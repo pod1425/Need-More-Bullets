@@ -1,5 +1,6 @@
 package net.pod.cnmb;
 
+import net.pod.cnmb.registry.ModItems;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -38,6 +39,7 @@ public class NeedMoreBulletsMod {
     public NeedMoreBulletsMod(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(this);
+        ModItems.register(modEventBus);
 
         modEventBus.addListener(this::addCreative);
 
@@ -49,7 +51,9 @@ public class NeedMoreBulletsMod {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-
+        if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+            event.accept(ModItems.LEAD_INGOT);
+        }
     }
 
     @SubscribeEvent
