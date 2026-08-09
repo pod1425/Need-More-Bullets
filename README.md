@@ -1,3 +1,3 @@
 # Nothing to read about here yet
 
-go away
+our code is shit and we know it! 
