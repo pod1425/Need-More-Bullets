@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "light_level=0": {
+      "model": "cnmb:block/lead_lamp_off"
+    },
+    "light_level=1": {
+      "model": "cnmb:block/lead_lamp_1"
+    },
+    "light_level=10": {
+      "model": "cnmb:block/lead_lamp_2"
+    },
+    "light_level=11": {
+      "model": "cnmb:block/lead_lamp_3"
+    },
+    "light_level=12": {
+      "model": "cnmb:block/lead_lamp_3"
+    },
+    "light_level=13": {
+      "model": "cnmb:block/lead_lamp_3"
+    },
+    "light_level=14": {
+      "model": "cnmb:block/lead_lamp_3"
+    },
+    "light_level=15": {
+      "model": "cnmb:block/lead_lamp_3"
+    },
+    "light_level=2": {
+      "model": "cnmb:block/lead_lamp_1"
+    },
+    "light_level=3": {
+      "model": "cnmb:block/lead_lamp_1"
+    },
+    "light_level=4": {
+      "model": "cnmb:block/lead_lamp_1"
+    },
+    "light_level=5": {
+      "model": "cnmb:block/lead_lamp_1"
+    },
+    "light_level=6": {
+      "model": "cnmb:block/lead_lamp_2"
+    },
+    "light_level=7": {
+      "model": "cnmb:block/lead_lamp_2"
+    },
+    "light_level=8": {
+      "model": "cnmb:block/lead_lamp_2"
+    },
+    "light_level=9": {
+      "model": "cnmb:block/lead_lamp_2"
+    }
+  }
+}

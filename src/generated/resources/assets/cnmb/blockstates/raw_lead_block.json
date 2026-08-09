@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "cnmb:block/raw_lead_block"
+    }
+  }
+}

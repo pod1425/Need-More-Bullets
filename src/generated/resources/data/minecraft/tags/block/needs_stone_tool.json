@@ -1,0 +1,14 @@
+{
+  "values": [
+    "cnmb:lead_block",
+    "cnmb:cut_steel",
+    "cnmb:steel_block",
+    "cnmb:raw_lead_block",
+    "cnmb:lead_bricks",
+    "cnmb:lead_lamp",
+    "cnmb:steel_bricks",
+    "cnmb:steel_lamp",
+    "cnmb:lead_ore",
+    "cnmb:deepslate_lead_ore"
+  ]
+}

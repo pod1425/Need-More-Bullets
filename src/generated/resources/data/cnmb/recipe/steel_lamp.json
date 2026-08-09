@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:blaze_rod"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "item": "cnmb:steel_block"
+    }
+  },
+  "pattern": [
+    " S ",
+    "SBS",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cnmb:steel_lamp"
+  }
+}

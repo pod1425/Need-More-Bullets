@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:blaze_rod"
+    },
+    "L": {
+      "item": "cnmb:lead_block"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    " L ",
+    "LBL",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "cnmb:lead_lamp"
+  }
+}
