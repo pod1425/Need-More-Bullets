@@ -1,3 +1,18 @@
 {
-  "item.cnmb.lead_ingot": "Lead Ingot"
+  "item.cnmb.lead_ingot": "Lead Ingot",
+  "item.cnmb.lead_nugget": "Lead nugget",
+  "item.cnmb.raw_lead": "Raw lead",
+  "item.cnmb.steel_ingot": "Steel ingot",
+  "item.cnmb.steel_nugget": "Steel nugget",
+  "item.cnmb.pistol": "Pistol",
+  "block.cnmb.lead_block": "Lead block",
+  "block.cnmb.lead_bricks": "Lead bricks",
+  "block.cnmb.lead_ore": "Lead ore",
+  "block.cnmb.deepslate_lead_ore": "Deepslate lead ore",
+  "block.cnmb.raw_lead_block": "Raw lead block",
+  "block.cnmb.steel_block": "Steel block",
+  "block.cnmb.steel_bricks": "Steel bricks",
+  "block.cnmb.cut_steel": "Cut steel",
+  "block.cnmb.steel_lamp": "Steel lamp",
+  "block.cnmb.lead_lamp": "Lead lamp"
 }

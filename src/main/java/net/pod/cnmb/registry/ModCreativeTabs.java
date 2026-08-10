@@ -19,7 +19,7 @@ public class ModCreativeTabs {
 
     public static final Supplier<CreativeModeTab> MAIN_TAB = CREATIVE_MODE_TAB.register("bismuth_items_tab",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.STEEL_INGOT.get()))
-                    .title(Component.translatable("creativetab.cnmb.creative_tab"))
+                    .title(Component.translatable("Сreate: Need More Bullets"))
                     .displayItems((itemDisplayParameters, output) -> {
                         for (Item i : ModItems.getItems()) {
                             output.accept(i);
