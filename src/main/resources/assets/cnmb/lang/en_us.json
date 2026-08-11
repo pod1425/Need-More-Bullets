@@ -5,6 +5,7 @@
   "item.cnmb.steel_ingot": "Steel ingot",
   "item.cnmb.steel_nugget": "Steel nugget",
   "item.cnmb.pistol": "Pistol",
+
   "block.cnmb.lead_block": "Lead block",
   "block.cnmb.lead_bricks": "Lead bricks",
   "block.cnmb.lead_ore": "Lead ore",
@@ -15,4 +16,5 @@
   "block.cnmb.cut_steel": "Cut steel",
   "block.cnmb.steel_lamp": "Steel lamp",
   "block.cnmb.lead_lamp": "Lead lamp"
+
 }

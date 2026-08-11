@@ -5,6 +5,7 @@
   "item.cnmb.steel_ingot": "Сталевий зливок",
   "item.cnmb.steel_nugget": "Сталевий самородок",
   "item.cnmb.pistol": "Пістоль",
+
   "block.cnmb.lead_block": "Свинцевий блок",
   "block.cnmb.lead_bricks": "Свинцеві кирпічі",
   "block.cnmb.lead_ore": "Свинцева руда",
@@ -15,4 +16,5 @@
   "block.cnmb.cut_steel": "Різана сталь",
   "block.cnmb.steel_lamp": "Сталева лампа",
   "block.cnmb.lead_lamp": "Свинцева лампа"
+
 }
