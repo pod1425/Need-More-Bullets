@@ -1,0 +1,20 @@
+{
+  "item.cnmb.lead_ingot": "Свинцевий зливок",
+  "item.cnmb.lead_nugget": "Свинцевий самородок",
+  "item.cnmb.raw_lead": "Сирий свинець",
+  "item.cnmb.steel_ingot": "Сталевий зливок",
+  "item.cnmb.steel_nugget": "Сталевий самородок",
+  "item.cnmb.pistol": "Пістоль",
+
+  "block.cnmb.lead_block": "Свинцевий блок",
+  "block.cnmb.lead_bricks": "Свинцеві кирпічі",
+  "block.cnmb.lead_ore": "Свинцева руда",
+  "block.cnmb.deepslate_lead_ore": "Глибокосланцева свинцева руда",
+  "block.cnmb.raw_lead_block": "Блок сирого свинцю",
+  "block.cnmb.steel_block": "Сталевий блок",
+  "block.cnmb.steel_bricks": "Сталеві кирпічі",
+  "block.cnmb.cut_steel": "Різана сталь",
+  "block.cnmb.steel_lamp": "Сталева лампа",
+  "block.cnmb.lead_lamp": "Свинцева лампа"
+
+}
