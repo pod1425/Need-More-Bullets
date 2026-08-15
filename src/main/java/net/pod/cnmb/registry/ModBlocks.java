@@ -59,13 +59,9 @@ public class ModBlocks {
     public static final DeferredBlock<Block> ACTIVE_SCULK = registerBlock("active_sculk",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(1.5f).sound(SoundType.SCULK)));
-    public static final DeferredBlock<Block> CERUSSITE = registerBlock("cerussite",
-            () -> new Block(BlockBehaviour.Properties.of()
-                    .strength(2f).sound(SoundType.STONE)));
 
-    public static final DeferredBlock<Block> CERUSSITE_PILLAR = registerBlock("cerussite_pillar",
-            () -> new ConnectedPillarBlock(BlockBehaviour.Properties.of()
-                    .strength(2f).sound(SoundType.STONE)));
+
+
     /*
     public static final DeferredBlock<Block> CERUSSITE_PILLAR = registerBlock("cerussite_pillar",
             CreateRegistrate.connectedTextures(() -> new RotatedPillarCTBehaviour(BlockBehaviour.Properties.of()

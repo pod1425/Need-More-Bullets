@@ -1,13 +1,9 @@
 package net.pod.cnmb;
 
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.pod.cnmb.entity.projectile.GenericBulletEntity;
-import net.pod.cnmb.entity.projectile.GenericBulletRenderer;
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import net.pod.cnmb.networking.ModNetworking;
-import net.pod.cnmb.registry.ModBlocks;
-import net.pod.cnmb.registry.ModCreativeTabs;
-import net.pod.cnmb.registry.ModEntities;
-import net.pod.cnmb.registry.ModItems;
+import net.pod.cnmb.registry.CNMBAllPaletteStoneTypes;
+import net.pod.cnmb.registry.*;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -28,10 +24,15 @@ public class NeedMoreBulletsMod {
     public static final String MODID = "cnmb";
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
+
     public NeedMoreBulletsMod(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(this);
 
+        REGISTRATE.registerEventListeners(modEventBus);
+
+        CNMBAllPaletteStoneTypes.register(REGISTRATE);
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModEntities.register(modEventBus);
