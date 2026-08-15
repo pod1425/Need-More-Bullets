@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.pod.cnmb.NeedMoreBulletsMod;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -212,7 +213,7 @@ public class CNMBPaletteBlockPattern {
     }
 
     protected static ResourceLocation toLocation(String variant, String texture) {
-        return Create.asResource(
+        return NeedMoreBulletsMod.asResource(
                 String.format(TEXTURE_LOCATION, texture, variant + (texture.equals("cut") ? "_" : "_cut_") + texture));
     }
 

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "cnmb:block/polished_cut_cerussite_slab"
+    },
+    "type=double": {
+      "model": "cnmb:block/polished_cut_cerussite_slab_double"
+    },
+    "type=top": {
+      "model": "cnmb:block/polished_cut_cerussite_slab_top"
+    }
+  }
+}

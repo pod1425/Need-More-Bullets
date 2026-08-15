@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_stone_types_cerussite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#cnmb:stone_types/cerussite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cnmb:cut_cerussite_brick_slab_from_stone_types_cerussite_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_stone_types_cerussite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cnmb:cut_cerussite_brick_slab_from_stone_types_cerussite_stonecutting"
+    ]
+  }
+}

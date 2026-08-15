@@ -24,11 +24,13 @@ import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
  * Copy of PalettesVariantEntry from create
  * @see com.simibubi.create.content.decoration.palettes.PalettesVariantEntry
  */
+@SuppressWarnings("deprecation")
 public class CNMBPalettesVariantEntry {
     private static final CreateRegistrate REGISTRATE = NeedMoreBulletsMod.REGISTRATE;
 
     public final ImmutableList<BlockEntry<? extends Block>> registeredBlocks;
     public final ImmutableList<BlockEntry<? extends Block>> registeredPartials;
+
 
     public CNMBPalettesVariantEntry(String name, CNMBAllPaletteStoneTypes paletteStoneVariants) {
         ImmutableList.Builder<BlockEntry<? extends Block>> registeredBlocks = ImmutableList.builder();
@@ -56,8 +58,8 @@ public class CNMBPalettesVariantEntry {
 
             itemBuilder.tag(paletteStoneVariants.materialTag);
 
-            if (pattern.isTranslucent())
-                builder.addLayer(() -> RenderType::translucent);
+            //if (pattern.isTranslucent())
+            //    builder.addLayer(() -> RenderType::translucent);
             pattern.createCTBehaviour(name)
                     .ifPresent(b -> builder.onRegister(connectedTextures(b)));
 

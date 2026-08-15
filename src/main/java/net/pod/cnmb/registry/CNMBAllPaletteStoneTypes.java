@@ -50,6 +50,7 @@ public enum CNMBAllPaletteStoneTypes {
         return variants;
     }
 
+    @SuppressWarnings({"deprecation", "removal"})
     public static void register(CreateRegistrate registrate) {
         for (CNMBAllPaletteStoneTypes paletteStoneVariants : values()) {
             paletteStoneVariants.baseBlock = paletteStoneVariants.factory.apply(registrate);

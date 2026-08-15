@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "cnmb:lead_bricks"
+          "name": "cnmb:cut_lead"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "cnmb:blocks/lead_bricks"
+  "random_sequence": "cnmb:blocks/cut_lead"
 }

@@ -1,0 +1,19 @@
+{
+  "values": [
+    "cnmb:cut_cerussite",
+    "cnmb:cut_cerussite_stairs",
+    "cnmb:cut_cerussite_wall",
+    "cnmb:polished_cut_cerussite",
+    "cnmb:polished_cut_cerussite_stairs",
+    "cnmb:polished_cut_cerussite_wall",
+    "cnmb:cut_cerussite_bricks",
+    "cnmb:cut_cerussite_brick_stairs",
+    "cnmb:cut_cerussite_brick_wall",
+    "cnmb:small_cerussite_bricks",
+    "cnmb:small_cerussite_brick_stairs",
+    "cnmb:small_cerussite_brick_wall",
+    "cnmb:layered_cerussite",
+    "cnmb:cerussite_pillar",
+    "cnmb:cerussite"
+  ]
+}

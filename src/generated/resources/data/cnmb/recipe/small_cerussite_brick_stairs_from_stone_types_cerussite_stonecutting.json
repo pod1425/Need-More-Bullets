@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "tag": "cnmb:stone_types/cerussite"
+  },
+  "result": {
+    "count": 1,
+    "id": "cnmb:small_cerussite_brick_stairs"
+  }
+}

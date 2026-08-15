@@ -1,6 +1,7 @@
 package net.pod.cnmb;
 
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import net.minecraft.resources.ResourceLocation;
 import net.pod.cnmb.networking.ModNetworking;
 import net.pod.cnmb.registry.CNMBAllPaletteStoneTypes;
 import net.pod.cnmb.registry.*;
@@ -44,7 +45,9 @@ public class NeedMoreBulletsMod {
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
-
+    public static ResourceLocation asResource(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    }
     private void commonSetup(FMLCommonSetupEvent event) {
         LOGGER.info("CNMB started. (insert 120 year old engine startup sounds)");
     }
