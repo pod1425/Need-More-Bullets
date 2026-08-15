@@ -54,6 +54,7 @@ public class NeedMoreBulletsMod {
         }
     }
 
+
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         LOGGER.info("CNMB serverside started. (insert 120 year old engine startup sounds)");

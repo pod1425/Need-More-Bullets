@@ -3,6 +3,7 @@ package net.pod.cnmb.datagen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.pod.cnmb.NeedMoreBulletsMod;
@@ -23,24 +24,27 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.CUT_STEEL.get())
                 .add(ModBlocks.STEEL_BLOCK.get())
                 .add(ModBlocks.RAW_LEAD_BLOCK.get())
-                .add(ModBlocks.LEAD_BRICKS.get())
+                .add(ModBlocks.CUT_LEAD.get())
                 .add(ModBlocks.LEAD_LAMP.get())
                 .add(ModBlocks.STEEL_BRICKS.get())
                 .add(ModBlocks.STEEL_LAMP.get())
                 .add(ModBlocks.LEAD_ORE.get())
-                .add(ModBlocks.DEEPSLATE_LEAD_ORE.get());
+                .add(ModBlocks.DEEPSLATE_LEAD_ORE.get())
+                .add(ModBlocks.CERUSSITE.get())
+                .add(ModBlocks.CERUSSITE_PILLAR.get());
 
         tag(BlockTags.NEEDS_STONE_TOOL)
                 .add(ModBlocks.LEAD_BLOCK.get())
                 .add(ModBlocks.CUT_STEEL.get())
                 .add(ModBlocks.STEEL_BLOCK.get())
                 .add(ModBlocks.RAW_LEAD_BLOCK.get())
-                .add(ModBlocks.LEAD_BRICKS.get())
+                .add(ModBlocks.CUT_LEAD.get())
                 .add(ModBlocks.LEAD_LAMP.get())
                 .add(ModBlocks.STEEL_BRICKS.get())
                 .add(ModBlocks.STEEL_LAMP.get())
                 .add(ModBlocks.LEAD_ORE.get())
                 .add(ModBlocks.DEEPSLATE_LEAD_ORE.get());
+
 
     }
 }

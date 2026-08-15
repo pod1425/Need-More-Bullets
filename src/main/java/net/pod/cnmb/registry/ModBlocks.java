@@ -1,5 +1,9 @@
 package net.pod.cnmb.registry;
 
+import com.simibubi.create.content.decoration.palettes.ConnectedPillarBlock;
+import com.simibubi.create.foundation.block.connected.*;
+import com.simibubi.create.foundation.data.CreateRegistrate;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -8,6 +12,7 @@ import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -27,7 +32,7 @@ public class ModBlocks {
     public static final DeferredBlock<Block> LEAD_BLOCK = registerBlock("lead_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-    public static final DeferredBlock<Block> LEAD_BRICKS = registerBlock("lead_bricks",
+    public static final DeferredBlock<Block> CUT_LEAD = registerBlock("cut_lead",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 
@@ -51,9 +56,21 @@ public class ModBlocks {
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 
+    public static final DeferredBlock<Block> ACTIVE_SCULK = registerBlock("active_sculk",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(1.5f).sound(SoundType.SCULK)));
+    public static final DeferredBlock<Block> CERUSSITE = registerBlock("cerussite",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(2f).sound(SoundType.STONE)));
 
-
-
+    public static final DeferredBlock<Block> CERUSSITE_PILLAR = registerBlock("cerussite_pillar",
+            () -> new ConnectedPillarBlock(BlockBehaviour.Properties.of()
+                    .strength(2f).sound(SoundType.STONE)));
+    /*
+    public static final DeferredBlock<Block> CERUSSITE_PILLAR = registerBlock("cerussite_pillar",
+            CreateRegistrate.connectedTextures(() -> new RotatedPillarCTBehaviour(BlockBehaviour.Properties.of()
+                    .strength(2f).sound(SoundType.STONE))));
+*/
 
 
     public static final DeferredBlock<Block> STEEL_LAMP = registerBlock("steel_lamp",
@@ -77,6 +94,8 @@ public class ModBlocks {
             () -> new DropExperienceBlock(UniformInt.of(3, 6),
                     BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE)));
 */
+
+
 
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {

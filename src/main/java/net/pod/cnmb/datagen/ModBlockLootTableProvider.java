@@ -31,10 +31,13 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.CUT_STEEL.get());
         dropSelf(ModBlocks.STEEL_BLOCK.get());
         dropSelf(ModBlocks.RAW_LEAD_BLOCK.get());
-        dropSelf(ModBlocks.LEAD_BRICKS.get());
+        dropSelf(ModBlocks.CUT_LEAD.get());
         dropSelf(ModBlocks.LEAD_LAMP.get());
         dropSelf(ModBlocks.STEEL_BRICKS.get());
         dropSelf(ModBlocks.STEEL_LAMP.get());
+        dropSelf(ModBlocks.ACTIVE_SCULK.get());
+        dropSelf(ModBlocks.CERUSSITE.get());
+        dropSelf(ModBlocks.CERUSSITE_PILLAR.get());
 
 
         add(ModBlocks.LEAD_ORE.get(),
