@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "cnmb:block/palettes/stone_types/cap/cerussite_cut_cap",
+    "side": "cnmb:block/palettes/stone_types/pillar/cerussite_cut_pillar"
+  }
+}

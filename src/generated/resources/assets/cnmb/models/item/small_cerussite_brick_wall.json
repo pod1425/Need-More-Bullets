@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "cnmb:block/palettes/stone_types/small_brick/cerussite_cut_small_brick"
+  }
+}

@@ -29,9 +29,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.STEEL_BRICKS.get())
                 .add(ModBlocks.STEEL_LAMP.get())
                 .add(ModBlocks.LEAD_ORE.get())
-                .add(ModBlocks.DEEPSLATE_LEAD_ORE.get())
-                .add(ModBlocks.CERUSSITE.get())
-                .add(ModBlocks.CERUSSITE_PILLAR.get());
+                .add(ModBlocks.DEEPSLATE_LEAD_ORE.get());
+
 
         tag(BlockTags.NEEDS_STONE_TOOL)
                 .add(ModBlocks.LEAD_BLOCK.get())

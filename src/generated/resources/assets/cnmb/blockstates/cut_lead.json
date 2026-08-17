@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "cnmb:block/lead_bricks"
+      "model": "cnmb:block/cut_lead"
     }
   }
 }

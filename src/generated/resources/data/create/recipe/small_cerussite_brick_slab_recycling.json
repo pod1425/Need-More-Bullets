@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "cnmb:small_cerussite_brick_slab"
+    },
+    {
+      "item": "cnmb:small_cerussite_brick_slab"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "cnmb:small_cerussite_bricks"
+  }
+}
