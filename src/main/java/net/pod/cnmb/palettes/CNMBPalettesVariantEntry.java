@@ -8,6 +8,8 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import net.createmod.catnip.math.BlockFace;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.TagKey;
@@ -16,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.registry.CNMBAllPaletteStoneTypes;
+import net.pod.cnmb.registry.ModCreativeTabs;
 
 import static com.simibubi.create.foundation.data.CreateRegistrate.connectedTextures;
 import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
@@ -72,9 +75,10 @@ public class CNMBPalettesVariantEntry {
             BlockEntry<? extends Block> block = builder.register();
             registeredBlocks.add(block);
 
-            for (CNMBPaletteBlockPartial<? extends Block> partialBlock : pattern.getPartials())
+            for (CNMBPaletteBlockPartial<? extends Block> partialBlock : pattern.getPartials()) {
                 registeredPartials.add(partialBlock.create(name, pattern, block, paletteStoneVariants)
                         .register());
+            }
         }
 
         REGISTRATE.addDataGenerator(ProviderType.RECIPE,

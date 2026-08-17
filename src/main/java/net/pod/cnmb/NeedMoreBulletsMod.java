@@ -32,13 +32,12 @@ public class NeedMoreBulletsMod {
         NeoForge.EVENT_BUS.register(this);
 
         REGISTRATE.registerEventListeners(modEventBus);
-
         CNMBAllPaletteStoneTypes.register(REGISTRATE);
+
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModEntities.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
-        //EntityRenderers.register(ModEntities.GENERIC_BULLET.get(), GenericBulletRenderer::new);
 
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(ModNetworking::register);
