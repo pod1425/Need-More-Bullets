@@ -32,7 +32,7 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
     }
 
 
-    public GenericBulletEntity(LivingEntity shooter, Level level, double damage, double speed) {
+    public GenericBulletEntity(Entity shooter, Level level, double damage, double speed) {
         this(ModEntities.GENERIC_BULLET.get(), level);
         this.damage = damage;
         this.setOwner(shooter);
@@ -51,9 +51,6 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
                 EntityAnchorArgument.Anchor.FEET,
                 this.position().add(look)
         );
-
-        this.yRotO = this.getYRot();
-        this.xRotO = this.getXRot();
     }
 
     @Override
@@ -95,16 +92,6 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
                 )
         );
 
-        if (hitResult.getType() != HitResult.Type.MISS) {
-            end = hitResult.getLocation();
-            this.setPos(end);
-
-            if (hitResult instanceof BlockHitResult blockHit) {
-                onHitBlock(blockHit);
-            }
-
-            return;
-        }
 
         // Entity collision
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
@@ -112,7 +99,7 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
                 this,
                 start,
                 end,
-                this.getBoundingBox().expandTowards(movement).inflate(1.0),
+                this.getBoundingBox().expandTowards(movement).inflate(2.0),
                 entity -> !entity.isSpectator()
                         && entity.isPickable()
                         && entity != this.getOwner()
@@ -124,6 +111,16 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
             return;
         }
 
+        if (hitResult.getType() != HitResult.Type.MISS) {
+            end = hitResult.getLocation();
+            this.setPos(end);
+
+            if (hitResult instanceof BlockHitResult blockHit) {
+                onHitBlock(blockHit);
+            }
+
+            return;
+        }
         // Move
         this.setPos(end);
 

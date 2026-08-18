@@ -45,11 +45,9 @@ public class GunClientHandler {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-
         if (mc.player == null) {
             return;
         }
-
 
         ItemStack stack = mc.player.getMainHandItem();
 
