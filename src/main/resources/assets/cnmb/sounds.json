@@ -1,0 +1,8 @@
+{
+  "gun_fire" :{
+    "subtitle": "Gunshot",
+    "sounds": [
+      "cnmb:gun_fire"
+    ]
+  }
+}

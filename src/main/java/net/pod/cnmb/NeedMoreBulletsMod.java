@@ -43,6 +43,7 @@ public class NeedMoreBulletsMod {
         modEventBus.addListener(ModNetworking::register);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        ModSounds.register(modEventBus);
     }
     public static ResourceLocation asResource(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
