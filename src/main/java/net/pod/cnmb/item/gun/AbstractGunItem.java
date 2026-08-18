@@ -1,21 +1,18 @@
 package net.pod.cnmb.item.gun;
 
-import net.minecraft.commands.arguments.EntityAnchorArgument;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.pod.cnmb.entity.projectile.GenericBulletEntity;
+import net.pod.cnmb.registry.ModSounds;
 
 public abstract class AbstractGunItem extends Item {
-    // change into DataComponents later
     private int shootRate;
     private double bulletDamage;
     private double bulletSpeed;
@@ -39,6 +36,7 @@ public abstract class AbstractGunItem extends Item {
         if (player.getCooldowns().isOnCooldown(this)) {
             return;
         }
+
         Level l = player.level();
         player.getCooldowns().addCooldown(this, 20 / shootRate);
 
@@ -49,6 +47,17 @@ public abstract class AbstractGunItem extends Item {
                     new GenericBulletEntity(player, l, bulletDamage, bulletSpeed);
 
             l.addFreshEntity(projectile);
+
+            l.playSound(
+                    null,
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
+                    ModSounds.Gun_Fire.get(),
+                    SoundSource.PLAYERS,
+                    1.0F,
+                    1.0F
+            );
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));

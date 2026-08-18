@@ -4,10 +4,7 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.pod.cnmb.entity.projectile.GenericBulletEntity;
 import net.pod.cnmb.entity.projectile.GenericBulletRenderer;
 import net.pod.cnmb.networking.ModNetworking;
-import net.pod.cnmb.registry.ModBlocks;
-import net.pod.cnmb.registry.ModCreativeTabs;
-import net.pod.cnmb.registry.ModEntities;
-import net.pod.cnmb.registry.ModItems;
+import net.pod.cnmb.registry.*;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -42,6 +39,7 @@ public class NeedMoreBulletsMod {
         modEventBus.addListener(ModNetworking::register);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        ModSounds.register(modEventBus);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
