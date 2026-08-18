@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "polished_cut_cerussite_stairs",
+  "key": {
+    "X": {
+      "item": "cnmb:polished_cut_cerussite"
+    }
+  },
+  "pattern": [
+    "X  ",
+    "XX ",
+    "XXX"
+  ],
+  "result": {
+    "count": 4,
+    "id": "cnmb:polished_cut_cerussite_stairs"
+  }
+}

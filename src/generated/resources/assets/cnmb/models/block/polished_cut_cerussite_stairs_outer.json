@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "cnmb:block/palettes/stone_types/polished/cerussite_cut_polished",
+    "side": "cnmb:block/palettes/stone_types/polished/cerussite_cut_polished",
+    "top": "cnmb:block/palettes/stone_types/polished/cerussite_cut_polished"
+  }
+}

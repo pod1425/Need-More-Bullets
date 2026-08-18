@@ -23,8 +23,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.CUT_STEEL);
         blockWithItem(ModBlocks.STEEL_BLOCK);
         blockWithItem(ModBlocks.RAW_LEAD_BLOCK);
-        blockWithItem(ModBlocks.LEAD_BRICKS);
+        blockWithItem(ModBlocks.CUT_LEAD);
         blockWithItem(ModBlocks.STEEL_BRICKS);
+        blockWithItem(ModBlocks.ACTIVE_SCULK);
+
 
         blockWithItem(ModBlocks.LEAD_ORE);
         blockWithItem(ModBlocks.DEEPSLATE_LEAD_ORE);

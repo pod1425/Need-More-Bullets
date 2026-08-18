@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "cnmb:block/cerussite_natural_0"
+      },
+      {
+        "model": "cnmb:block/cerussite_natural_1"
+      },
+      {
+        "model": "cnmb:block/cerussite_natural_2"
+      },
+      {
+        "model": "cnmb:block/cerussite_natural_3"
+      }
+    ]
+  }
+}

@@ -1,10 +1,8 @@
 package net.pod.cnmb.registry;
 
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
@@ -18,16 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static net.pod.cnmb.NeedMoreBulletsMod.REGISTRATE;
+
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS =
             DeferredRegister.createBlocks(NeedMoreBulletsMod.MODID);
+
     // for creative tab
     private static List<DeferredBlock<? extends Block> > blocks = new ArrayList<>();
+    private static List<DeferredBlock<? extends Block> > decorativeBlocks = new ArrayList<>();
 
     public static final DeferredBlock<Block> LEAD_BLOCK = registerBlock("lead_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-    public static final DeferredBlock<Block> LEAD_BRICKS = registerBlock("lead_bricks",
+    public static final DeferredBlock<Block> CUT_LEAD = registerDecorativeBlock("cut_lead",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 
@@ -44,16 +46,24 @@ public class ModBlocks {
     public static final DeferredBlock<Block> STEEL_BLOCK = registerBlock("steel_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-    public static final DeferredBlock<Block> STEEL_BRICKS = registerBlock("steel_bricks",
+    public static final DeferredBlock<Block> STEEL_BRICKS = registerDecorativeBlock("steel_bricks",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-    public static final DeferredBlock<Block> CUT_STEEL = registerBlock("cut_steel",
+    public static final DeferredBlock<Block> CUT_STEEL = registerDecorativeBlock("cut_steel",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 
+    public static final DeferredBlock<Block> ACTIVE_SCULK = registerBlock("active_sculk",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(1.5f).sound(SoundType.SCULK)));
 
 
 
+    /*
+    public static final DeferredBlock<Block> CERUSSITE_PILLAR = registerBlock("cerussite_pillar",
+            CreateRegistrate.connectedTextures(() -> new RotatedPillarCTBehaviour(BlockBehaviour.Properties.of()
+                    .strength(2f).sound(SoundType.STONE))));
+*/
 
 
     public static final DeferredBlock<Block> STEEL_LAMP = registerBlock("steel_lamp",
@@ -79,12 +89,21 @@ public class ModBlocks {
 */
 
 
+
+
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);
         blocks.add(toReturn);
         return toReturn;
     }
+    private static <T extends Block> DeferredBlock<T> registerDecorativeBlock(String name, Supplier<T> block) {
+        DeferredBlock<T> toReturn = BLOCKS.register(name, block);
+        registerBlockItem(name, toReturn);
+        decorativeBlocks.add(toReturn);
+        return toReturn;
+    }
+
 
     private static <T extends Block> void registerBlockItem(String name, DeferredBlock<T> block) {
         ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
@@ -96,5 +115,8 @@ public class ModBlocks {
 
     public static List<? extends Block> getBlocks() {
         return blocks.stream().map(DeferredHolder::get).toList();
+    }
+    public static List<? extends Block> getDecorativeBlocks() {
+        return decorativeBlocks.stream().map(DeferredHolder::get).toList();
     }
 }

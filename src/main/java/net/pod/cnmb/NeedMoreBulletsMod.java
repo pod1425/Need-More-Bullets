@@ -1,9 +1,9 @@
 package net.pod.cnmb;
 
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.pod.cnmb.entity.projectile.GenericBulletEntity;
-import net.pod.cnmb.entity.projectile.GenericBulletRenderer;
+import com.simibubi.create.foundation.data.CreateRegistrate;
+import net.minecraft.resources.ResourceLocation;
 import net.pod.cnmb.networking.ModNetworking;
+import net.pod.cnmb.registry.CNMBAllPaletteStoneTypes;
 import net.pod.cnmb.registry.*;
 import org.slf4j.Logger;
 
@@ -25,15 +25,19 @@ public class NeedMoreBulletsMod {
     public static final String MODID = "cnmb";
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
+
     public NeedMoreBulletsMod(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(this);
+
+        REGISTRATE.registerEventListeners(modEventBus);
+        CNMBAllPaletteStoneTypes.register(REGISTRATE);
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModEntities.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
-        //EntityRenderers.register(ModEntities.GENERIC_BULLET.get(), GenericBulletRenderer::new);
 
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(ModNetworking::register);
@@ -41,7 +45,9 @@ public class NeedMoreBulletsMod {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         ModSounds.register(modEventBus);
     }
-
+    public static ResourceLocation asResource(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    }
     private void commonSetup(FMLCommonSetupEvent event) {
         LOGGER.info("CNMB started. (insert 120 year old engine startup sounds)");
     }
@@ -51,6 +57,7 @@ public class NeedMoreBulletsMod {
             event.accept(ModItems.LEAD_INGOT);
         }
     }
+
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {

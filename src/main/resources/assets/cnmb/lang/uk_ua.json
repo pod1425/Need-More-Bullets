@@ -7,12 +7,12 @@
   "item.cnmb.pistol": "Пістоль",
 
   "block.cnmb.lead_block": "Свинцевий блок",
-  "block.cnmb.lead_bricks": "Свинцева цегла",
+  "block.cnmb.cut_lead": "Тесаний свинець",
   "block.cnmb.lead_ore": "Свинцева руда",
-  "block.cnmb.deepslate_lead_ore": "Глибокосланцева свинцева руда",
+  "block.cnmb.deepslate_lead_ore": "Глибосланцева свинцева руда",
   "block.cnmb.raw_lead_block": "Блок сирого свинцю",
   "block.cnmb.steel_block": "Сталевий блок",
-  "block.cnmb.steel_bricks": "Сталева цегла",
+  "block.cnmb.steel_bricks": "Тесана сталь",
   "block.cnmb.cut_steel": "Різана сталь",
   "block.cnmb.steel_lamp": "Сталева лампа",
   "block.cnmb.lead_lamp": "Свинцева лампа"

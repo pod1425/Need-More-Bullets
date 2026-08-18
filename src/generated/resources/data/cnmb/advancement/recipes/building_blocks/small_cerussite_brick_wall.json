@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_small_cerussite_bricks": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cnmb:small_cerussite_bricks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cnmb:small_cerussite_brick_wall"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_small_cerussite_bricks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cnmb:small_cerussite_brick_wall"
+    ]
+  }
+}
