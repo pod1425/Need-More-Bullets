@@ -26,7 +26,7 @@ public class ModItems {
     public static final DeferredItem<Item> STEEL_NUGGET = add(ITEMS.register("steel_nugget",
             () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> PISTOL = add(ITEMS.register("pistol",
-            () -> new PistolItem(new Item.Properties(), 4, 10, 8)));
+            () -> new PistolItem(new Item.Properties(), 4, 10, 8, 2, false)));
 
     private static DeferredItem<Item> add(DeferredItem<Item> item) {
         items.add(item);

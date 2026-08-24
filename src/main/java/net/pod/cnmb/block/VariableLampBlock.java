@@ -33,6 +33,7 @@ public class VariableLampBlock extends Block {
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         if (!level.isClientSide) {
+            // im wondering why no one EVER thought of this. Its genius. And simple.
             int value = state.getValue(LIGHT_LEVEL);
             if (value != level.getBestNeighborSignal(pos)) {
                 level.scheduleTick(pos, this, 0);

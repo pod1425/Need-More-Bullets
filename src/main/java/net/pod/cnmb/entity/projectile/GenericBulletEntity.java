@@ -5,9 +5,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -18,32 +18,72 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.pod.cnmb.registry.ModEntities;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
-
-public class GenericBulletEntity extends Entity implements IEntityWithComplexSpawn {
-
+/**
+ This is serverside code that runs for every bullet.
+ For clientside, check out GenericBulletRenderer
+ */
+public class GenericBulletEntity extends Entity implements IEntityWithComplexSpawn, IBulletEntity {
     private double damage;
+    // only set if its a player
     private UUID ownerUUID;
+    // to check who does the damage
     private Entity owner;
+    // for fixing the issues with weird rendering on high speeds
     private Vec3 clientVelocity = Vec3.ZERO;
 
+    /**
+     * Shouldnt be used to create a bullet entity.
+     * Use {@code GenericBulletEntity(Entity, Level, double, double, Vec3)} instead.
+     * @param entityType
+     * @param level
+     */
     public GenericBulletEntity(EntityType<? extends GenericBulletEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-
-    public GenericBulletEntity(Entity shooter, Level level, double damage, double speed) {
+    /**
+     * Initializes a new bullet and fully prepares it to be added into the world.
+     * Gets its vector of flight from shooter looking angle and applies inaccuracy.
+     * Sets the vector of flight relative to its "feet", with its looking angle always the same
+     * as the flight direction.
+     * After object creation, immidiately ready to be added to the world with {@code Level#addFreshEntity}
+     *
+     * @param shooter the entity that shot this bullet, will be used to record who did the damage
+     * @param level level duh
+     * @param damage if I need to explain what this means, its already too late for you. Just go be a barista or something
+     * @param speed speed at which bullet travels, in blocks per second
+     * @param inaccuracy angle of spread of bullets when shooting
+     * @param offset sets the offset for the bullet when it spawns. Origin point is at {@code shooter} X and Z coordinates,
+     *               and their EyeY
+     *               If this param is null, the default pos will be at the center of {@code shooter}'s head
+     */
+    public GenericBulletEntity(Entity shooter, Level level, double damage, double speed, double inaccuracy, @Nullable Vec3 offset) {
         this(ModEntities.GENERIC_BULLET.get(), level);
         this.damage = damage;
         this.setOwner(shooter);
 
         Vec3 look = shooter.getLookAngle();
 
-        this.setPos(
-                shooter.getX() + look.x * 0.5,
-                shooter.getEyeY() + look.y,
-                shooter.getZ() + look.z * 0.5
+        look = applyInaccuracy(
+                look,
+                inaccuracy,
+                shooter.getRandom()
         );
+        if (offset == null) {
+            this.setPos(
+                    shooter.getX() + look.x * 0.5,
+                    shooter.getEyeY() + look.y,
+                    shooter.getZ() + look.z * 0.5
+            );
+        } else {
+            this.setPos(
+                    shooter.getX() + offset.x,
+                    shooter.getEyeY() + offset.y,
+                    shooter.getZ() + offset.z
+            );
+        }
 
         this.setDeltaMovement(look.scale(speed));
 
@@ -51,6 +91,37 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
                 EntityAnchorArgument.Anchor.FEET,
                 this.position().add(look)
         );
+    }
+    private static Vec3 applyInaccuracy(Vec3 direction, double inaccuracy, RandomSource random) {
+        if (inaccuracy <= 0.0) {
+            return direction;
+        }
+
+        double angle = Math.toRadians(inaccuracy);
+
+        double theta = random.nextDouble() * Math.PI * 2.0;
+        double cos = Math.cos(angle * random.nextDouble());
+        double sin = Math.sqrt(1.0 - cos * cos);
+
+        Vec3 perpendicular = direction.cross(
+                Math.abs(direction.y) < 0.999
+                        ? new Vec3(0, 1, 0)
+                        : new Vec3(1, 0, 0)
+        ).normalize();
+
+        Vec3 perpendicular2 = direction.cross(perpendicular).normalize();
+
+        return direction.scale(cos)
+                .add(perpendicular.scale(Math.cos(theta) * sin))
+                .add(perpendicular2.scale(Math.sin(theta) * sin))
+                .normalize();
+    }
+    /**
+     * Initializes a new bullet and fully prepares it to be added into the world.
+     * See {@code GenericBulletEntity(Entity, Level, double, double, Vec3)} for more details.
+     */
+    public GenericBulletEntity(Entity shooter, Level level, double damage, double speed, double inaccuracy) {
+        this(shooter, level, damage, speed, inaccuracy, null);
     }
 
     @Override
@@ -92,14 +163,13 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
                 )
         );
 
-
         // Entity collision
         EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(
                 this.level(),
                 this,
                 start,
                 end,
-                this.getBoundingBox().expandTowards(movement).inflate(2.0),
+                this.getBoundingBox().expandTowards(movement).inflate(1.0),
                 entity -> !entity.isSpectator()
                         && entity.isPickable()
                         && entity != this.getOwner()
@@ -133,7 +203,9 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
         }
     }
 
-    protected void onHitEntity(EntityHitResult result) {
+
+    @Override
+    public void onHitEntity(EntityHitResult result) {
         Entity target = result.getEntity();
 
         if (!this.level().isClientSide) {
@@ -146,13 +218,15 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
         }
     }
 
-    protected void onHitBlock(BlockHitResult result) {
+    @Override
+    public void onHitBlock(BlockHitResult result) {
         if (!this.level().isClientSide) {
             this.discard();
         }
     }
 
-    private Entity getOwner() {
+    @Override
+    public Entity getOwner() {
         if (owner != null) {
             return owner;
         }
@@ -164,7 +238,8 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
         return owner;
     }
 
-    private void setOwner(Entity owner) {
+    @Override
+    public void setOwner(Entity owner) {
         this.owner = owner;
 
         if (owner != null) {
@@ -177,12 +252,20 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
         return false;
     }
 
+    /**
+     * Override this to make the projectile gravity-affected
+     * @return gravity scale
+     */
     @Override
     protected double getDefaultGravity() {
         return 0.0;
     }
 
-
+    /**
+     * Needed alongside with {@code readSpawnData} to sync client and server bullet speed
+     * for proper rendering.
+     * @param buffer The packet data stream
+     */
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         Vec3 velocity = this.getDeltaMovement();
@@ -193,6 +276,10 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
 
     }
 
+    /**
+     * See {@code writeSpawnData}.
+     * @param buffer The packet data stream
+     */
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf buffer) {
         clientVelocity = new Vec3(

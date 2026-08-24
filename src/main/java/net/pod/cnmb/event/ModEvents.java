@@ -17,7 +17,7 @@ import net.pod.cnmb.item.gun.AbstractGunItem;
 
 public class ModEvents {
 
-
+    // this is too funny to remove, AND is a great tutorial on how to do stuff
     @SubscribeEvent
     public static void livingDamage(LivingDamageEvent.Pre event) {
         if(event.getEntity() instanceof Sheep sheep && event.getSource().getDirectEntity() instanceof Player player) {

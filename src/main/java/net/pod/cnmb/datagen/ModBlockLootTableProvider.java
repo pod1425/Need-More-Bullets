@@ -40,7 +40,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
 
 
         add(ModBlocks.LEAD_ORE.get(),
-                block -> createOreDrop(ModBlocks.LEAD_ORE.get(), ModItems.RAW_LEAD.get()));
+                block -> createMultipleOreDrops(ModBlocks.LEAD_ORE.get(), ModItems.RAW_LEAD.get(), 2, 5));
         add(ModBlocks.DEEPSLATE_LEAD_ORE.get(),
                 block -> createMultipleOreDrops(ModBlocks.DEEPSLATE_LEAD_ORE.get(), ModItems.RAW_LEAD.get(), 2, 5));
 

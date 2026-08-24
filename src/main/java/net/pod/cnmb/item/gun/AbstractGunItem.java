@@ -11,26 +11,47 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.pod.cnmb.entity.projectile.GenericBulletEntity;
+import net.pod.cnmb.event.GunClientHandler;
 import net.pod.cnmb.registry.ModSounds;
 
-public abstract class AbstractGunItem extends Item {
-    private int shootRate;
-    private double bulletDamage;
-    private double bulletSpeed;
+import static net.pod.cnmb.event.GunClientHandler.playerHoldsGun;
 
-    public AbstractGunItem(Properties properties, int shootRate, double bulletDamage, double bulletSpeed) {
+public abstract class AbstractGunItem extends Item {
+    // Should add all the same things but as NBT for gun itemstacks, so it can be changed individually by upgrades and stuff
+    private final int shootRate;
+    private final double bulletDamage;
+    private final double bulletSpeed;
+    private final double inaccuracy;
+    private final boolean isAutomatic;
+    private boolean shotOccured = false;
+
+    public AbstractGunItem(Properties properties, int shootRate, double bulletDamage, double bulletSpeed, double inaccuracy, boolean isAutomatic) {
         super(properties);
         this.shootRate = shootRate;
         this.bulletSpeed = bulletSpeed;
         this.bulletDamage = bulletDamage;
+        this.inaccuracy = inaccuracy;
+        this.isAutomatic = isAutomatic;
     }
 
-    public int getShootRate() {
+    public int getBaseShootRate() {
         return shootRate;
     }
 
-    public void setShootRate(int shootRate) {
-        this.shootRate = shootRate;
+    public double getBaseBulletDamage() {
+        return bulletDamage;
+    }
+
+    public double getBaseInaccuracy() {
+        return inaccuracy;
+    }
+
+    public double getBaseBulletSpeed() {
+        return bulletSpeed;
+    }
+
+    public boolean isAutomaticByDefault() {
+        return isAutomatic;
     }
 
     public void shoot(Entity entity) {
@@ -46,7 +67,7 @@ public abstract class AbstractGunItem extends Item {
             // creating the object automatically fills in all the necessary data.
             // After initialization, entity is ready to be added to the level
             GenericBulletEntity projectile =
-                    new GenericBulletEntity(entity, l, bulletDamage, bulletSpeed);
+                    new GenericBulletEntity(entity, l, bulletDamage, bulletSpeed, inaccuracy);
 
             l.addFreshEntity(projectile);
 
@@ -77,14 +98,33 @@ public abstract class AbstractGunItem extends Item {
     }
 
     @Override
-    public void onUseTick(
-            Level level,
-            LivingEntity entity,
-            ItemStack stack,
-            int remainingUseDuration
-    ) {
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingUseDuration) {
         if (!level.isClientSide && entity instanceof ServerPlayer player) {
-            shoot(player);
+
+            // all the right mouse button code goes here
+
         }
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (!level.isClientSide && entity instanceof ServerPlayer player) {
+            if (!GunClientHandler.playerShooting() && shotOccured) {
+                shotOccured = false;
+            }
+            if (!playerHoldsGun(player)) {
+                return;
+            }
+            if (GunClientHandler.playerShooting()) {
+                if (isAutomatic || !shotOccured) {
+                    shoot(player);
+                }
+                if (!isAutomatic) {
+                    shotOccured = true;
+                }
+            }
+
+        }
+        super.inventoryTick(stack, level, entity, slotId, isSelected);
     }
 }
