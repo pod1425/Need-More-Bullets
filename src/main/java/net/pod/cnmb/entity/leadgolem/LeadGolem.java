@@ -168,6 +168,8 @@ public class LeadGolem extends Animal {
         if (!getWeapon().isEmpty()) {
             compound.put("Weapon", getWeapon().save(registryAccess()));
         }
+
+        compound.put("Inventory", inventory.serializeNBT(registryAccess()));
     }
 
     @Override
@@ -176,6 +178,10 @@ public class LeadGolem extends Animal {
 
         if (compound.contains("Weapon")) {
             setWeapon(ItemStack.parse(registryAccess(), compound.getCompound("Weapon")).orElse(ItemStack.EMPTY));
+        }
+
+        if (compound.contains("Inventory")) {
+            inventory.deserializeNBT(registryAccess(), compound.getCompound("Inventory"));
         }
     }
 }
