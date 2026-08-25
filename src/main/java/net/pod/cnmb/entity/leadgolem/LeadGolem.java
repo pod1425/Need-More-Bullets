@@ -18,11 +18,18 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.pod.cnmb.entity.leadgolem.goal.ShootGunGoal;
+import net.pod.cnmb.registry.ModItems;
 import net.pod.cnmb.registry.ModTags;
 import org.jetbrains.annotations.Nullable;
+import oshi.util.tuples.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LeadGolem extends Animal {
     private static final EntityDataAccessor<ItemStack> WEAPON =
@@ -37,13 +44,47 @@ public class LeadGolem extends Animal {
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
 
-    public ItemStack getWeapon() {
-        return entityData.get(WEAPON);
+    private final ItemStackHandler inventory = new ItemStackHandler(9);
+    public boolean getItems(List<Pair<Item, Integer>> items) {
+        List<Pair<Integer, Integer>> found = new ArrayList<>();
+
+        for (Pair<Item, Integer> item : items) {
+            int remaining = item.getB();
+
+            for (int i = 0; i < inventory.getSlots(); i++) {
+                ItemStack stack = inventory.getStackInSlot(i);
+
+                if (stack.isEmpty()) continue;
+
+                if (!stack.is(item.getA())) continue;
+
+                if (remaining >= stack.getCount()) {
+                    found.add(new Pair<>(i, stack.getCount()));
+                    remaining -= stack.getCount();
+                } else {
+                    found.add(new Pair<>(i, remaining));
+                    remaining = 0;
+                }
+
+                if (remaining == 0) break;
+            }
+
+            if (remaining > 0) return false;
+        }
+
+        for (Pair<Integer, Integer> item : found) {
+            ItemStack stack = inventory.getStackInSlot(item.getA());
+
+            stack = stack.getCount() - item.getB() == 0 ? ItemStack.EMPTY : stack.copyWithCount(stack.getCount() - item.getB());
+
+            inventory.setStackInSlot(item.getA(), stack);
+        }
+
+        return true;
     }
 
-    public void setWeapon(ItemStack weapon) {
-        entityData.set(WEAPON, weapon);
-    }
+    public ItemStack getWeapon() { return entityData.get(WEAPON); }
+    public void setWeapon(ItemStack weapon) { entityData.set(WEAPON, weapon); }
 
     public LeadGolem(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
