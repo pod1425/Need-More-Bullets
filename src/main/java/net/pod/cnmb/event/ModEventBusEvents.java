@@ -10,7 +10,7 @@ import net.pod.cnmb.entity.leadgolem.Client.LeadGolemModel;
 import net.pod.cnmb.entity.leadgolem.LeadGolem;
 import net.pod.cnmb.registry.ModEntities;
 
-@EventBusSubscriber(modid = NeedMoreBulletsMod.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = NeedMoreBulletsMod.MODID)
 public class ModEventBusEvents {
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event){

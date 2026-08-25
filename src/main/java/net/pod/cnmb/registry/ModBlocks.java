@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static net.pod.cnmb.NeedMoreBulletsMod.REGISTRATE;
-
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS =
             DeferredRegister.createBlocks(NeedMoreBulletsMod.MODID);

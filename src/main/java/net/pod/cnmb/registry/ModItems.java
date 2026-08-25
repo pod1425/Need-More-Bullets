@@ -28,7 +28,9 @@ public class ModItems {
     public static final DeferredItem<Item> STEEL_NUGGET = add(ITEMS.register("steel_nugget",
             () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> PISTOL = add(ITEMS.register("pistol",
-            () -> new PistolItem(new Item.Properties(), 4, 10, 8)));
+            () -> new PistolItem(new Item.Properties().stacksTo(1), 4, 10, 8)));
+    public static final DeferredItem<Item> LEAD_GOLEM_SPAWN_EGG = add(ITEMS.register("lead_golem_spawn_egg",
+            () -> new DeferredSpawnEggItem(ModEntities.GOLEM, 0x343950, 0x27d9e4, new Item.Properties())));
 
 
     private static DeferredItem<Item> add(DeferredItem<Item> item) {
@@ -36,10 +38,6 @@ public class ModItems {
         return item;
     }
 
-    public static List<Item> getItems() {
-        return items.stream().map(DeferredHolder::get).toList();
-    }
-    public static void register(IEventBus eventBus) {
-        ITEMS.register(eventBus);
-    }
+    public static List<Item> getItems() { return items.stream().map(DeferredHolder::get).toList(); }
+    public static void register(IEventBus eventBus) { ITEMS.register(eventBus); }
 }

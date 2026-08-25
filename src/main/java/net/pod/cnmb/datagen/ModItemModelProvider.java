@@ -20,6 +20,6 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.LEAD_NUGGET.get());
         basicItem(ModItems.RAW_LEAD.get());
 
-        //withExistingParent(ModItems.LEAD_GOLEM_SPAWN_EGG.getId().getPath(), mcLoc("item/tamplate_spawn_egg"));
+        withExistingParent(ModItems.LEAD_GOLEM_SPAWN_EGG.getId().getPath(), mcLoc("item/tamplate_spawn_egg"));
     }
 }

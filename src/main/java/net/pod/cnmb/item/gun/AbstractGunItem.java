@@ -9,13 +9,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.pod.cnmb.entity.leadgolem.LeadGolem;
 import net.pod.cnmb.entity.projectile.GenericBulletEntity;
 import net.pod.cnmb.registry.ModSounds;
 
 public abstract class AbstractGunItem extends Item {
     private int shootRate;
-    private double bulletDamage;
-    private double bulletSpeed;
+    private final double bulletDamage;
+    private final double bulletSpeed;
 
     public AbstractGunItem(Properties properties, int shootRate, double bulletDamage, double bulletSpeed) {
         super(properties);
@@ -59,6 +60,28 @@ public abstract class AbstractGunItem extends Item {
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
+    }
+
+    public void shoot(LeadGolem golem) {
+        Level l = golem.level();
+
+        if (!l.isClientSide) {
+            GenericBulletEntity projectile =
+                    new GenericBulletEntity(golem, l, bulletDamage, bulletSpeed);
+
+            l.addFreshEntity(projectile);
+
+            l.playSound(
+                    null,
+                    golem.getX(),
+                    golem.getY(),
+                    golem.getZ(),
+                    ModSounds.Gun_Fire.get(),
+                    SoundSource.NEUTRAL,
+                    1.0F,
+                    1.0F
+            );
+        }
     }
 
     public void startFiring(ServerPlayer player) {
