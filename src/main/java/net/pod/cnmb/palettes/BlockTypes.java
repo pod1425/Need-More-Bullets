@@ -16,10 +16,10 @@ public class BlockTypes {
         CUT = createType("cut_+")
                 .addPartials(),
 
-        POLISHED = createType("polished_+")
+        POLISHED_CUT = createType("polished_cut_+")
                 .addPartials(),
 
-        BRICKS = createType("+_bricks")
+        CUT_BRICKS = createType("cut_+_bricks")
                 .addPartials(),
 
         SMALL_BRICKS = createType("small_+_bricks")
@@ -40,7 +40,7 @@ public class BlockTypes {
      *  prepared ranges, because nobody wants to add each of blockType to palette
      *  you also can create here other ranges, for e.g for wood
      */
-    public static final BlockTypes[] PREPARED_VANILLA_STONE_RANGE = { CUT, POLISHED, BRICKS, SMALL_BRICKS, LAYERED, PILLAR };
+    public static final BlockTypes[] PREPARED_VANILLA_STONE_RANGE = { CUT, POLISHED_CUT, CUT_BRICKS, SMALL_BRICKS, LAYERED, PILLAR };
 
     private final String ext;
     private Boolean hasPartials;

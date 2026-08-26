@@ -5,11 +5,14 @@ import com.simibubi.create.foundation.block.connected.CTModel;
 import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.registry.ModItems;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +41,8 @@ public class Palette {
 
     public void register(IEventBus eventBus) {
         // Don't forget to register base block
-        BLOCKS.register(baseBlockName, () -> new Block(baseBlockProperties));
+        var baseB = BLOCKS.register(baseBlockName, () -> new Block(baseBlockProperties));
+        ModItems.ITEMS.register(baseBlockName, () -> new BlockItem(baseB.get(), new Item.Properties()));
 
         for (BlockTypes type : types) {
             var name = type.parseName(baseBlockName);
@@ -46,7 +50,8 @@ public class Palette {
             var texture = NeedMoreBulletsMod.asResource("block/palettes/" + baseBlockName + "/" + baseBlockName);
             var textureBehaviour = type.getTextureBehaviour(texture);
 
-            BLOCKS.register(name, block);
+            var b = BLOCKS.register(name, block);
+            ModItems.ITEMS.register(name, () -> new BlockItem(b.get(), new Item.Properties()));
             if (textureBehaviour != null) addCTListener(eventBus, name, textureBehaviour);
 
             // ? temporary without partials, I need to think how to implement them with connected textures
