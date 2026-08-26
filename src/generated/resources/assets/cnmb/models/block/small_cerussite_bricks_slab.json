@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "cnmb:block/palettes/cerussite/small_cerussite_bricks",
+    "side": "cnmb:block/palettes/cerussite/small_cerussite_bricks",
+    "top": "cnmb:block/palettes/cerussite/small_cerussite_bricks"
+  }
+}

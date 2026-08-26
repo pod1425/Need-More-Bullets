@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "cnmb:block/palettes/cerussite/layered_cerussite"
+    "all": "cnmb:block/palettes/cerussite/cerussite"
   }
 }
