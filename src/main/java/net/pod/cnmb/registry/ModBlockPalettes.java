@@ -4,13 +4,15 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.pod.cnmb.palettes.BlockTypes;
+import net.pod.cnmb.palettes.GeneratedPaletteBlock;
 import net.pod.cnmb.palettes.Palette;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class ModBlockPalettes {
-    public static final List<Palette> palettes = new ArrayList<>();
+    private static final List<Palette> palettes = new ArrayList<>();
 
     public static final Palette CERUSSITE = createPalette("cerussite",
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE))
@@ -29,6 +31,12 @@ public class ModBlockPalettes {
         Palette palette = new Palette(baseBlockName, baseBlockProperties);
         palettes.add(palette);
         return palette;
+    }
+
+    public static List<GeneratedPaletteBlock> getGeneratedBlocks() {
+        List<GeneratedPaletteBlock> l = new ArrayList<>();
+        palettes.forEach(p -> l.addAll(p.blockList));
+        return l;
     }
 
     public static void register(IEventBus eventBus) {

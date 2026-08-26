@@ -21,7 +21,8 @@ public class ModBlocks {
             DeferredRegister.createBlocks(NeedMoreBulletsMod.MODID);
 
     // for creative tab
-    private static final List<DeferredBlock<? extends Block> > blocks = new ArrayList<>();
+    private static List<DeferredBlock<? extends Block> > blocks = new ArrayList<>();
+    private static List<DeferredBlock<? extends Block> > decorativeBlocks = new ArrayList<>();
 
     public static final DeferredBlock<Block> LEAD_BLOCK = registerBlock("lead_block",
             () -> new Block(BlockBehaviour.Properties.of()
@@ -32,7 +33,6 @@ public class ModBlocks {
     public static final DeferredBlock<Block> LEAD_ORE = registerBlock("lead_ore",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.STONE)));
-
     public static final DeferredBlock<Block> DEEPSLATE_LEAD_ORE = registerBlock("deepslate_lead_ore",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.STONE)));
@@ -43,10 +43,10 @@ public class ModBlocks {
     public static final DeferredBlock<Block> STEEL_BLOCK = registerBlock("steel_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-    public static final DeferredBlock<Block> STEEL_BRICKS = registerBlock("steel_bricks",
+    public static final DeferredBlock<Block> STEEL_BRICKS = registerDecorativeBlock("steel_bricks",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-    public static final DeferredBlock<Block> CUT_STEEL = registerBlock("cut_steel",
+    public static final DeferredBlock<Block> CUT_STEEL = registerDecorativeBlock("cut_steel",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 
@@ -85,6 +85,13 @@ public class ModBlocks {
         blocks.add(toReturn);
         return toReturn;
     }
+    private static <T extends Block> DeferredBlock<T> registerDecorativeBlock(String name, Supplier<T> block) {
+        DeferredBlock<T> toReturn = BLOCKS.register(name, block);
+        registerBlockItem(name, toReturn);
+        decorativeBlocks.add(toReturn);
+        return toReturn;
+    }
+
 
     private static <T extends Block> void registerBlockItem(String name, DeferredBlock<T> block) {
         ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
@@ -96,5 +103,8 @@ public class ModBlocks {
 
     public static List<? extends Block> getBlocks() {
         return blocks.stream().map(DeferredHolder::get).toList();
+    }
+    public static List<? extends Block> getDecorativeBlocks() {
+        return decorativeBlocks.stream().map(DeferredHolder::get).toList();
     }
 }

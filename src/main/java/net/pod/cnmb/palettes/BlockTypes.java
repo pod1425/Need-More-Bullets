@@ -5,6 +5,7 @@ import com.simibubi.create.foundation.block.connected.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
@@ -30,7 +31,8 @@ public class BlockTypes {
 
         PILLAR = createType("+_pillar")
                 .block(ConnectedPillarBlock::new) // RotatedPillarBlock and ConnectedPillarBlocks it turns out are different
-                .connectedTexture((t) -> new RotatedPillarCTBehaviour(CTs.PILLAR.get(t), CTs.CAP.get(t)));
+                .connectedTexture((t) -> new RotatedPillarCTBehaviour(CTs.PILLAR.get(t), CTs.CAP.get(t)))
+                .blockStateModel(PalettesBlockStateModelData::pillarBlockStateModel);
 
         // something else you also can add here, and literally anything
         // for e.g. you can add here wood
@@ -46,6 +48,7 @@ public class BlockTypes {
     private Boolean hasPartials = false;
     private Function<BlockBehaviour.Properties, ? extends Block> blockFactory = Block::new;
     private @Nullable Function<ResourceLocation, ConnectedTextureBehaviour> textureFactory;
+    private PalettesBlockStateModelData.PalettesDataGenConsumer<? super Block> blockStateModelDatagenFactory = PalettesBlockStateModelData::vanillaBlockStateModel;
 
 
     private BlockTypes(String ext) {
@@ -64,9 +67,14 @@ public class BlockTypes {
         return () -> blockFactory.apply(p);
     }
 
-    public @Nullable ConnectedTextureBehaviour getTextureBehaviour(ResourceLocation t) {
-        if (textureFactory == null) return  null;
+    public ConnectedTextureBehaviour getTextureBehaviour(ResourceLocation t) {
+        assert textureFactory != null;
         return textureFactory.apply(t);
+    }
+    public Boolean needCTRegister() { return this.textureFactory != null; }
+
+    public <T extends Block> void genBlockStateModel(BlockStateProvider bsp, T b, String bbn) {
+        this.blockStateModelDatagenFactory.accept(bsp, b, bbn);
     }
 
     /**
@@ -101,6 +109,19 @@ public class BlockTypes {
      */
     private BlockTypes connectedTexture(Function<ResourceLocation, ConnectedTextureBehaviour> textureFactory) {
         this.textureFactory = textureFactory;
+        return this;
+    }
+
+    /**
+     * Here you can specify datagenerator for blocks of this type
+     * by default it PalettesBlockStateModelData.vanillaBlockStateModel
+     * @see PalettesBlockStateModelData
+     * @snippet
+     *  createType("pillar")
+     *      .blockStateModel(PalettesBlockStateModelData::pillarBlockStateModel)
+     */
+    private BlockTypes blockStateModel(PalettesBlockStateModelData.PalettesDataGenConsumer blockStateModelDatagenFactory) {
+        this.blockStateModelDatagenFactory = blockStateModelDatagenFactory;
         return this;
     }
 

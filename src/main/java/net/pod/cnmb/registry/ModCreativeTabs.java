@@ -10,6 +10,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.palettes.GeneratedPaletteBlock;
 
 public class ModCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB =
@@ -27,17 +28,17 @@ public class ModCreativeTabs {
                         }
                     }).build());
 
-//    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BLOCK_TAB = CREATIVE_MODE_TAB.register("decorative_blocks_tab",
-//            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModBlocks.ACTIVE_SCULK.get())) // CERUSSITE.getVariants().registeredBlocks.getFirst().asItem()) TODO
-//                    .title(Component.literal("Сreate: Needs More Bullets Blocks"))
-//                    .displayItems((itemDisplayParameters, output) -> {
-//                        for (RegistryEntry<Block, ?> block : REGISTRATE.getAll(Registries.BLOCK)) {
-//                            output.accept(block.get(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-//                        }
-//                        for (Block b : ModBlocks.getDecorativeBlocks()) {
-//                            output.accept(b);
-//                        }
-//                    }).build());
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BLOCK_TAB = CREATIVE_MODE_TAB.register("decorative_blocks_tab",
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModBlockPalettes.CERUSSITE.getBaseBlock().get()))
+                    .title(Component.literal("Сreate: Needs More Bullets Blocks"))
+                    .displayItems((itemDisplayParameters, output) -> {
+                        for (GeneratedPaletteBlock b : ModBlockPalettes.getGeneratedBlocks()) {
+                            output.accept(b.deferredBlock.get());
+                        }
+                        for (Block b : ModBlocks.getDecorativeBlocks()) {
+                            output.accept(b);
+                        }
+                    }).build());
 
 
 
