@@ -4,16 +4,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.pod.cnmb.NeedMoreBulletsMod;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Palette {
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(NeedMoreBulletsMod.MODID);
-
     private final List<BlockTypes> types = new ArrayList<>();
     public final List<GeneratedPaletteBlock> blockList = new ArrayList<>();
 

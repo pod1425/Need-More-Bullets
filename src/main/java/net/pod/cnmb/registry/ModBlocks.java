@@ -21,8 +21,8 @@ public class ModBlocks {
             DeferredRegister.createBlocks(NeedMoreBulletsMod.MODID);
 
     // for creative tab
-    private static List<DeferredBlock<? extends Block> > blocks = new ArrayList<>();
-    private static List<DeferredBlock<? extends Block> > decorativeBlocks = new ArrayList<>();
+    private static final List<DeferredBlock<? extends Block> > blocks = new ArrayList<>();
+    private static final List<DeferredBlock<? extends Block> > decorativeBlocks = new ArrayList<>();
 
     public static final DeferredBlock<Block> LEAD_BLOCK = registerBlock("lead_block",
             () -> new Block(BlockBehaviour.Properties.of()

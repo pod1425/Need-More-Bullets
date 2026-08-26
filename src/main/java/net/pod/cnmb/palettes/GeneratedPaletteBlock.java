@@ -25,7 +25,6 @@ public class GeneratedPaletteBlock {
     private static final List<GeneratedPaletteBlock> blockList = new ArrayList<>();
 
     private final String baseName;
-    private final BlockBehaviour.Properties blockProperties;
     private @Nullable BlockTypes blockType = null;
     private @Nullable PartialBlocks partial = null;
 
@@ -35,7 +34,6 @@ public class GeneratedPaletteBlock {
 
     public GeneratedPaletteBlock(String baseName, BlockBehaviour.Properties blockProperties) {
         this.baseName = baseName;
-        this.blockProperties = blockProperties;
         this.finalName = baseName;
         this.deferredBlock = registerBlock(baseName, () -> new Block(blockProperties));
 
@@ -44,7 +42,6 @@ public class GeneratedPaletteBlock {
 
     public GeneratedPaletteBlock(String name, BlockBehaviour.Properties blockProperties, BlockTypes blockType) {
         this.baseName = name;
-        this.blockProperties = blockProperties;
         this.blockType = blockType;
         this.finalName = blockType.parseName(name);
         this.deferredBlock = registerBlock(finalName, blockType.makeBlock(blockProperties));
@@ -54,7 +51,6 @@ public class GeneratedPaletteBlock {
 
     public GeneratedPaletteBlock(String name, BlockBehaviour.Properties blockProperties, BlockTypes blockType, PartialBlocks partial, DeferredBlock<? extends Block> parentBlock) {
         this.baseName = name;
-        this.blockProperties = blockProperties;
         this.blockType = blockType;
         this.partial = partial;
         this.finalName = partial.parseName(blockType.parseName(name));
