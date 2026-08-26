@@ -10,15 +10,18 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.registry.ModItems;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class Palette {
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(NeedMoreBulletsMod.MODID);
+
     private final List<BlockTypes> types = new ArrayList<>();
 
     private final String baseBlockName;
@@ -41,8 +44,7 @@ public class Palette {
 
     public void register(IEventBus eventBus) {
         // Don't forget to register base block
-        var baseB = BLOCKS.register(baseBlockName, () -> new Block(baseBlockProperties));
-        ModItems.ITEMS.register(baseBlockName, () -> new BlockItem(baseB.get(), new Item.Properties()));
+        registerBlock(baseBlockName, () -> new Block(baseBlockProperties));
 
         for (BlockTypes type : types) {
             var name = type.parseName(baseBlockName);
@@ -50,21 +52,28 @@ public class Palette {
             var texture = NeedMoreBulletsMod.asResource("block/palettes/" + baseBlockName + "/" + baseBlockName);
             var textureBehaviour = type.getTextureBehaviour(texture);
 
-            var b = BLOCKS.register(name, block);
-            ModItems.ITEMS.register(name, () -> new BlockItem(b.get(), new Item.Properties()));
+            var b = registerBlock(name, block);
             if (textureBehaviour != null) addCTListener(eventBus, name, textureBehaviour);
 
-            // ? temporary without partials, I need to think how to implement them with connected textures
 
-//            if (type.needPartialsRegister()) {
-//                for(PartialBlocks partial : PartialBlocks.values()) {
-//                    var partialName = partial.parseName(name);
-//                    Block
-//                }
-//            }
+            if (type.needPartialsRegister()) {
+                for(PartialBlocks partial : PartialBlocks.values()) {
+                    // * For now, we register partials without any connected textures
+                    // * Why? because in vanilla create there's no any partials with CT
+                    var partialName = partial.parseName(name);
+                    Supplier<? extends  Block> partialBlock = () -> partial.makeBlock(b.get().defaultBlockState(), baseBlockProperties);
+                    registerBlock(partialName, partialBlock);
+                }
+            }
         }
 
         BLOCKS.register(eventBus);
+    }
+
+    private DeferredBlock<Block> registerBlock(String name, Supplier<? extends Block> block) {
+        DeferredBlock<Block> b = BLOCKS.register(name, block);
+        ModItems.ITEMS.register(name, () -> new BlockItem(b.get(), new Item.Properties()));
+        return b;
     }
 
     private void addCTListener(IEventBus eventBus, String name, ConnectedTextureBehaviour textureBehaviour) {

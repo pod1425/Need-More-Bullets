@@ -38,12 +38,12 @@ public class BlockTypes {
 
     /**
      *  prepared ranges, because nobody wants to add each of blockType to palette
-     *  you also can create here other ranges, for e.g for wood
+     *  you also can create here other ranges, for e.g. for wood
      */
     public static final BlockTypes[] PREPARED_VANILLA_STONE_RANGE = { CUT, POLISHED_CUT, CUT_BRICKS, SMALL_BRICKS, LAYERED, PILLAR };
 
     private final String ext;
-    private Boolean hasPartials;
+    private Boolean hasPartials = false;
     private Function<BlockBehaviour.Properties, ? extends Block> blockFactory = Block::new;
     private @Nullable Function<ResourceLocation, ConnectedTextureBehaviour> textureFactory;
 
