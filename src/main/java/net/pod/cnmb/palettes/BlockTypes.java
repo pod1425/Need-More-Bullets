@@ -120,7 +120,7 @@ public class BlockTypes {
      *  createType("pillar")
      *      .blockStateModel(PalettesBlockStateModelData::pillarBlockStateModel)
      */
-    private BlockTypes blockStateModel(PalettesBlockStateModelData.PalettesDataGenConsumer blockStateModelDatagenFactory) {
+    private BlockTypes blockStateModel(PalettesBlockStateModelData.PalettesDataGenConsumer<? super Block> blockStateModelDatagenFactory) {
         this.blockStateModelDatagenFactory = blockStateModelDatagenFactory;
         return this;
     }
