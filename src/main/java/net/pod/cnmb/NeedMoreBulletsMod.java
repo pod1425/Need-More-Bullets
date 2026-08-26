@@ -1,41 +1,33 @@
 package net.pod.cnmb;
 
-import com.simibubi.create.foundation.data.CreateRegistrate;
-import net.minecraft.resources.ResourceLocation;
-import net.pod.cnmb.networking.ModNetworking;
-import net.pod.cnmb.registry.ModStoneBlocksPalettes;
-import net.pod.cnmb.registry.*;
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
-
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.pod.cnmb.networking.ModNetworking;
+import net.pod.cnmb.registry.*;
+import org.slf4j.Logger;
 
 @Mod(NeedMoreBulletsMod.MODID)
 public class NeedMoreBulletsMod {
     public static final String MODID = "cnmb";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MODID);
-
     public NeedMoreBulletsMod(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(this);
 
-        REGISTRATE.registerEventListeners(modEventBus);
-        ModStoneBlocksPalettes.register(REGISTRATE);
-
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModBlockPalettes.register(modEventBus);
         ModEntities.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
 

@@ -9,7 +9,6 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.VariableLampBlock;
 import net.pod.cnmb.registry.ModBlocks;
-import net.pod.cnmb.registry.ModItems;
 
 
 public class ModBlockStateProvider extends BlockStateProvider {
