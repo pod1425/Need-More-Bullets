@@ -9,7 +9,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
@@ -24,9 +23,10 @@ public class GeneratedPaletteBlock {
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(NeedMoreBulletsMod.MODID);
     private static final List<GeneratedPaletteBlock> blockList = new ArrayList<>();
 
-    private final String baseName;
+    public final String baseName;
     private @Nullable BlockTypes blockType = null;
     private @Nullable PartialBlocks partial = null;
+    private @Nullable DeferredBlock<? extends Block> partialParentBlock = null;
 
     public final String finalName;
     public final DeferredBlock<? extends Block> deferredBlock;
@@ -53,6 +53,7 @@ public class GeneratedPaletteBlock {
         this.baseName = name;
         this.blockType = blockType;
         this.partial = partial;
+        this.partialParentBlock = parentBlock;
         this.finalName = partial.parseName(blockType.parseName(name));
         this.deferredBlock = registerBlock(finalName, () -> partial.makeBlock(parentBlock.get().defaultBlockState(), blockProperties));
 
@@ -65,19 +66,18 @@ public class GeneratedPaletteBlock {
         return b;
     }
 
-    public void generateData(BlockStateProvider bsp) {
-        if (partial != null) {
-            partial.genBlockStateModel(bsp, deferredBlock.get(), baseName);
-            return;
-        }
+    public @Nullable BlockTypes getBlockType() {
+        return this.blockType;
+    }
 
-        if (blockType != null) {
-            blockType.genBlockStateModel(bsp, deferredBlock.get(), baseName);
-            return;
-        }
-
-        // If block registered not automatically (for e.g. when it's base block)
-        PalettesBlockStateModelData.vanillaBlockStateModel(bsp, deferredBlock.get(), baseName);
+    public Boolean isPartial() {
+        return this.partial != null;
+    }
+    public @Nullable PartialBlocks getPartial() {
+        return this.partial;
+    }
+    public @Nullable DeferredBlock<? extends Block> getPartialParentBlock() {
+        return this.partialParentBlock;
     }
 
     public static void register(IEventBus eventBus) {

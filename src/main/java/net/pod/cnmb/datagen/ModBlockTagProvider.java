@@ -2,10 +2,15 @@ package net.pod.cnmb.datagen;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.palettes.Palette;
+import net.pod.cnmb.registry.ModBlockPalettes;
 import net.pod.cnmb.registry.ModBlocks;
 
 import javax.annotation.Nullable;
@@ -44,5 +49,13 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.DEEPSLATE_LEAD_ORE.get());
 
 
+        for (Palette p : ModBlockPalettes.palettes) {
+            p.generateTags(this);
+        }
     }
+
+    // well, tag() method protected, so to keep all datagen for palettes in palettes we should do it private
+    // or, we can add datagen here, but then it will be split in project, because part of it you used to place it palettes classes
+    // for me, it's better to place it in one place rather than doing shit with partial splitting
+    public IntrinsicHolderTagsProvider.IntrinsicTagAppender<Block> pTag(TagKey<Block> tag) { return tag(tag); }
 }

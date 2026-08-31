@@ -11,6 +11,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * This class contains all available block types (e.g. cut type or any other)
+ * ONLY things that can variates depending on type should be defined here
+ * for e.g. block state and model for datagen can be different for different types
+ * but for e.g. stonecutting can't be, so you define stonecutting on palette
+ * @see Palette
+ * @see net.pod.cnmb.registry.ModBlockPalettes
+ */
 public class BlockTypes {
     public static final BlockTypes
         // Stones
@@ -59,7 +67,7 @@ public class BlockTypes {
         return ext.replace("+", baseName);
     }
 
-    public Boolean needPartialsRegister() {
+    public Boolean hasPartials() {
         return this.hasPartials;
     }
 
