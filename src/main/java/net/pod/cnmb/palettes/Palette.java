@@ -9,7 +9,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.pod.cnmb.NeedMoreBulletsMod;
@@ -21,6 +20,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class Palette {
     private final List<BlockTypes> types = new ArrayList<>();
@@ -28,6 +29,7 @@ public class Palette {
 
     private final String baseBlockName;
     private final BlockBehaviour.Properties baseBlockProperties;
+    private Supplier<Block> baseBlockSupplier;
 
     private Boolean stoneCuttable = false;
     private Boolean minableWithPickaxe = false;
@@ -35,6 +37,7 @@ public class Palette {
     public Palette(String baseBlockName, BlockBehaviour.Properties baseBlockProperties) {
         this.baseBlockName = baseBlockName;
         this.baseBlockProperties = baseBlockProperties;
+        this.baseBlockSupplier = () -> new Block(baseBlockProperties);
     }
 
     public Palette add(BlockTypes type) {
@@ -47,6 +50,10 @@ public class Palette {
         return this;
     }
 
+    public Palette baseBlock(Function<BlockBehaviour.Properties, Block> b) {
+        this.baseBlockSupplier = () -> b.apply(baseBlockProperties);
+        return this;
+    }
     public Palette stoneCuttable() {
         this.stoneCuttable = true;
         return this;
@@ -61,9 +68,9 @@ public class Palette {
         return b.<DeferredBlock<? extends Block>>map(generatedPaletteBlock -> generatedPaletteBlock.deferredBlock).orElse(null);
     }
 
-    public void register(IEventBus eventBus) {
+    public void register() {
         // Don't forget to register base block
-        blockList.add(new GeneratedPaletteBlock(baseBlockName, baseBlockProperties));
+        blockList.add(new GeneratedPaletteBlock(baseBlockName, baseBlockSupplier));
 
         for (BlockTypes type : types) {
             var typedBlock = new GeneratedPaletteBlock(baseBlockName, baseBlockProperties, type);
@@ -74,8 +81,6 @@ public class Palette {
                 }
             }
         }
-
-        GeneratedPaletteBlock.register(eventBus);
     }
 
 
@@ -94,7 +99,7 @@ public class Palette {
             }
 
             // If block registered not automatically (for e.g. when it's base block)
-            PalettesBlockStateModelData.vanillaBlockStateModel(bsp, b.deferredBlock.get(), b.baseName);
+            PalettesBlockStateModelData.defaultBlockStateModel(bsp, b.deferredBlock.get(), b.baseName);
         }
     }
 
