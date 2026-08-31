@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "cnmb:cut_cerussite_bricks_wall"
+  },
+  "result": {
+    "count": 1,
+    "id": "cnmb:chiseled_cerussite_stairs"
+  }
+}

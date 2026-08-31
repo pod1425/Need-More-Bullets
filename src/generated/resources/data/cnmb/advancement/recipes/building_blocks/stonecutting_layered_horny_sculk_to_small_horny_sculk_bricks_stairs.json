@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_layered_horny_sculk_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cnmb:layered_horny_sculk"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cnmb:stonecutting_layered_horny_sculk_to_small_horny_sculk_bricks_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_layered_horny_sculk_block"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cnmb:stonecutting_layered_horny_sculk_to_small_horny_sculk_bricks_stairs"
+    ]
+  }
+}

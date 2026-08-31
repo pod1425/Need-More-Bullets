@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "B": {
+      "item": "cnmb:cut_cerussite_bricks"
+    }
+  },
+  "pattern": [
+    "BBB"
+  ],
+  "result": {
+    "count": 6,
+    "id": "cnmb:cut_cerussite_bricks_slab"
+  }
+}

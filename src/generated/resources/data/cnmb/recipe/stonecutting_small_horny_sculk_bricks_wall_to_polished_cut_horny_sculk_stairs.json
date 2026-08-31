@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "cnmb:small_horny_sculk_bricks_wall"
+  },
+  "result": {
+    "count": 1,
+    "id": "cnmb:polished_cut_horny_sculk_stairs"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "S": {
+      "item": "cnmb:cut_horny_sculk_slab"
+    }
+  },
+  "pattern": [
+    "S",
+    "S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "cnmb:cut_horny_sculk"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "cnmb:block/palettes/horny_sculk/polished_cut_horny_sculk",
+    "side": "cnmb:block/palettes/horny_sculk/polished_cut_horny_sculk",
+    "top": "cnmb:block/palettes/horny_sculk/polished_cut_horny_sculk"
+  }
+}
