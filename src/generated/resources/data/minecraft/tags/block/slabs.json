@@ -3,6 +3,12 @@
     "cnmb:cut_cerussite_slab",
     "cnmb:polished_cut_cerussite_slab",
     "cnmb:cut_cerussite_bricks_slab",
-    "cnmb:small_cerussite_bricks_slab"
+    "cnmb:small_cerussite_bricks_slab",
+    "cnmb:chiseled_cerussite_slab",
+    "cnmb:cut_horny_sculk_slab",
+    "cnmb:polished_cut_horny_sculk_slab",
+    "cnmb:cut_horny_sculk_bricks_slab",
+    "cnmb:small_horny_sculk_bricks_slab",
+    "cnmb:chiseled_horny_sculk_slab"
   ]
 }
