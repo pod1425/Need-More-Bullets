@@ -15,10 +15,14 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.pod.cnmb.palettes.Palette;
+import net.pod.cnmb.registry.ModBlockPalettes;
 import net.pod.cnmb.registry.ModBlocks;
 import net.pod.cnmb.registry.ModItems;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class ModBlockLootTableProvider extends BlockLootSubProvider {
     protected ModBlockLootTableProvider(HolderLookup.Provider registries) {
@@ -44,6 +48,9 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         add(ModBlocks.DEEPSLATE_LEAD_ORE.get(),
                 block -> createMultipleOreDrops(ModBlocks.DEEPSLATE_LEAD_ORE.get(), ModItems.RAW_LEAD.get(), 2, 5));
 
+        for (Palette p : ModBlockPalettes.palettes) {
+            p.generateLootTables(this);
+        }
     }
 
     protected LootTable.Builder createMultipleOreDrops(Block pBlock, Item item, float minDrops, float maxDrops) {
@@ -55,7 +62,14 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     }
 
     @Override
-    protected Iterable<Block> getKnownBlocks() {
-        return ModBlocks.BLOCKS.getEntries().stream().map(Holder::value)::iterator;
+    protected @NotNull Iterable<Block> getKnownBlocks() {
+        return Stream.concat(
+                ModBlocks.BLOCKS.getEntries().stream().map(Holder::value),
+                ModBlockPalettes.getGeneratedBlocks().stream().map( b -> b.deferredBlock.get())
+        ).toList();
     }
+
+    public void pAdd(Block block, LootTable.Builder builder) { add(block, builder); }
+    public LootTable.Builder pCreateSlabItemTable(Block block) { return createSlabItemTable(block); }
+    public void pDropSelf(Block block) { dropSelf(block); }
 }
