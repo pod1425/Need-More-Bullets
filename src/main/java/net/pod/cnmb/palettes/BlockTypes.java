@@ -19,6 +19,7 @@ import java.util.function.Supplier;
  * @see Palette
  * @see net.pod.cnmb.registry.ModBlockPalettes
  */
+@SuppressWarnings("unused")
 public class BlockTypes {
     public static final BlockTypes
         // Stones
@@ -40,8 +41,11 @@ public class BlockTypes {
         PILLAR = createType("+_pillar")
                 .block(ConnectedPillarBlock::new) // RotatedPillarBlock and ConnectedPillarBlocks it turns out are different
                 .connectedTexture((t) -> new RotatedPillarCTBehaviour(CTs.PILLAR.get(t), CTs.CAP.get(t)))
-                .blockStateModel(PalettesBlockStateModelData::pillarBlockStateModel);
+                .blockStateModel(PalettesBlockStateModelData::pillarBlockStateModel),
 
+        CHISELED = createType("chiseled_+")
+                .addPartials()
+    ;
         // something else you also can add here, and literally anything
         // for e.g. you can add here wood
         // + sign will be replaced with base block name
@@ -51,12 +55,13 @@ public class BlockTypes {
      *  you also can create here other ranges, for e.g. for wood
      */
     public static final BlockTypes[] PREPARED_VANILLA_STONE_RANGE = { CUT, POLISHED_CUT, CUT_BRICKS, SMALL_BRICKS, LAYERED, PILLAR };
+    public static final BlockTypes[] PREPARED_EXTENDED_STONE_RANGE = { CUT, POLISHED_CUT, CUT_BRICKS, SMALL_BRICKS, LAYERED, PILLAR, CHISELED };
 
     private final String ext;
     private Boolean hasPartials = false;
     private Function<BlockBehaviour.Properties, ? extends Block> blockFactory = Block::new;
     private @Nullable Function<ResourceLocation, ConnectedTextureBehaviour> textureFactory;
-    private PalettesBlockStateModelData.PalettesDataGenConsumer<? super Block> blockStateModelDatagenFactory = PalettesBlockStateModelData::vanillaBlockStateModel;
+    private PalettesBlockStateModelData.PalettesDataGenConsumer<? super Block> blockStateModelDatagenFactory = PalettesBlockStateModelData::defaultBlockStateModel;
 
 
     private BlockTypes(String ext) {

@@ -15,6 +15,7 @@ import net.pod.cnmb.palettes.GeneratedPaletteBlock;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class ModCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, NeedMoreBulletsMod.MODID);

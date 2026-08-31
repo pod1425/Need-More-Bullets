@@ -1,5 +1,6 @@
 package net.pod.cnmb.registry;
 
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
@@ -24,14 +25,23 @@ import java.util.List;
  * Or you can your block here, and do everything only 1 time, and then everything else will be generated automatically base on BlockTypes you added to block.
  * @see BlockTypes
  */
+@SuppressWarnings("unused")
 public class ModBlockPalettes {
     public static final List<Palette> palettes = new ArrayList<>();
 
-    public static final Palette CERUSSITE = createPalette("cerussite", // destroy time and explosion resistance same as andesite 1.5f and 6f
-            BlockBehaviour.Properties.of().strength(1.5f, 6f).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE))
-            .add(BlockTypes.PREPARED_VANILLA_STONE_RANGE)
-            .minableWithPickaxe()
-            .stoneCuttable()
+    public static final Palette
+            CERUSSITE = createPalette("cerussite", // destroy time and explosion resistance same as andesite 1.5f and 6f
+                    BlockBehaviour.Properties.of().strength(1.5f, 6f).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE))
+                    .add(BlockTypes.PREPARED_EXTENDED_STONE_RANGE)
+                    .minableWithPickaxe()
+                    .stoneCuttable(),
+
+            HORNY_SCULK = createPalette("horny_sculk",
+                    BlockBehaviour.Properties.of().strength(1.5f, 6f).requiresCorrectToolForDrops().sound(SoundType.STONE))
+                    .add(BlockTypes.PREPARED_EXTENDED_STONE_RANGE)
+                    .baseBlock(RotatedPillarBlock::new)
+                    .minableWithPickaxe()
+                    .stoneCuttable()
     ;
 
 
@@ -56,7 +66,8 @@ public class ModBlockPalettes {
 
     public static void register(IEventBus eventBus) {
         for (Palette p : palettes) {
-            p.register(eventBus);
+            p.register();
         }
+        GeneratedPaletteBlock.register(eventBus);
     }
 }

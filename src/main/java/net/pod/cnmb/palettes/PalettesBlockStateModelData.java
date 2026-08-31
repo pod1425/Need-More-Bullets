@@ -4,10 +4,7 @@ import com.simibubi.create.content.decoration.palettes.ConnectedPillarBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
@@ -24,13 +21,41 @@ public class PalettesBlockStateModelData {
     // ? Use IDE possibilities! when you fold these all functions it looks much cleaner
     // ? AI are good here, but anyway do not silly blindly copy-past!!!!
 
-    public static <T extends Block> void vanillaBlockStateModel(BlockStateProvider bsp, T block, String baseBlockName) {
+    public static <T extends Block> void defaultBlockStateModel(BlockStateProvider bsp, T block, String baseBlockName) {
         // This generator designed for palettes, so I think it's ok if I'll hardcode texture locations
         var blockKey = BuiltInRegistries.BLOCK.getKey(block);
         var blockName = blockKey.getPath();
         var texture = blockKey.withPath("block/palettes/" + baseBlockName + "/" + blockName);
 
-        bsp.simpleBlockWithItem(block, bsp.models().cubeAll(blockName, texture));
+        if (!(block instanceof RotatedPillarBlock)) {
+            bsp.simpleBlockWithItem(block, bsp.models().cubeAll(blockName, texture));
+        } else {
+            var sideTexture = texture.withSuffix("_side");
+            var endTexture = texture.withSuffix("_end");
+
+            var model = bsp.models().cubeColumn(blockName, sideTexture, endTexture);
+            var modelHorizontal = bsp.models().cubeColumnHorizontal(blockName + "_horizontal", sideTexture, endTexture);
+            bsp.itemModels().getBuilder(blockName).parent(model);
+
+            bsp.getVariantBuilder(block)
+                    .forAllStatesExcept(state -> {
+                                Direction.Axis axis = state.getValue(ConnectedPillarBlock.AXIS);
+
+                                if (axis == Direction.Axis.Y)
+                                    return ConfiguredModel.builder()
+                                            .modelFile(model)
+                                            .uvLock(false)
+                                            .build();
+                                return ConfiguredModel.builder()
+                                        .modelFile(modelHorizontal)
+                                        .uvLock(false)
+                                        .rotationX(90)
+                                        .rotationY(axis == Direction.Axis.X ? 90 : 0)
+                                        .build();
+                            }, BlockStateProperties.WATERLOGGED, ConnectedPillarBlock.NORTH, ConnectedPillarBlock.SOUTH,
+                            ConnectedPillarBlock.EAST, ConnectedPillarBlock.WEST);
+        }
+
     }
 
     public static <T extends Block> void slabBlockStateModel(BlockStateProvider bsp, T block, String baseBlockName) {

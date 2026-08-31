@@ -32,10 +32,10 @@ public class GeneratedPaletteBlock {
     public final DeferredBlock<? extends Block> deferredBlock;
 
 
-    public GeneratedPaletteBlock(String baseName, BlockBehaviour.Properties blockProperties) {
+    public GeneratedPaletteBlock(String baseName, Supplier<Block> block) {
         this.baseName = baseName;
         this.finalName = baseName;
-        this.deferredBlock = registerBlock(baseName, () -> new Block(blockProperties));
+        this.deferredBlock = registerBlock(baseName, block);
 
         blockList.add(this);
     }
@@ -49,6 +49,7 @@ public class GeneratedPaletteBlock {
         blockList.add(this);
     }
 
+    @SuppressWarnings("NullableProblems")
     public GeneratedPaletteBlock(String name, BlockBehaviour.Properties blockProperties, BlockTypes blockType, PartialBlocks partial, DeferredBlock<? extends Block> parentBlock) {
         this.baseName = name;
         this.blockType = blockType;
@@ -82,7 +83,6 @@ public class GeneratedPaletteBlock {
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
-
         for (GeneratedPaletteBlock block : blockList) {
             if (block.blockType == null) continue;
             if (!block.blockType.needCTRegister()) continue;
