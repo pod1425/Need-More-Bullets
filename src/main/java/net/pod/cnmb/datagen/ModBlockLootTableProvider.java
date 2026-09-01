@@ -69,7 +69,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         ).toList();
     }
 
-    public void pAdd(Block block, LootTable.Builder builder) { add(block, builder); }
-    public LootTable.Builder pCreateSlabItemTable(Block block) { return createSlabItemTable(block); }
-    public void pDropSelf(Block block) { dropSelf(block); }
+    @Override public void add(@NotNull Block block, LootTable.@NotNull Builder builder) { super.add(block, builder); }
+    @Override public LootTable.@NotNull Builder createSlabItemTable(@NotNull Block block) { return super.createSlabItemTable(block); }
+    @Override public void dropSelf(@NotNull Block block) { super.dropSelf(block); }
 }

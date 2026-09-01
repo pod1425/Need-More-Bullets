@@ -104,7 +104,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         buildMetalRecipes(recipeOutput);
 
         for (Palette p : ModBlockPalettes.palettes) {
-            p.generateRecipes(this, recipeOutput);
+            p.generateRecipes(recipeOutput);
         }
     }
 
@@ -128,5 +128,5 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         }
     }
 
-    public Criterion<InventoryChangeTrigger.TriggerInstance> pHas(ItemLike itemLike) { return has(itemLike); }
+    public static Criterion<InventoryChangeTrigger.TriggerInstance> has(ItemLike itemLike) { return RecipeProvider.has(itemLike); }
 }
