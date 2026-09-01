@@ -24,65 +24,59 @@ import java.util.function.Function;
 public enum PartialBlocks {
     STAIRS("stairs", StairBlock::new, PalettesBlockStateModelData::stairsBlockStateModel) {
         @Override
-        public void generateTag(ModBlockTagProvider btp, Block b) {
-            btp.pTag(BlockTags.STAIRS).add(b);
-        }
+        public void generateTag(ModBlockTagProvider btp, Block b) { btp.tag(BlockTags.STAIRS).add(b); }
 
         @Override
-        public void generateRecipe(ModRecipeProvider mrp, RecipeOutput out, Block resultBlock, Block materialBlock, String advancementName) {
+        public void generateRecipe(RecipeOutput out, Block resultBlock, Block materialBlock, String advancementName) {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, resultBlock, 4)
                     .pattern("B  ")
                     .pattern("BB ")
                     .pattern("BBB")
                     .define('B', materialBlock)
-                    .unlockedBy(advancementName, mrp.pHas(materialBlock))
+                    .unlockedBy(advancementName, ModRecipeProvider.has(materialBlock))
                     .save(out);
         }
     },
 
     WALL("wall", WallBlock::new, PalettesBlockStateModelData::wallBlockStateModel) {
         @Override
-        public void generateTag(ModBlockTagProvider btp, Block b) {
-            btp.pTag(BlockTags.WALLS).add(b);
-        }
+        public void generateTag(ModBlockTagProvider btp, Block b) { btp.tag(BlockTags.WALLS).add(b); }
 
         @Override
-        public void generateRecipe(ModRecipeProvider mrp, RecipeOutput out, Block resultBlock, Block materialBlock, String advancementName) {
+        public void generateRecipe(RecipeOutput out, Block resultBlock, Block materialBlock, String advancementName) {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, resultBlock, 6)
                     .pattern("BBB")
                     .pattern("BBB")
                     .define('B', materialBlock)
-                    .unlockedBy(advancementName, mrp.pHas(materialBlock))
+                    .unlockedBy(advancementName, ModRecipeProvider.has(materialBlock))
                     .save(out);
         }
     },
 
     SLAB("slab", SlabBlock::new, PalettesBlockStateModelData::slabBlockStateModel) {
         @Override
-        public void generateTag(ModBlockTagProvider btp, Block b) {
-            btp.pTag(BlockTags.SLABS).add(b);
-        }
+        public void generateTag(ModBlockTagProvider btp, Block b) { btp.tag(BlockTags.SLABS).add(b); }
 
         @Override
-        public void generateRecipe(ModRecipeProvider mrp, RecipeOutput out, Block resultBlock, Block materialBlock, String advancementName) {
+        public void generateRecipe(RecipeOutput out, Block resultBlock, Block materialBlock, String advancementName) {
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, resultBlock, 6)
                     .pattern("BBB")
                     .define('B', materialBlock)
-                    .unlockedBy(advancementName, mrp.pHas(materialBlock))
+                    .unlockedBy(advancementName, ModRecipeProvider.has(materialBlock))
                     .save(out);
             // also register backcraft recipe, because slabs can be uncrafted to normal block
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, materialBlock)
                     .pattern("S")
                     .pattern("S")
                     .define('S', resultBlock)
-                    .unlockedBy(advancementName, mrp.pHas(resultBlock))
+                    .unlockedBy(advancementName, ModRecipeProvider.has(resultBlock))
                     .save(out);
         }
     };
 
     // For datagen
     public abstract void generateTag(ModBlockTagProvider btp, Block b);
-    public abstract void generateRecipe(ModRecipeProvider mrp, RecipeOutput out, Block resultBlock, Block parentBlock, String advancementName);
+    public abstract void generateRecipe(RecipeOutput out, Block resultBlock, Block parentBlock, String advancementName);
     // For datagen
 
     private final String extName;

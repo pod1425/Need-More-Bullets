@@ -107,15 +107,15 @@ public class Palette {
         for (GeneratedPaletteBlock b : blockList) {
             Block block = b.deferredBlock.get();
             // as far as I can remember slabs are only block that must drops with tuple
-            if (block instanceof SlabBlock) blp.pAdd(block, blp.pCreateSlabItemTable(block));
-            else blp.pDropSelf(block);
+            if (block instanceof SlabBlock) blp.add(block, blp.createSlabItemTable(block));
+            else blp.dropSelf(block);
         }
     }
 
     public void generateTags(ModBlockTagProvider btp) {
         for(GeneratedPaletteBlock b : blockList) {
             var block = b.deferredBlock.get();
-            if (this.minableWithPickaxe) btp.pTag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
+            if (this.minableWithPickaxe) btp.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
 
             if (b.isPartial()) {
                 assert b.getPartial() != null;
@@ -125,13 +125,13 @@ public class Palette {
 
     }
 
-    public void generateRecipes(ModRecipeProvider mrp, RecipeOutput out) {
+    public void generateRecipes(RecipeOutput out) {
         // for future if we had more ways to craft, because palettes are universal, and can be not only for stones
-        generatePartialsRecipes(mrp, out);
-        if (stoneCuttable) generateStonecutterRecipes(mrp, out);
+        generatePartialsRecipes(out);
+        if (stoneCuttable) generateStonecutterRecipes(out);
     }
 
-    private void generatePartialsRecipes(ModRecipeProvider mrp, RecipeOutput out) {
+    private void generatePartialsRecipes(RecipeOutput out) {
         for (GeneratedPaletteBlock result : blockList) {
             if (!result.isPartial()) continue;
 
@@ -144,10 +144,10 @@ public class Palette {
             var parentBlockKey = BuiltInRegistries.BLOCK.getKey(parentBlock);
             var advancementName = "has_" + parentBlockKey.getPath() + "_block";
 
-            result.getPartial().generateRecipe(mrp, out, partialBlock, parentBlock, advancementName);
+            result.getPartial().generateRecipe(out, partialBlock, parentBlock, advancementName);
         }
     }
-    private void generateStonecutterRecipes(ModRecipeProvider mrp,RecipeOutput out) {
+    private void generateStonecutterRecipes(RecipeOutput out) {
         for (GeneratedPaletteBlock result : blockList) {
             for (GeneratedPaletteBlock material : blockList) {
                 var resultBlock = result.deferredBlock.get();
@@ -164,7 +164,7 @@ public class Palette {
                 // if you're making slabs you should get 2 slabs
                 var count = resultBlock instanceof SlabBlock ? 2 : 1;
                 SingleItemRecipeBuilder.stonecutting(Ingredient.of(materialBlock), RecipeCategory.BUILDING_BLOCKS, resultBlock, count)
-                        .unlockedBy(advancementName, mrp.pHas(materialBlock.asItem()))
+                        .unlockedBy(advancementName, ModRecipeProvider.has(materialBlock.asItem()))
                         .save(out, recipeId);
             }
         }
