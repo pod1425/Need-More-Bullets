@@ -23,8 +23,8 @@ public class ModEntities {
 
     public static final Supplier<EntityType<BeeDrone>> BEE_DRONE =
             ENTITY_TYPES.register("bee_drone", () -> EntityType.Builder
-                    .of(BeeDrone::new, MobCategory.CREATURE)
-                    .build("bee_drone"));
+                    .of(BeeDrone::new, MobCategory.MISC)
+                    .sized(0.6f, 0.6f).build("bee_drone"));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);

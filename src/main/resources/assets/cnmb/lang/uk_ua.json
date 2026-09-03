@@ -5,6 +5,7 @@
   "item.cnmb.steel_ingot": "Сталевий зливок",
   "item.cnmb.steel_nugget": "Сталевий самородок",
   "item.cnmb.pistol": "Пістоль",
+  "item.cnmb.bee_drone_spawn_egg": "Яйце спавну бджрона",
 
   "block.cnmb.lead_block": "Свинцевий блок",
   "block.cnmb.cut_lead": "Тесаний свинець",
@@ -15,6 +16,8 @@
   "block.cnmb.steel_bricks": "Тесана сталь",
   "block.cnmb.cut_steel": "Різана сталь",
   "block.cnmb.steel_lamp": "Сталева лампа",
-  "block.cnmb.lead_lamp": "Свинцева лампа"
+  "block.cnmb.lead_lamp": "Свинцева лампа",
 
+  "key.categories.cnmb": "Need More Bullets",
+  "key.cnmb.stop_control": "Припинити керування"
 }

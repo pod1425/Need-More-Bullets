@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -24,7 +25,34 @@ public class ModNetworking {
                 GunTriggerPayload.STREAM_CODEC,
                 ModNetworking::handleGunTrigger
         );
+
+        registrar.playToClient(
+                SetControllingPayload.TYPE,
+                SetControllingPayload.STREAM_CODEC,
+                SetControllingPayload::handle
+        );
+        registrar.playToServer(
+                StopControlPayload.TYPE,
+                StopControlPayload.STREAM_CODEC,
+                StopControlPayload::handle
+        );
+        registrar.playToServer(
+                ControlInputPayload.TYPE,
+                ControlInputPayload.STREAM_CODEC,
+                ControlInputPayload::handle
+        );
     }
+
+    public static void sendControlling(ServerPlayer player, int id, boolean controlling) {
+        PacketDistributor.sendToPlayer(player, new SetControllingPayload(id, controlling));
+    }
+    public static void sendStopControl(StopControlPayload payload) {
+        PacketDistributor.sendToServer(payload);
+    }
+    public static void sendControlInput(ControlInputPayload payload) {
+        PacketDistributor.sendToServer(payload);
+    }
+
     public record GunTriggerPayload(boolean pressed) implements CustomPacketPayload {
         public static final Type<GunTriggerPayload> TYPE =
                 new Type<>(
