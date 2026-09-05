@@ -54,10 +54,10 @@ public abstract class AbstractGunItem extends Item {
         return isAutomatic;
     }
 
-    public void shoot(Entity entity) {
+    public boolean shoot(Entity entity) {
         if (entity instanceof Player player) {
             if (player.getCooldowns().isOnCooldown(this)) {
-                return;
+                return false;
             }
             player.getCooldowns().addCooldown(this, 20 / shootRate);
             player.awardStat(Stats.ITEM_USED.get(this));
@@ -82,6 +82,8 @@ public abstract class AbstractGunItem extends Item {
                     1.0F
             );
         }
+
+        return true;
     }
 
     public void startFiring(ServerPlayer player) {

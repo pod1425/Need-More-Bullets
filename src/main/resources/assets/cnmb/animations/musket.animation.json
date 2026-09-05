@@ -1,7 +1,7 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"musket_fire": {
+		"fire": {
 			"animation_length": 0.25,
 			"bones": {
 				"flint": {
