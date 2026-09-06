@@ -54,6 +54,11 @@ public abstract class AbstractGunItem extends Item {
         return isAutomatic;
     }
 
+    @Override
+    public int getMaxStackSize(ItemStack stack) {
+        return 1;
+    }
+
     public boolean shoot(Entity entity) {
         if (entity instanceof Player player) {
             if (player.getCooldowns().isOnCooldown(this)) {
