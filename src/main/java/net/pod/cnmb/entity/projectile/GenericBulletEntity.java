@@ -175,6 +175,25 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
                         && entity != this.getOwner()
         );
 
+        boolean isEntity = entityHit != null;
+        boolean isBlock = hitResult.getType() != HitResult.Type.MISS;
+
+        if (isEntity && isBlock) {
+            if (start.distanceToSqr(entityHit.getLocation()) < start.distanceToSqr(hitResult.getLocation())) {
+                this.setPos(entityHit.getLocation());
+                onHitEntity(entityHit);
+            } else {
+                end = hitResult.getLocation();
+                this.setPos(end);
+
+                if (hitResult instanceof BlockHitResult blockHit) {
+                    onHitBlock(blockHit);
+                }
+            }
+
+            return;
+        }
+
         if (entityHit != null) {
             this.setPos(entityHit.getLocation());
             onHitEntity(entityHit);
