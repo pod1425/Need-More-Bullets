@@ -4,6 +4,9 @@
   "package": "net.pod.cnmb.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "TrackedEntityMixin"
+  ],
+  "client": [
     "MinecraftMixin",
     "MouseHandlerMixin",
     "LocalPlayerMixin"

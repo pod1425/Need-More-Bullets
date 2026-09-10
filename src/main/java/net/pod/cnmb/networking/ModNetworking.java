@@ -14,6 +14,9 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.item.gun.AbstractGunItem;
+import net.pod.cnmb.networking.payload.ControlInputPayload;
+import net.pod.cnmb.networking.payload.SetControllingPayload;
+import net.pod.cnmb.networking.payload.StopControlPayload;
 
 public class ModNetworking {
 
@@ -26,11 +29,6 @@ public class ModNetworking {
                 ModNetworking::handleGunTrigger
         );
 
-        registrar.playToClient(
-                SetControllingPayload.TYPE,
-                SetControllingPayload.STREAM_CODEC,
-                SetControllingPayload::handle
-        );
         registrar.playToServer(
                 StopControlPayload.TYPE,
                 StopControlPayload.STREAM_CODEC,
@@ -40,6 +38,12 @@ public class ModNetworking {
                 ControlInputPayload.TYPE,
                 ControlInputPayload.STREAM_CODEC,
                 ControlInputPayload::handle
+        );
+
+        registrar.playToClient(
+                SetControllingPayload.TYPE,
+                SetControllingPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> ModClientPayloadHandlers.setControlling(payload, context))
         );
     }
 

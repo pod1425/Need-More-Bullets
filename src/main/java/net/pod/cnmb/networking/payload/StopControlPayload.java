@@ -1,4 +1,4 @@
-package net.pod.cnmb.networking;
+package net.pod.cnmb.networking.payload;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

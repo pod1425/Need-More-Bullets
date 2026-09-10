@@ -11,16 +11,13 @@ import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.pod.cnmb.NeedMoreBulletsMod;
-import net.pod.cnmb.networking.ControlInputPayload;
+import net.pod.cnmb.networking.payload.ControlInputPayload;
 import net.pod.cnmb.networking.ModNetworking;
-import net.pod.cnmb.networking.StopControlPayload;
+import net.pod.cnmb.networking.payload.StopControlPayload;
 import net.pod.cnmb.registry.ModKeyBinds;
 import net.pod.cnmb.util.ControllableMob;
 
-@EventBusSubscriber(
-        modid = NeedMoreBulletsMod.MODID,
-        value = Dist.CLIENT
-)
+@EventBusSubscriber(modid = NeedMoreBulletsMod.MODID, value = Dist.CLIENT)
 public class ModClientEvents {
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
