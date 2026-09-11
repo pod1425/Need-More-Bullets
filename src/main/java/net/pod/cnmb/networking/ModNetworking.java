@@ -36,6 +36,12 @@ public class ModNetworking {
                 RemoveAttachmentPayload.STREAM_CODEC,
                 ModNetworking::handleRemoveAttachment
         );
+
+        registrar.playToServer(
+                EquipAttachmentPayload.TYPE,
+                EquipAttachmentPayload.STREAM_CODEC,
+                ModNetworking::handleEquipAttachment
+        );
     }
     public enum GunHand {
         MAIN_HAND(0),
@@ -107,6 +113,39 @@ public class ModNetworking {
             data.setShotOccurred(false);
         }
     }
+    private static void handleEquipAttachment(
+            EquipAttachmentPayload payload,
+            IPayloadContext context
+    ) {
+        context.enqueueWork(() -> {
+            System.out.println("HandleEquipAttachment");
+            if (!(context.player() instanceof ServerPlayer player))
+                return;
+
+            AbstractContainerMenu menu = player.containerMenu;
+
+            int slotId = payload.inventorySlot();
+
+            if (slotId < 0 || slotId >= menu.slots.size())
+                return;
+
+            Slot slot = menu.getSlot(slotId);
+
+            ItemStack gunStack = slot.getItem();
+            System.out.println("slot item " + gunStack.getItem().getDescriptionId());
+
+            if (!(gunStack.getItem() instanceof AbstractGunItem gun))
+                return;
+
+            ItemStack cursorStack = player.containerMenu.getCarried();
+
+            if (cursorStack.isEmpty())
+                return;
+            System.out.println("trying");
+            gun.tryEquipAttachment(gunStack, cursorStack);
+        });
+    }
+
     private static void handleRemoveAttachment(RemoveAttachmentPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             ServerPlayer player = (ServerPlayer) context.player();

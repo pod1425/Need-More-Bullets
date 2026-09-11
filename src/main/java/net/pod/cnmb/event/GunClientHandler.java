@@ -17,9 +17,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentsComponent;
+import net.pod.cnmb.networking.EquipAttachmentPayload;
 import net.pod.cnmb.networking.ModNetworking;
 import net.pod.cnmb.networking.RemoveAttachmentPayload;
 import net.pod.cnmb.registry.ModDataComponents;
+import net.pod.cnmb.registry.ModGunAttachments;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -138,35 +140,51 @@ public class GunClientHandler {
     @SubscribeEvent
     public static void onMouseButtonPressed(ScreenEvent.MouseButtonPressed.Pre event) {
         removingAttachment = false;
-
         if (!(event.getScreen() instanceof AbstractContainerScreen<?> screen))
             return;
 
-        if (!Screen.hasControlDown()
-                || event.getButton() != GLFW.GLFW_MOUSE_BUTTON_RIGHT)
-            return;
-
         Slot slot = screen.getSlotUnderMouse();
-
         if (slot == null)
             return;
-
         ItemStack gunStack = slot.getItem();
 
         if (!(gunStack.getItem() instanceof AbstractGunItem))
             return;
+        // Ctrl + Right Click = remove attachment
+        if (Screen.hasControlDown() && event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+            int selected = gunStack.get(ModDataComponents.SELECTED_ATTACHMENT.get());
 
-        int selected =
-                gunStack.get(ModDataComponents.SELECTED_ATTACHMENT.get());
+            removingAttachment = true;
+            event.setCanceled(true);
 
-        removingAttachment = true;
-        event.setCanceled(true);
+            PacketDistributor.sendToServer(
+                    new RemoveAttachmentPayload(slot.index, selected)
+            );
+            return;
+        }
+        // Left Click with an attachment on the cursor = equip attachment
+        if (event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 
-        PacketDistributor.sendToServer(
-                new RemoveAttachmentPayload(slot.index, selected)
-        );
+            ItemStack cursorStack =
+                    Minecraft.getInstance()
+                            .player
+                            .containerMenu
+                            .getCarried();
+
+            if (cursorStack.isEmpty())
+                return;
+
+            if (ModGunAttachments.ATTACHMENTS
+                    .getForItemOrNull(cursorStack.getItem()) == null)
+                return;
+
+            event.setCanceled(true);
+
+            PacketDistributor.sendToServer(
+                    new EquipAttachmentPayload(slot.index)
+            );
+        }
     }
-
     /**
      * Cancels picking up the gun when the button is released
      * @param event

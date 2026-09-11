@@ -3,9 +3,7 @@ package net.pod.cnmb.event;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -17,11 +15,9 @@ import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
-import net.pod.cnmb.registry.ModDataComponents;
 
 import java.util.List;
 
-import static net.pod.cnmb.registry.ModDataComponents.SELECTED_ATTACHMENT;
 import static net.pod.cnmb.registry.ModGunAttachments.ATTACHMENTS;
 
 
@@ -30,7 +26,6 @@ import static net.pod.cnmb.registry.ModGunAttachments.ATTACHMENTS;
         value = Dist.CLIENT
 )
 public class ModClientEvents {
-
 
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {

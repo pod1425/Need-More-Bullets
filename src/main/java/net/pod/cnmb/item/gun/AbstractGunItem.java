@@ -20,10 +20,7 @@ import net.pod.cnmb.entity.projectile.GenericBulletEntity;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentsComponent;
-import net.pod.cnmb.registry.ModDataComponents;
-import net.pod.cnmb.registry.ModGunAttachments;
-import net.pod.cnmb.registry.ModPlayerAttachments;
-import net.pod.cnmb.registry.ModSounds;
+import net.pod.cnmb.registry.*;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -77,6 +74,11 @@ public abstract class AbstractGunItem extends Item {
 
     public boolean isAutomaticByDefault() {
         return defaultIsAutomatic;
+    }
+
+    @Override
+    public int getMaxStackSize(ItemStack stack) {
+        return 64;
     }
 
     public boolean shoot(Entity entity) {
@@ -137,7 +139,6 @@ public abstract class AbstractGunItem extends Item {
                     case BOTH -> player.getMainHandItem() == stack ||
                                     player.getOffhandItem() == stack;
                 };
-
                 if (correctHand) {
                     if (defaultIsAutomatic || !data.hasShotOccurred()) {
                         shoot(player);
@@ -148,57 +149,45 @@ public abstract class AbstractGunItem extends Item {
                 }
             }
         }
-
         super.inventoryTick(stack, level, entity, slotId, isSelected);
     }
 
-    @Override
-    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access) {
-        System.out.println(
-                "Stacked on me - client: " + player.level().isClientSide
-        );
-        if (!player.level().isClientSide) {
-            ItemStack gunStack = slot.getItem();
-            System.out.println("Stacked on me");
-            if (!(gunStack.getItem() instanceof AbstractGunItem gun))
-                return false;
+    public boolean tryEquipAttachment(
+            ItemStack gunStack,
+            ItemStack attachmentStack
+    ) {
+        System.out.println("Trying to equip attachment");
+        GunAttachment attachment =
+                ModGunAttachments.ATTACHMENTS.getForItemOrNull(
+                        attachmentStack.getItem()
+                );
 
-            if (action != ClickAction.PRIMARY)
-                return false;
-
-            return gun.tryEquipAttachment(gunStack, other);
-        }
-        return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
-    }
-
-    @Override
-    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
-        System.out.println("i am stacked");
-        return super.overrideStackedOnOther(stack, slot, action, player);
-    }
-
-    public boolean tryEquipAttachment(ItemStack gunStack, ItemStack attachmentStack) {
-        GunAttachment attachment = ModGunAttachments.ATTACHMENTS.getForItemOrNull(
-                        attachmentStack.getItem());
         if (attachment == null)
             return false;
 
-        GunAttachmentsComponent attachments =
+        GunAttachmentsComponent component =
                 gunStack.get(ModDataComponents.GUN_ATTACHMENTS.get());
 
-        for (GunAttachmentSlot slot : attachments.attachments().keySet()) {
+        if (component == null)
+            return false;
 
+        for (GunAttachmentSlot slot : component.attachments().keySet()) {
             if (!attachment.isCompatible(slot))
                 continue;
 
-            if (!attachments.get(slot).isEmpty())
+            if (!component.get(slot).isEmpty())
                 continue;
 
             gunStack.set(
                     ModDataComponents.GUN_ATTACHMENTS.get(),
-                    attachments.set(slot, attachmentStack)
+                    component.set(
+                            slot,
+                            attachmentStack.copyWithCount(1)
+                    )
             );
+
             attachmentStack.shrink(1);
+
             return true;
         }
 
