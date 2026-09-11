@@ -15,6 +15,23 @@
   "block.cnmb.steel_bricks": "Steel bricks",
   "block.cnmb.cut_steel": "Cut steel",
   "block.cnmb.steel_lamp": "Steel lamp",
-  "block.cnmb.lead_lamp": "Lead lamp"
+  "block.cnmb.lead_lamp": "Lead lamp",
 
+  "tooltip.cnmb.attachment_slot": "%s: %s",
+  "tooltip.cnmb.empty_attachment_slot": "None",
+  "tooltip.cnmb.right_click_to_remove": "R-click to remove selected attachment",
+  "tooltip.cnmb.hold_ctrl_remove": "Hold CTRL to remove attachments",
+
+  "attachment.cnmb.scope": "Scope",
+  "attachment.cnmb.barrel": "Barrel",
+  "attachment.cnmb.magazine": "Magazine",
+  "attachment.cnmb.trigger": "Trigger",
+  "attachment.cnmb.handle": "Handle",
+  "attachment.cnmb.underside": "Underside",
+  "attachment.cnmb.misc1": "Miscellaneous 1",
+  "attachment.cnmb.misc2": "Miscellaneous 2",
+  "attachment.cnmb.misc3": "Miscellaneous 3",
+  "attachment.cnmb.misc4": "Miscellaneous 4",
+  "attachment.cnmb.misc5": "Miscellaneous 5",
+  "attachment.cnmb.misc6": "Miscellaneous 6"
 }

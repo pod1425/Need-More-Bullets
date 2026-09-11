@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.pod.cnmb.networking.ModNetworking;
 import net.pod.cnmb.registry.ModStoneBlocksPalettes;
 import net.pod.cnmb.registry.*;
+import net.pod.cnmb.registry.custom.SimpleGunAttachmentRegistry;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -38,6 +39,10 @@ public class NeedMoreBulletsMod {
         ModBlocks.register(modEventBus);
         ModEntities.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
+        ModDataComponents.register(modEventBus);
+        ModPlayerAttachments.register(modEventBus);
+
+        ModGunAttachments.ATTACHMENTS.initialize();
 
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(ModNetworking::register);

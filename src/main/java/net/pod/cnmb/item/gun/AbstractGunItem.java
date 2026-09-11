@@ -1,57 +1,82 @@
 package net.pod.cnmb.item.gun;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.pod.cnmb.entity.projectile.GenericBulletEntity;
-import net.pod.cnmb.event.GunClientHandler;
+import net.pod.cnmb.item.gun.attachment.GunAttachment;
+import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
+import net.pod.cnmb.item.gun.attachment.GunAttachmentsComponent;
+import net.pod.cnmb.registry.ModDataComponents;
+import net.pod.cnmb.registry.ModGunAttachments;
+import net.pod.cnmb.registry.ModPlayerAttachments;
 import net.pod.cnmb.registry.ModSounds;
 
-import static net.pod.cnmb.event.GunClientHandler.playerHoldsGun;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+
+import static net.pod.cnmb.registry.ModDataComponents.SELECTED_ATTACHMENT;
+import static net.pod.cnmb.registry.ModDataComponents.SHOT_OCCURRED;
 
 public abstract class AbstractGunItem extends Item {
-    // Should add all the same things but as NBT for gun itemstacks, so it can be changed individually by upgrades and stuff
-    private final int shootRate;
-    private final double bulletDamage;
-    private final double bulletSpeed;
-    private final double inaccuracy;
-    private final boolean isAutomatic;
-    private boolean shotOccured = false;
+    private final int defaultShootRate;
+    private final double defaultBulletDamage;
+    private final double defaultBulletSpeed;
+    private final double defaultInaccuracy;
+    private final boolean defaultIsAutomatic;
 
-    public AbstractGunItem(Properties properties, int shootRate, double bulletDamage, double bulletSpeed, double inaccuracy, boolean isAutomatic) {
-        super(properties);
-        this.shootRate = shootRate;
-        this.bulletSpeed = bulletSpeed;
-        this.bulletDamage = bulletDamage;
-        this.inaccuracy = inaccuracy;
-        this.isAutomatic = isAutomatic;
+    public AbstractGunItem(Properties properties, int shootRate, double bulletDamage,
+                           double bulletSpeed, double inaccuracy, boolean isAutomatic, List<GunAttachmentSlot> slots) {
+        super(properties
+                .component(ModDataComponents.SHOOT_RATE, shootRate)
+                .component(ModDataComponents.BULLET_DAMAGE, bulletDamage)
+                .component(ModDataComponents.BULLET_SPEED, bulletSpeed)
+                .component(ModDataComponents.INACCURACY, inaccuracy)
+                .component(ModDataComponents.IS_AUTOMATIC, isAutomatic)
+                .component(ModDataComponents.GUN_ATTACHMENTS, GunAttachmentsComponent.create(slots))
+                .component(SHOT_OCCURRED, false)
+                .component(SELECTED_ATTACHMENT, 0));
+
+        this.defaultShootRate = shootRate;
+        this.defaultBulletSpeed = bulletSpeed;
+        this.defaultBulletDamage = bulletDamage;
+        this.defaultInaccuracy = inaccuracy;
+        this.defaultIsAutomatic = isAutomatic;
+
     }
 
     public int getBaseShootRate() {
-        return shootRate;
+        return defaultShootRate;
     }
 
     public double getBaseBulletDamage() {
-        return bulletDamage;
+        return defaultBulletDamage;
     }
 
     public double getBaseInaccuracy() {
-        return inaccuracy;
+        return defaultInaccuracy;
     }
 
     public double getBaseBulletSpeed() {
-        return bulletSpeed;
+        return defaultBulletSpeed;
     }
 
     public boolean isAutomaticByDefault() {
-        return isAutomatic;
+        return defaultIsAutomatic;
     }
 
     public void shoot(Entity entity) {
@@ -59,7 +84,7 @@ public abstract class AbstractGunItem extends Item {
             if (player.getCooldowns().isOnCooldown(this)) {
                 return;
             }
-            player.getCooldowns().addCooldown(this, 20 / shootRate);
+            player.getCooldowns().addCooldown(this, 20 / defaultShootRate);
             player.awardStat(Stats.ITEM_USED.get(this));
         }
         Level l = entity.level();
@@ -67,7 +92,7 @@ public abstract class AbstractGunItem extends Item {
             // creating the object automatically fills in all the necessary data.
             // After initialization, entity is ready to be added to the level
             GenericBulletEntity projectile =
-                    new GenericBulletEntity(entity, l, bulletDamage, bulletSpeed, inaccuracy);
+                    new GenericBulletEntity(entity, l, defaultBulletDamage, defaultBulletSpeed, defaultInaccuracy);
 
             l.addFreshEntity(projectile);
 
@@ -82,14 +107,6 @@ public abstract class AbstractGunItem extends Item {
                     1.0F
             );
         }
-    }
-
-    public void startFiring(ServerPlayer player) {
-        player.startUsingItem(InteractionHand.MAIN_HAND);
-    }
-
-    public void stopFiring(ServerPlayer player) {
-        player.stopUsingItem();
     }
 
     @Override
@@ -109,22 +126,152 @@ public abstract class AbstractGunItem extends Item {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (!level.isClientSide && entity instanceof ServerPlayer player) {
-            if (!GunClientHandler.playerShooting() && shotOccured) {
-                shotOccured = false;
-            }
-            if (!playerHoldsGun(player)) {
-                return;
-            }
-            if (GunClientHandler.playerShooting()) {
-                if (isAutomatic || !shotOccured) {
-                    shoot(player);
-                }
-                if (!isAutomatic) {
-                    shotOccured = true;
-                }
-            }
+            GunPlayerData data = player.getData(ModPlayerAttachments.GUN_DATA);
 
+            if (data.isTriggerPressed()) {
+                boolean correctHand = switch (data.getTriggerHand()) {
+                    case MAIN_HAND -> player.getMainHandItem() == stack;
+                    case OFF_HAND -> player.getOffhandItem() == stack;
+                    case BOTH -> player.getMainHandItem() == stack ||
+                                    player.getOffhandItem() == stack;
+                };
+
+                if (correctHand) {
+                    if (defaultIsAutomatic || !data.hasShotOccurred()) {
+                        shoot(player);
+                    }
+                    if (!defaultIsAutomatic) {
+                        data.setShotOccurred(true);
+                    }
+                }
+            }
         }
+
         super.inventoryTick(stack, level, entity, slotId, isSelected);
+    }
+
+    @Override
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access) {
+        if (!player.level().isClientSide) {
+            ItemStack gunStack = slot.getItem();
+
+            if (!(gunStack.getItem() instanceof AbstractGunItem gun))
+                return false;
+
+            if (action != ClickAction.PRIMARY)
+                return false;
+
+            return gun.tryEquipAttachment(gunStack, other);
+        }
+        return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
+    }
+
+    @Override
+    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
+
+        return super.overrideStackedOnOther(stack, slot, action, player);
+    }
+
+    public boolean tryEquipAttachment(ItemStack gunStack, ItemStack attachmentStack) {
+        GunAttachment attachment = ModGunAttachments.ATTACHMENTS.getForItemOrNull(
+                        attachmentStack.getItem());
+        if (attachment == null)
+            return false;
+
+        GunAttachmentsComponent attachments =
+                gunStack.get(ModDataComponents.GUN_ATTACHMENTS.get());
+
+        for (GunAttachmentSlot slot : attachments.attachments().keySet()) {
+
+            if (!attachment.isCompatible(slot))
+                continue;
+
+            if (!attachments.get(slot).isEmpty())
+                continue;
+
+            gunStack.set(
+                    ModDataComponents.GUN_ATTACHMENTS.get(),
+                    attachments.set(slot, attachmentStack)
+            );
+            attachmentStack.shrink(1);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context,
+            List<Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltip, flag);
+
+        EnumMap<GunAttachmentSlot, ItemStack> slots =
+                stack.get(ModDataComponents.GUN_ATTACHMENTS.get()).attachments();
+        int selectedSlot = stack.get(SELECTED_ATTACHMENT.get());
+        for (var key : slots.keySet()) {
+            Component itemName = slots.get(key).isEmpty()
+                    ? Component.translatable("tooltip.cnmb.empty_attachment_slot")
+                    : slots.get(key).getHoverName();
+            ChatFormatting color = ChatFormatting.GRAY;
+            if (selectedSlot == 0) {
+                color = Screen.hasControlDown() ? ChatFormatting.RED : ChatFormatting.AQUA;
+            }
+            tooltip.add(Component.translatable(
+                    "tooltip.cnmb.attachment_slot",
+                    Component.translatable(key.getTranslationKey()),
+                    itemName
+            ).withStyle(color));
+
+            selectedSlot--;
+        }
+        if (!Screen.hasControlDown()) {
+            tooltip.add(Component.translatable("tooltip.cnmb.hold_ctrl_remove"));
+        } else {
+            tooltip.add(Component.translatable("tooltip.cnmb.right_click_to_remove"));
+        }
+    }
+
+    public void removeAttachment(
+            ItemStack gunStack,
+            ServerPlayer player,
+            int selected
+    ) {
+        GunAttachmentsComponent component =
+                gunStack.get(ModDataComponents.GUN_ATTACHMENTS.get());
+
+        System.out.println(
+                "Removing the attachment from item "
+                        + gunStack.getDescriptionId()
+        );
+
+        if (component == null)
+            return;
+
+        System.out.println("selected " + selected);
+
+        List<GunAttachmentSlot> slots =
+                new ArrayList<>(component.attachments().keySet());
+
+        if (selected < 0 || selected >= slots.size())
+            return;
+
+        GunAttachmentSlot slot = slots.get(selected);
+
+        ItemStack attachment = component.get(slot);
+
+        if (attachment.isEmpty())
+            return;
+
+        // Don't overwrite something the player is already carrying.
+        if (!player.containerMenu.getCarried().isEmpty())
+            return;
+
+        // Put the attachment onto the GUI cursor.
+        player.containerMenu.setCarried(attachment.copy());
+
+        gunStack.set(
+                ModDataComponents.GUN_ATTACHMENTS.get(),
+                component.remove(slot)
+        );
     }
 }
