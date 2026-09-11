@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.pod.cnmb.item.gun.AbstractGunItem;
+import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
 import net.pod.cnmb.item.gun.pistol.client.PistolRenderer;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
@@ -16,13 +17,15 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public final class PistolItem extends AbstractGunItem implements GeoItem {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public PistolItem(Properties properties, int shootRate, double bulletDamage, double bulletSpeed, double inaccuracy, boolean isAutomatic) {
-        super(properties, shootRate, bulletDamage, bulletSpeed, inaccuracy, isAutomatic);
+        super(properties, shootRate, bulletDamage, bulletSpeed, inaccuracy, isAutomatic, List.of(GunAttachmentSlot.SCOPE,
+                GunAttachmentSlot.BARREL, GunAttachmentSlot.HANDLE, GunAttachmentSlot.MAGAZINE, GunAttachmentSlot.UNDERSIDE));
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 

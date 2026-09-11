@@ -79,11 +79,6 @@ public abstract class AbstractGunItem extends Item {
         return defaultIsAutomatic;
     }
 
-    @Override
-    public int getMaxStackSize(ItemStack stack) {
-        return 1;
-    }
-
     public boolean shoot(Entity entity) {
         if (entity instanceof Player player) {
             if (player.getCooldowns().isOnCooldown(this)) {
@@ -159,9 +154,12 @@ public abstract class AbstractGunItem extends Item {
 
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access) {
+        System.out.println(
+                "Stacked on me - client: " + player.level().isClientSide
+        );
         if (!player.level().isClientSide) {
             ItemStack gunStack = slot.getItem();
-
+            System.out.println("Stacked on me");
             if (!(gunStack.getItem() instanceof AbstractGunItem gun))
                 return false;
 
@@ -175,7 +173,7 @@ public abstract class AbstractGunItem extends Item {
 
     @Override
     public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
-
+        System.out.println("i am stacked");
         return super.overrideStackedOnOther(stack, slot, action, player);
     }
 
