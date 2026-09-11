@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/outer_stairs",
   "textures": {
-    "bottom": "cnmb:block/palettes/stone_types/cut/cerussite_cut",
-    "side": "cnmb:block/palettes/stone_types/cut/cerussite_cut",
-    "top": "cnmb:block/palettes/stone_types/cut/cerussite_cut"
+    "bottom": "cnmb:block/palettes/cerussite/cut_cerussite",
+    "side": "cnmb:block/palettes/cerussite/cut_cerussite",
+    "top": "cnmb:block/palettes/cerussite/cut_cerussite"
   }
 }

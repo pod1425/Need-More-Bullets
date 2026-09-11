@@ -1,14 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
-  "group": "polished_cut_cerussite_slab",
   "key": {
-    "X": {
+    "B": {
       "item": "cnmb:polished_cut_cerussite"
     }
   },
   "pattern": [
-    "XXX"
+    "BBB"
   ],
   "result": {
     "count": 6,

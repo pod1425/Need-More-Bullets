@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "cnmb:block/palettes/horny_sculk/chiseled_horny_sculk"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "cnmb:horny_sculk_pillar"
+  },
+  "result": {
+    "count": 1,
+    "id": "cnmb:small_horny_sculk_bricks_stairs"
+  }
+}

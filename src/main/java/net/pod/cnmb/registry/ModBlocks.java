@@ -16,23 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static net.pod.cnmb.NeedMoreBulletsMod.REGISTRATE;
-
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS =
             DeferredRegister.createBlocks(NeedMoreBulletsMod.MODID);
 
     // for creative tab
-    private static List<DeferredBlock<? extends Block> > blocks = new ArrayList<>();
-    private static List<DeferredBlock<? extends Block> > decorativeBlocks = new ArrayList<>();
+    private static final List<DeferredBlock<? extends Block> > blocks = new ArrayList<>();
+    private static final List<DeferredBlock<? extends Block> > decorativeBlocks = new ArrayList<>();
 
     public static final DeferredBlock<Block> LEAD_BLOCK = registerBlock("lead_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-    public static final DeferredBlock<Block> CUT_LEAD = registerDecorativeBlock("cut_lead",
-            () -> new Block(BlockBehaviour.Properties.of()
-                    .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
-
+//    public static final DeferredBlock<Block> CUT_LEAD = registerBlock("cut_lead",
+//            () -> new Block(BlockBehaviour.Properties.of()
+//                    .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
     public static final DeferredBlock<Block> LEAD_ORE = registerBlock("lead_ore",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.STONE)));
@@ -56,15 +53,6 @@ public class ModBlocks {
     public static final DeferredBlock<Block> ACTIVE_SCULK = registerBlock("active_sculk",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(1.5f).sound(SoundType.SCULK)));
-
-
-
-    /*
-    public static final DeferredBlock<Block> CERUSSITE_PILLAR = registerBlock("cerussite_pillar",
-            CreateRegistrate.connectedTextures(() -> new RotatedPillarCTBehaviour(BlockBehaviour.Properties.of()
-                    .strength(2f).sound(SoundType.STONE))));
-*/
-
 
     public static final DeferredBlock<Block> STEEL_LAMP = registerBlock("steel_lamp",
             () -> new VariableLampBlock(BlockBehaviour.Properties.of()
