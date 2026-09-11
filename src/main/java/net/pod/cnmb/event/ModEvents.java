@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.ItemStackedOnOtherEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.pod.cnmb.NeedMoreBulletsMod;
@@ -16,7 +17,16 @@ import net.pod.cnmb.item.gun.AbstractGunItem;
 @EventBusSubscriber(modid = NeedMoreBulletsMod.MODID)
 
 public class ModEvents {
-
+    @SubscribeEvent
+    public static void debugStackedOn(ItemStackedOnOtherEvent event) {
+        System.out.println(
+                "ItemStackedOnOtherEvent"
+                        + " client=" + event.getPlayer().level().isClientSide
+                        + " canceled=" + event.isCanceled()
+                        + " carried=" + event.getCarriedItem().getHoverName()
+                        + " stacked=" + event.getStackedOnItem().getHoverName()
+        );
+    }
     // this is too funny to remove, AND is a great tutorial on how to do stuff
     @SubscribeEvent
     public static void livingDamage(LivingDamageEvent.Pre event) {

@@ -30,12 +30,16 @@ public class NeedMoreBulletsMod {
         ModBlockPalettes.register(modEventBus);
         ModEntities.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
+        ModDataComponents.register(modEventBus);
+        ModPlayerAttachments.register(modEventBus);
+        ModSounds.register(modEventBus);
+
+        ModGunAttachments.ATTACHMENTS.initialize();
 
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(ModNetworking::register);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-        ModSounds.register(modEventBus);
     }
     public static ResourceLocation asResource(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
