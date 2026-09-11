@@ -79,10 +79,15 @@ public abstract class AbstractGunItem extends Item {
         return defaultIsAutomatic;
     }
 
-    public void shoot(Entity entity) {
+    @Override
+    public int getMaxStackSize(ItemStack stack) {
+        return 1;
+    }
+
+    public boolean shoot(Entity entity) {
         if (entity instanceof Player player) {
             if (player.getCooldowns().isOnCooldown(this)) {
-                return;
+                return false;
             }
             player.getCooldowns().addCooldown(this, 20 / defaultShootRate);
             player.awardStat(Stats.ITEM_USED.get(this));
@@ -107,6 +112,8 @@ public abstract class AbstractGunItem extends Item {
                     1.0F
             );
         }
+
+        return true;
     }
 
     @Override
