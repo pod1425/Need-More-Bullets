@@ -15,6 +15,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.networking.payload.ControlInputPayload;
+import net.pod.cnmb.networking.payload.CustomAttackPayload;
 import net.pod.cnmb.networking.payload.SetControllingPayload;
 import net.pod.cnmb.networking.payload.StopControlPayload;
 
@@ -45,6 +46,12 @@ public class ModNetworking {
                 SetControllingPayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() -> ModClientPayloadHandlers.setControlling(payload, context))
         );
+
+        registrar.playToServer(
+                CustomAttackPayload.TYPE,
+                CustomAttackPayload.STREAM_CODEC,
+                CustomAttackPayload::handle
+        );
     }
 
     public static void sendControlling(ServerPlayer player, int id, boolean controlling) {
@@ -55,6 +62,10 @@ public class ModNetworking {
     }
     public static void sendControlInput(ControlInputPayload payload) {
         PacketDistributor.sendToServer(payload);
+    }
+    public static void sendCustomAttack(int mobId) {
+        NeedMoreBulletsMod.LOGGER.debug("send custom attack to server");
+        PacketDistributor.sendToServer(new CustomAttackPayload(mobId));
     }
 
     public record GunTriggerPayload(boolean pressed) implements CustomPacketPayload {

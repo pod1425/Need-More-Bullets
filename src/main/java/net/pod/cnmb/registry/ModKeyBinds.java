@@ -12,8 +12,14 @@ public class ModKeyBinds {
 
     public static KeyMapping STOP_CONTROL = add(new KeyMapping(
             "key.cnmb.stop_control",
-            InputConstants.KEY_X,
+            InputConstants.Type.KEYSYM,
+            InputConstants.KEY_GRAVE,
             "key.categories.cnmb"));
+    public static final KeyMapping ACTIVATE_CUSTOM_ATTACK = new KeyMapping(
+            "key.cnmb.activate_custom_attack",
+            InputConstants.Type.KEYSYM,
+            InputConstants.KEY_R,
+            "key.categories.cnmb");
 
     private static KeyMapping add(KeyMapping keymapping) {
         keybinds.add(keymapping);

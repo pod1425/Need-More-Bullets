@@ -1,17 +1,23 @@
 package net.pod.cnmb.entity.beedrone;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.pod.cnmb.util.ControllableMob;
 import net.pod.cnmb.util.CustomAttack;
+
+import java.util.List;
 
 public class BeeDrone extends ControllableMob implements CustomAttack {
     public final AnimationState flyAnimationState = new AnimationState();
@@ -75,7 +81,50 @@ public class BeeDrone extends ControllableMob implements CustomAttack {
     }
 
     @Override
-    public void attack() {}
+    public void attack() {
+        if (level() instanceof ServerLevel level) {
+            Vec3 pos = position();
+
+            level.explode(
+                    controller, pos.x, this.getY(0.0625D), pos.z,
+                    2.0F, false, Level.ExplosionInteraction.TNT
+            );
+
+            double damageRadius = 2.5;
+            double maxDamage = 20;
+            
+            AABB area = new AABB(
+                    pos.x - damageRadius, pos.y - damageRadius, pos.z - damageRadius,
+                    pos.x + damageRadius, pos.y + damageRadius, pos.z + damageRadius
+            );
+            List<LivingEntity> targets = level.getEntitiesOfClass(LivingEntity.class, area);
+            targets.remove(this);
+
+
+            DamageSource source = damageSources().explosion(null, controller);
+            targets.forEach(target -> {
+                AABB box = target.getBoundingBox();
+
+                double distance = Math.sqrt(new Vec3(
+                        Mth.clamp(pos.x, box.minX, box.maxX),
+                        Mth.clamp(pos.y, box.minY, box.maxY),
+                        Mth.clamp(pos.z, box.minZ, box.maxZ))
+                        .distanceToSqr(pos));
+
+                if (distance > damageRadius) return;
+
+                double factor  = 1.0 - distance / damageRadius;
+
+                target.hurt(source, (float)(maxDamage * factor));
+
+                Vec3 delta = target.position().subtract(pos).normalize().scale(2 * factor);
+                target.setDeltaMovement(target.getDeltaMovement().add(delta.x, 0.7 * factor, delta.z));
+                target.hurtMarked = true;
+            });
+
+            stop();
+        }
+    }
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {

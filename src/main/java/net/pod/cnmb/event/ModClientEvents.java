@@ -26,6 +26,7 @@ public class ModClientEvents {
 
     public static ControllableMob controlling;
     public static double pitch, yaw;
+    private static boolean prevActiveCustomAttack;
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
@@ -38,6 +39,14 @@ public class ModClientEvents {
                     opt.keyJump.isDown(), opt.keyShift.isDown()));
 
             if (ModKeyBinds.STOP_CONTROL.consumeClick()) ModNetworking.sendStopControl(new StopControlPayload(controlling.getId()));
+            if (ModKeyBinds.ACTIVATE_CUSTOM_ATTACK.isDown()) {
+                if (!prevActiveCustomAttack) {
+                    ModNetworking.sendCustomAttack(controlling.getId());
+                    prevActiveCustomAttack = true;
+                }
+            } else {
+                prevActiveCustomAttack = false;
+            }
         }
     }
 

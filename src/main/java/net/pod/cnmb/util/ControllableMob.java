@@ -37,7 +37,7 @@ public abstract class ControllableMob extends Mob implements Controllable {
             TicketType.create("cnmb_controllable_mob_chunk_loader", Comparator.comparingLong(ChunkPos::toLong));
 
     public ChunkPos chunkPos;
-    private Set<ChunkPos> loadedChunks = new HashSet<>();
+    protected Set<ChunkPos> loadedChunks = new HashSet<>();
 
     public Player controller;
     protected ControlInputPayload input;
@@ -72,23 +72,35 @@ public abstract class ControllableMob extends Mob implements Controllable {
         ModNetworking.sendControlling(player, getId(), false);
 
         if (level() instanceof ServerLevel level) {
-            loadedChunks.forEach(p -> player.connection.send(new ClientboundForgetLevelChunkPacket(p)));
-            loadedChunks.clear();
-
             ChunkPos pos = controller.chunkPosition();
             player.connection.send(new ClientboundSetChunkCacheCenterPacket(pos.x, pos.z));
 
-            int radius = player.requestedViewDistance();
+            int radius = player.requestedViewDistance() + 2;
+
+            loadedChunks.removeIf(p -> {
+                if (p.x < -radius || p.x > radius || p.z < -radius || p.z > radius) {
+                    player.connection.send(new ClientboundForgetLevelChunkPacket(p));
+                    return true;
+                }
+                return false;
+            });
+
             for (int dx = -radius; dx <= radius; dx++) {
                 for (int dz = -radius; dz <= radius; dz++) {
-                    player.connection.send(
-                            new ClientboundLevelChunkWithLightPacket(
-                                    (LevelChunk) level.getChunk(pos.x + dx, pos.z + dz, ChunkStatus.FULL),
-                                    level.getLightEngine(), null, null)
-                    );
+                    int x = pos.x + dx, z = pos.z + dz;
+
+                    level.getChunkSource().getChunkFuture(x, z, ChunkStatus.FULL, true).thenAcceptAsync(res -> res.ifSuccess(access -> {
+                        if (access instanceof LevelChunk chunk) {
+                            if (!loadedChunks.contains(chunk.getPos())) {
+                                if (!player.connection.isAcceptingMessages()) return;
+                                player.connection.send(new ClientboundLevelChunkWithLightPacket(chunk, level.getLightEngine(), null, null));
+                            }
+                        }
+                    }));
                 }
             }
 
+            loadedChunks.clear();
             chunkPos = null;
         }
 
@@ -106,8 +118,8 @@ public abstract class ControllableMob extends Mob implements Controllable {
 
                 int radius = player.requestedViewDistance();
                 Set<ChunkPos> needed = new HashSet<>();
-                for (int dx = -radius - 2; dx <= radius + 2; dx++) {
-                    for (int dz = -radius - 2; dz <= radius + 2; dz++) {
+                for (int dx = -radius; dx <= radius; dx++) {
+                    for (int dz = -radius; dz <= radius; dz++) {
                         needed.add(new ChunkPos(pos.x + dx, pos.z + dz));
                     }
                 }
@@ -124,7 +136,7 @@ public abstract class ControllableMob extends Mob implements Controllable {
                     if (!loadedChunks.contains(p)) {
                         level.getChunkSource().getChunkFuture(p.x, p.z, ChunkStatus.FULL, true)
                                 .thenAcceptAsync(res -> res.ifSuccess(access -> {
-                                    if (access instanceof LevelChunk chunk && player.connection.isAcceptingMessages() && controller == player) {
+                                    if (access instanceof LevelChunk chunk && player.connection.isAcceptingMessages()) {
                                         player.connection.send(new ClientboundLevelChunkWithLightPacket(chunk, level.getLightEngine(), null, null));
                                     }
                                 }), level.getServer());
