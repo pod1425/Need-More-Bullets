@@ -18,6 +18,7 @@
   "block.cnmb.lead_lamp": "Lead lamp",
 
   "block.cnmb.depleted_redstone_block": "Depleted redstone block",
+  "block.cnmb.redstone_depleter": "Redstone depleter",
 
   "tooltip.cnmb.attachment_slot": "%s: %s",
   "tooltip.cnmb.empty_attachment_slot": "None",

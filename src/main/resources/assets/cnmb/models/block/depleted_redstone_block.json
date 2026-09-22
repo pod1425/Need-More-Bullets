@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
+    "particle": "cnmb:block/depleted_redstone_block",
     "all": "cnmb:block/depleted_redstone_block"
   },
   "elements": [

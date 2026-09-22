@@ -44,6 +44,18 @@ public class DepletedRedStoneBlock extends Block {
         updateOutPower(state, level, pos, power);
     }
 
+    public boolean extract(ServerLevel level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        int power = state.getValue(POWER);
+
+        if (power > 0) {
+            power--;
+            updateOutPower(state.setValue(POWER, power), level, pos, power);
+            return true;
+        }
+        return false;
+    }
+
     private void updateOutPower(BlockState state, ServerLevel level, BlockPos pos, int power) {
         level.setBlock(pos, state.setValue(OUT_POWER, power == 0 ? 0 : power + (level.random.nextInt(3) - 1)), 3);
     }
