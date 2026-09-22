@@ -17,6 +17,8 @@
   "block.cnmb.steel_lamp": "Steel lamp",
   "block.cnmb.lead_lamp": "Lead lamp",
 
+  "block.cnmb.depleted_redstone_block": "Depleted redstone block",
+
   "tooltip.cnmb.attachment_slot": "%s: %s",
   "tooltip.cnmb.empty_attachment_slot": "None",
   "tooltip.cnmb.right_click_to_remove": "R-click to remove selected attachment",

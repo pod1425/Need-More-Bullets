@@ -11,6 +11,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.VariableLampBlock;
+import net.pod.cnmb.block.depleted_redstone.DepletedRedStoneBlock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,10 @@ public class ModBlocks {
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)
                     .lightLevel(state -> state.getValue(VariableLampBlock.LIGHT_LEVEL))));
 
-
+    public static final DeferredBlock<Block> DEPLETED_REDSTONE_BLOCK = BLOCKS.register("depleted_redstone_block",
+            () -> new DepletedRedStoneBlock(BlockBehaviour.Properties.of()
+                    .strength(1.5f).requiresCorrectToolForDrops().sound(SoundType.STONE)
+                    .randomTicks()));
 
 
 

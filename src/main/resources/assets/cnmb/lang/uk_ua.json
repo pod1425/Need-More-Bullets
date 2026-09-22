@@ -15,6 +15,7 @@
   "block.cnmb.steel_bricks": "Тесана сталь",
   "block.cnmb.cut_steel": "Різана сталь",
   "block.cnmb.steel_lamp": "Сталева лампа",
-  "block.cnmb.lead_lamp": "Свинцева лампа"
+  "block.cnmb.lead_lamp": "Свинцева лампа",
 
+  "block.cnmb.depleted_redstone_block": "Збіднений редстоуновий блок"
 }
