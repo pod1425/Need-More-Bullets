@@ -9,12 +9,14 @@ import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.depleted_redstone.DepletedRedStoneBlock;
+import net.pod.cnmb.block.redstone_depleter.RedStoneDepleterBlockEntity;
 import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
@@ -50,6 +52,11 @@ public class ModClientEvents {
 
             return 0xFFFFFF;
         }, ModBlocks.DEPLETED_REDSTONE_BLOCK.get().asItem());
+    }
+
+    @SubscribeEvent
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        RedStoneDepleterBlockEntity.registerRenderer(event);
     }
 
     @SubscribeEvent

@@ -9,9 +9,11 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.pod.cnmb.block.redstone_depleter.RedStoneDepleterBlockEntity;
 import net.pod.cnmb.networking.ModNetworking;
 import net.pod.cnmb.registry.*;
 import org.slf4j.Logger;
@@ -38,6 +40,7 @@ public class NeedMoreBulletsMod {
         ModGunAttachments.ATTACHMENTS.initialize();
 
         modEventBus.addListener(this::addCreative);
+        modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(ModNetworking::register);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -53,6 +56,10 @@ public class NeedMoreBulletsMod {
         if(event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(ModItems.LEAD_INGOT);
         }
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        RedStoneDepleterBlockEntity.registerCapabilities(event);
     }
 
 
