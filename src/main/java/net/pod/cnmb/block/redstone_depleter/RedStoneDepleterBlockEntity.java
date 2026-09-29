@@ -1,7 +1,7 @@
 package net.pod.cnmb.block.redstone_depleter;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import net.minecraft.CrashReportCategory;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -18,30 +18,55 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.registries.IRegistryExtension;
 import net.pod.cnmb.block.depleted_redstone.DepletedRedStoneBlock;
-import net.pod.cnmb.block.redstone_depleter.client.RedStoneDepleterRenderer;
+import net.pod.cnmb.block.redstone_depleter.client.RedStoneDepleterBlockRenderer;
+import net.pod.cnmb.block.redstone_depleter.client.RedStoneDepleterItemRenderer;
 import net.pod.cnmb.registry.ModBlockEntities;
 import net.pod.cnmb.registry.ModBlocks;
+import net.pod.cnmb.registry.ModItems;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 
-public class RedStoneDepleterBlockEntity extends KineticBlockEntity {
+public class RedStoneDepleterBlockEntity extends KineticBlockEntity implements GeoBlockEntity {
     private static final int
             CAPACITY = 100000,
             ADDED_ENERGY = 8000,
             MAX_EXTRACT = 100,
             TIMER = 300;
 
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
     private final EnergyStorage energyStorage = new EnergyStorage(CAPACITY, ADDED_ENERGY, MAX_EXTRACT);
     private int timer = TIMER;
+    private float boostAccumulator = 0.0F;
 
     private ItemStack item = ItemStack.EMPTY;
 
     public static void registerRenderer(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(ModBlockEntities.REDSTONE_DEPLETER.get(), RedStoneDepleterRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.REDSTONE_DEPLETER.get(), RedStoneDepleterBlockRenderer::new);
+    }
+    public static void registerRenderer(RegisterClientExtensionsEvent event) {
+        event.registerItem(
+                new IClientItemExtensions() {
+                    private final RedStoneDepleterItemRenderer renderer = new RedStoneDepleterItemRenderer();
+
+                    @Override
+                    public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                        return renderer;
+                    }
+                },
+                ModItems.REDSTONE_DEPLETER.get()
+        );
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -159,6 +184,11 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity {
 
         if (timer > 0) {
             timer--;
+            boostAccumulator += Math.abs(getSpeed()) / 256 * 4;
+            while (boostAccumulator >= 1.0F) {
+                timer--;
+                boostAccumulator--;
+            }
         }
 
         if (timer <= 0) {
@@ -174,6 +204,11 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity {
                 timer = TIMER;
             }
         }
+    }
+
+    @Override
+    public float calculateStressApplied() {
+        return 16.0F;
     }
 
     @Override
@@ -204,6 +239,8 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity {
         tooltip.add(Component.literal("    §eEnergy: §f" + formatFE(energyStorage.getEnergyStored()) + " / " + formatFE(CAPACITY)));
         tooltip.add(Component.literal(String.format("    Timer: §f%.1fs", timer/20.0F)));
 
+        addStressImpactStats(tooltip, calculateStressApplied());
+
         if (item.isEmpty()) tooltip.add(Component.literal("    Item: -"));
         else {
             IEnergyStorage storage = item.getCapability(Capabilities.EnergyStorage.ITEM);
@@ -220,6 +257,8 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity {
         tag.put("EnergyStorage", energyStorage.serializeNBT(provider));
         tag.putInt("Timer", timer);
         if (!item.isEmpty()) tag.put("Item", item.save(provider));
+
+        super.write(tag, provider, clientPacket);
     }
 
     @Override
@@ -227,5 +266,15 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity {
         if (tag.contains("EnergyStorage")) energyStorage.deserializeNBT(provider, tag.get("EnergyStorage"));
         if (tag.contains("Timer")) timer = tag.getInt("Timer");
         item = tag.contains("Item") ? ItemStack.parse(provider, tag.get("Item")).orElse(ItemStack.EMPTY) : ItemStack.EMPTY;
+
+        super.read(tag, provider, clientPacket);
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 }

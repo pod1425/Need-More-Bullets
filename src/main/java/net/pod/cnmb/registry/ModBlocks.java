@@ -69,7 +69,7 @@ public class ModBlocks {
             () -> new DepletedRedStoneBlock(BlockBehaviour.Properties.of()
                     .strength(1.5f).requiresCorrectToolForDrops().sound(SoundType.STONE)
                     .randomTicks()));
-    public static final DeferredBlock<Block> REDSTONE_DEPLETER = registerBlock("redstone_depleter",
+    public static final DeferredBlock<Block> REDSTONE_DEPLETER = BLOCKS.register("redstone_depleter",
             () -> new RedStoneDepleterBlock(BlockBehaviour.Properties.of()
                     .strength(2.0f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
 

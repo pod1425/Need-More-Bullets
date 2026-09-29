@@ -1,6 +1,9 @@
 package net.pod.cnmb.block.redstone_depleter;
 
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
+import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
+import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
@@ -12,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,8 +34,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class RedStoneDepleterBlock extends Block implements EntityBlock, IWrenchable {
-    private static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D);
+public class RedStoneDepleterBlock extends KineticBlock implements IBE<RedStoneDepleterBlockEntity>, IWrenchable, ICogWheel {
+    private static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 13.0D, 16.0D);
 
     public RedStoneDepleterBlock(Properties properties) {
         super(properties);
@@ -43,14 +47,18 @@ public class RedStoneDepleterBlock extends Block implements EntityBlock, IWrench
     }
 
     @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return ModBlockEntities.REDSTONE_DEPLETER.get().create(pos, state);
+    public Class<RedStoneDepleterBlockEntity> getBlockEntityClass() {
+        return RedStoneDepleterBlockEntity.class;
     }
 
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return !level.isClientSide && type == ModBlockEntities.REDSTONE_DEPLETER.get() ?
-                (l, bp, bs, be) -> ((RedStoneDepleterBlockEntity) be).tick() : null;
+    public BlockEntityType<? extends RedStoneDepleterBlockEntity> getBlockEntityType() {
+        return ModBlockEntities.REDSTONE_DEPLETER.get();
+    }
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return ModBlockEntities.REDSTONE_DEPLETER.get().create(pos, state);
     }
 
     @Override
@@ -76,8 +84,21 @@ public class RedStoneDepleterBlock extends Block implements EntityBlock, IWrench
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if(level.getBlockEntity(pos) instanceof RedStoneDepleterBlockEntity be && be.getItem() instanceof ItemStack item && !item.isEmpty())
-            Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), item);
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (!state.is(newState.getBlock()))
+            if (level.getBlockEntity(pos) instanceof RedStoneDepleterBlockEntity be && be.getItem() instanceof ItemStack item && !item.isEmpty())
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), item);
+
+        super.onRemove(state, level, pos, newState, movedByPiston);
+    }
+
+    @Override
+    public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+        return false;
+    }
+
+    @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return Direction.Axis.Y;
     }
 }

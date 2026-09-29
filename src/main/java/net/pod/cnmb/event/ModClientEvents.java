@@ -12,6 +12,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.pod.cnmb.NeedMoreBulletsMod;
@@ -56,6 +57,10 @@ public class ModClientEvents {
 
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        RedStoneDepleterBlockEntity.registerRenderer(event);
+    }
+    @SubscribeEvent
+    public static void registerRenderers(RegisterClientExtensionsEvent event) {
         RedStoneDepleterBlockEntity.registerRenderer(event);
     }
 

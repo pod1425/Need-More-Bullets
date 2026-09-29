@@ -7,12 +7,14 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.depleted_redstone.DepletedRedStoneBlockItem;
+import net.pod.cnmb.block.redstone_depleter.RedStoneDepleterItem;
 import net.pod.cnmb.item.gun.musket.MusketItem;
 import net.pod.cnmb.item.gun.pistol.PistolItem;
 import net.pod.cnmb.item.gun.revolver.RevolverItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(NeedMoreBulletsMod.MODID);
@@ -39,6 +41,8 @@ public class ModItems {
     public static final DeferredItem<Item> DEPLETED_REDSTONE_BLOCK = add(ITEMS.register("depleted_redstone_block",
             () -> new DepletedRedStoneBlockItem(ModBlocks.DEPLETED_REDSTONE_BLOCK.get(),
                     new Item.Properties().component(ModDataComponents.DEPLETED_REDSTONE_BLOCK_POWER.get(), 14))));
+    public static final Supplier<Item> REDSTONE_DEPLETER = add(ITEMS.register("redstone_depleter",
+            () -> new RedStoneDepleterItem(ModBlocks.REDSTONE_DEPLETER.get(), new Item.Properties())));
 
     private static DeferredItem<Item> add(DeferredItem<Item> item) {
         items.add(item);
