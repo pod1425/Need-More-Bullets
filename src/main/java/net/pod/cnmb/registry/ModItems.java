@@ -6,6 +6,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.block.slip_roller.SlipRollerItem;
 import net.pod.cnmb.item.gun.musket.MusketItem;
 import net.pod.cnmb.item.gun.pistol.PistolItem;
 import net.pod.cnmb.item.gun.revolver.RevolverItem;
@@ -34,6 +35,9 @@ public class ModItems {
             () -> new RevolverItem(new Item.Properties(), 1, 10, 8, 2, false)));
     public static final DeferredItem<Item> MUSKET = add(ITEMS.register("musket",
             () -> new MusketItem(new Item.Properties(), 4, 10, 8, 2, false)));
+
+    public static final DeferredItem<Item> SLIP_ROLLER = add(ITEMS.register("slip_roller",
+            () -> new SlipRollerItem(ModBlocks.SLIP_ROLLER.get(), new Item.Properties())));
 
     private static DeferredItem<Item> add(DeferredItem<Item> item) {
         items.add(item);
