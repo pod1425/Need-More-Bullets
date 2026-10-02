@@ -8,10 +8,12 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.entity.lead_golem.LeadGolem;
 import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
@@ -26,6 +28,10 @@ import static net.pod.cnmb.registry.ModGunAttachments.ATTACHMENTS;
         value = Dist.CLIENT
 )
 public class ModClientEvents {
+    @SubscribeEvent
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        LeadGolem.registerRenderer(event);
+    }
 
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
