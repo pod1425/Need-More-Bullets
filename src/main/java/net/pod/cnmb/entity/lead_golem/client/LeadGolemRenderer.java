@@ -8,5 +8,6 @@ public class LeadGolemRenderer extends GeoEntityRenderer<LeadGolem> {
     public LeadGolemRenderer(EntityRendererProvider.Context context) {
         super(context, new LeadGolemModel());
         addRenderLayer(new LeadGolemEyesLayer(this));
+        addRenderLayer(new LeadGolemWeaponLayer(this));
     }
 }

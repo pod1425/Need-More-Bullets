@@ -35,6 +35,11 @@
 					]
 				},
 				{
+					"name": "weapon_anchor",
+					"parent": "right_arm",
+					"pivot": [-6, 8, -1]
+				},
+				{
 					"name": "left_arm",
 					"parent": "body",
 					"pivot": [4, 18, 0],
