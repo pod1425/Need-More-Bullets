@@ -9,6 +9,7 @@ import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.item.gun.musket.MusketItem;
 import net.pod.cnmb.item.gun.pistol.PistolItem;
 import net.pod.cnmb.item.gun.revolver.RevolverItem;
+import net.pod.cnmb.item.gun.rifle.RifleItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,8 @@ public class ModItems {
             () -> new RevolverItem(new Item.Properties(), 1, 10, 8, 2, false)));
     public static final DeferredItem<Item> MUSKET = add(ITEMS.register("musket",
             () -> new MusketItem(new Item.Properties(), 4, 10, 8, 2, false)));
+    public static final DeferredItem<Item> RIFLE = add(ITEMS.register(  "rifle",
+            () -> new RifleItem(new Item.Properties(), 4, 10, 8, 2, false)));
 
     private static DeferredItem<Item> add(DeferredItem<Item> item) {
         items.add(item);
