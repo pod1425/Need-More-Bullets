@@ -37,6 +37,8 @@ public class ModItems {
             () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> STEEL_PIPE = add(ITEMS.register("steel_pipe",
             () -> new Item(new Item.Properties())));
+    public static final DeferredItem<Item> STEEL_SPRING = add(ITEMS.register("steel_spring",
+            () -> new Item(new Item.Properties())));
 
     public static final DeferredItem<Item> PISTOL = add(ITEMS.register("pistol",
             () -> new PistolItem(new Item.Properties(), 8, 10, 8, 2, false)));
