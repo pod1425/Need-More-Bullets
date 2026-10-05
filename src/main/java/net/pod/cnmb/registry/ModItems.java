@@ -18,15 +18,27 @@ public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(NeedMoreBulletsMod.MODID);
     // for Creative mode tab
     private static List<DeferredItem<Item>> items = new ArrayList<>();
+    public static final DeferredItem<Item> IRON_PIPE = add(ITEMS.register("iron_pipe",
+            () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> LEAD_INGOT = add(ITEMS.register("lead_ingot",
             () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> LEAD_NUGGET = add(ITEMS.register("lead_nugget",
+            () -> new Item(new Item.Properties())));
+    public static final DeferredItem<Item> LEAD_SHEET = add(ITEMS.register("lead_sheet",
+            () -> new Item(new Item.Properties())));
+    public static final DeferredItem<Item> LEAD_PIPE = add(ITEMS.register("lead_pipe",
             () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> RAW_LEAD = add(ITEMS.register("raw_lead",
             () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> STEEL_INGOT = add(ITEMS.register("steel_ingot",
             () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> STEEL_NUGGET = add(ITEMS.register("steel_nugget",
+            () -> new Item(new Item.Properties())));
+    public static final DeferredItem<Item> STEEL_SHEET = add(ITEMS.register("steel_sheet",
+            () -> new Item(new Item.Properties())));
+    public static final DeferredItem<Item> STEEL_PIPE = add(ITEMS.register("steel_pipe",
+            () -> new Item(new Item.Properties())));
+    public static final DeferredItem<Item> STEEL_SPRING = add(ITEMS.register("steel_spring",
             () -> new Item(new Item.Properties())));
 
     public static final DeferredItem<Item> PISTOL = add(ITEMS.register("pistol",
