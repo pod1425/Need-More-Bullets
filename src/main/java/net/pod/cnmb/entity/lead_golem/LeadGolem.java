@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.pod.cnmb.entity.lead_golem.client.LeadGolemClothesLayer;
 import net.pod.cnmb.entity.lead_golem.goal.ShootGunGoal;
 import net.pod.cnmb.entity.lead_golem.client.LeadGolemRenderer;
 import net.pod.cnmb.registry.ModEntities;
@@ -27,10 +28,10 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.List;
-
 public class LeadGolem extends PathfinderMob implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    public LeadGolemClothesLayer.Clothes clothes = null;
 
     public static void registerRenderer(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.LEAD_GOLEM.get(), LeadGolemRenderer::new);
@@ -103,14 +104,12 @@ public class LeadGolem extends PathfinderMob implements GeoEntity {
 
         ItemStack weapon = getWeaponItem();
         if (!weapon.isEmpty()) tag.put("Weapon", weapon.save(registryAccess()));
-        System.out.println("SAVING WEAPON: " + weapon);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
 
-        if (tag.contains("Weapon")) setItemInHand(InteractionHand.MAIN_HAND, ItemStack.parse(registryAccess(), tag.get("Weapon")).orElse(ItemStack.EMPTY));
-        System.out.println("LOADING WEAPON: " + tag.get("Weapon"));
+        setItemInHand(InteractionHand.MAIN_HAND, tag.contains("Weapon") ? ItemStack.parse(registryAccess(), tag.get("Weapon")).orElse(ItemStack.EMPTY) : ItemStack.EMPTY);
     }
 }
