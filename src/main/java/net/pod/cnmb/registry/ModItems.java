@@ -17,6 +17,8 @@ public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(NeedMoreBulletsMod.MODID);
     // for Creative mode tab
     private static List<DeferredItem<Item>> items = new ArrayList<>();
+    public static final DeferredItem<Item> IRON_PIPE = add(ITEMS.register("iron_pipe",
+            () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> LEAD_INGOT = add(ITEMS.register("lead_ingot",
             () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> LEAD_NUGGET = add(ITEMS.register("lead_nugget",
