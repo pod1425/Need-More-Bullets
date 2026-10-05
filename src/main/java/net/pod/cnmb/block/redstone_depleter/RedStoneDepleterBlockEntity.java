@@ -197,8 +197,8 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity implements G
                 BlockState belowState = level.getBlockState(below);
 
                 if (belowState.is(Blocks.REDSTONE_BLOCK)) level.setBlock(below, ModBlocks.DEPLETED_REDSTONE_BLOCK.get().defaultBlockState(), 3);
-                else if (!belowState.is(ModBlocks.DEPLETED_REDSTONE_BLOCK.get()) ||
-                        !(((DepletedRedStoneBlock) belowState.getBlock()).extract(lvl, below))) return;
+                else if (belowState.is(ModBlocks.DEPLETED_REDSTONE_BLOCK.get())) ((DepletedRedStoneBlock) belowState.getBlock()).extract(lvl, below);
+                else return;
 
                 energyStorage.receiveEnergy(ADDED_ENERGY, false);
                 timer = TIMER;

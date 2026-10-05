@@ -18,5 +18,6 @@
   "block.cnmb.lead_lamp": "Свинцева лампа",
 
   "block.cnmb.depleted_redstone_block": "Збіднений редстоуновий блок",
+  "block.cnmb.empty_redstone_block": "Спорожнений редстоуновий блок",
   "block.cnmb.redstone_depleter": "Редстоуновий збіднювач"
 }

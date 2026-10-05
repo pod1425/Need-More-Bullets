@@ -10,6 +10,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.block.EmptyRedStoneBlock;
 import net.pod.cnmb.block.VariableLampBlock;
 import net.pod.cnmb.block.depleted_redstone.DepletedRedStoneBlock;
 import net.pod.cnmb.block.redstone_depleter.RedStoneDepleterBlock;
@@ -69,6 +70,10 @@ public class ModBlocks {
             () -> new DepletedRedStoneBlock(BlockBehaviour.Properties.of()
                     .strength(1.5f).requiresCorrectToolForDrops().sound(SoundType.STONE)
                     .randomTicks()));
+    public static final DeferredBlock<Block> EMPTY_REDSTONE_BLOCK = registerBlock("empty_redstone_block",
+            () -> new EmptyRedStoneBlock(BlockBehaviour.Properties.of()
+                    .strength(1.5f).requiresCorrectToolForDrops().sound(SoundType.STONE)));
+
     public static final DeferredBlock<Block> REDSTONE_DEPLETER = BLOCKS.register("redstone_depleter",
             () -> new RedStoneDepleterBlock(BlockBehaviour.Properties.of()
                     .strength(2.0f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
