@@ -41,7 +41,11 @@ public class SlipRollerBlockEntity extends KineticBlockEntity implements GeoBloc
 
     private record Craft(Item input, Item output, Integer ticks) {
         private static final List<Craft> ALL = List.of(
-                new Craft(AllItems.COPPER_SHEET.get(), AllBlocks.FLUID_PIPE.asItem(), 40)
+                new Craft(AllItems.IRON_SHEET.get(), ModItems.IRON_PIPE.get(), 40),
+                new Craft(ModItems.STEEL_SHEET.get(), ModItems.STEEL_PIPE.get(), 60),
+                new Craft(ModItems.LEAD_SHEET.get(), ModItems.LEAD_PIPE.get(), 30),
+                new Craft(AllItems.COPPER_SHEET.get(), AllBlocks.FLUID_PIPE.asItem(), 35),
+                new Craft(ModItems.STEEL_NUGGET.get(), ModItems.STEEL_SPRING.get(), 80)
         );
 
         public static @Nullable Craft find(Item input) {
