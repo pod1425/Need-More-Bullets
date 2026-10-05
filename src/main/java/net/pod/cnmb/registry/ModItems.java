@@ -23,6 +23,8 @@ public class ModItems {
             () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> LEAD_NUGGET = add(ITEMS.register("lead_nugget",
             () -> new Item(new Item.Properties())));
+    public static final DeferredItem<Item> LEAD_SHEET = add(ITEMS.register("lead_sheet",
+            () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> RAW_LEAD = add(ITEMS.register("raw_lead",
             () -> new Item(new Item.Properties())));
     public static final DeferredItem<Item> STEEL_INGOT = add(ITEMS.register("steel_ingot",
