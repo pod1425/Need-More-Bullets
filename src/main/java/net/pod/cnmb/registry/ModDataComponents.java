@@ -50,6 +50,8 @@ public class ModDataComponents {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> DEPLETED_REDSTONE_BLOCK_POWER =
             register("depleted_redstone_block_power", builder -> builder.persistent(Codec.INT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> REDSTONE_DEPLETER_IS_CHARGING_MODE =
+            register("redstone_depleter_is_charging_mode", builder -> builder.persistent(Codec.BOOL));
 
 
     private static <T>DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name,

@@ -76,7 +76,8 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> REDSTONE_DEPLETER = BLOCKS.register("redstone_depleter",
             () -> new RedStoneDepleterBlock(BlockBehaviour.Properties.of()
-                    .strength(2.0f).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+                    .isRedstoneConductor((state, level, pos) -> false)
+                    .strength(2.0f).requiresCorrectToolForDrops().sound(SoundType.METAL).noOcclusion()));
 
 
 

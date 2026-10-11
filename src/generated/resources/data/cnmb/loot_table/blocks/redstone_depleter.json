@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "conditions": [{ "condition": "minecraft:survives_explosion" }],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "cnmb:redstone_depleter",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "source": "block_entity",
+              "include": ["cnmb:redstone_depleter_is_charging_mode"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

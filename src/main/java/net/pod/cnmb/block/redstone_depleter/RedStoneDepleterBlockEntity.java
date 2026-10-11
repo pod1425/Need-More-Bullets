@@ -3,7 +3,9 @@ package net.pod.cnmb.block.redstone_depleter;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -11,9 +13,11 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -23,12 +27,12 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.registries.IRegistryExtension;
 import net.pod.cnmb.block.depleted_redstone.DepletedRedStoneBlock;
 import net.pod.cnmb.block.redstone_depleter.client.RedStoneDepleterBlockRenderer;
 import net.pod.cnmb.block.redstone_depleter.client.RedStoneDepleterItemRenderer;
 import net.pod.cnmb.registry.ModBlockEntities;
 import net.pod.cnmb.registry.ModBlocks;
+import net.pod.cnmb.registry.ModDataComponents;
 import net.pod.cnmb.registry.ModItems;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -47,9 +51,93 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity implements G
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private final EnergyStorage energyStorage = new EnergyStorage(CAPACITY, ADDED_ENERGY, MAX_EXTRACT);
+    private final IEnergyStorage outputStorage = new IEnergyStorage() {
+        @Override
+        public int receiveEnergy(int count, boolean simulate) {
+            return 0;
+        }
+
+        @Override
+        public int extractEnergy(int count, boolean simulate) {
+            return energyStorage.extractEnergy(count, simulate);
+        }
+
+        @Override
+        public int getEnergyStored() {
+            return energyStorage.getEnergyStored();
+        }
+
+        @Override
+        public int getMaxEnergyStored() {
+            return energyStorage.getMaxEnergyStored();
+        }
+
+        @Override
+        public boolean canExtract() {
+            return true;
+        }
+
+        @Override
+        public boolean canReceive() {
+            return false;
+        }
+    };
+    private final IItemHandler itemHandler = new IItemHandler() {
+        @Override
+        public int getSlots() {
+            return 1;
+        }
+
+        @Override
+        public ItemStack getStackInSlot(int i) {
+            return item.copy();
+        }
+
+        @Override
+        public ItemStack insertItem(int i, ItemStack stack, boolean simulate) {
+            if (!item.isEmpty()) return stack;
+
+            ItemStack stackItem = stack.copyWithCount(1);
+            if (!isItemValid(i, stackItem)) return stack;
+
+            if (!simulate) {
+                item = stackItem;
+                sync();
+            }
+
+            return stack.copyWithCount(stack.getCount() - 1);
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (item.isEmpty() || amount <= 0) return ItemStack.EMPTY;
+            if (item.getCapability(Capabilities.EnergyStorage.ITEM).receiveEnergy(2, true) > 0) return ItemStack.EMPTY;
+
+            ItemStack extract = item.copy();
+            if (!simulate) {
+                item = ItemStack.EMPTY;
+                sync();
+            }
+
+            return extract;
+        }
+
+        @Override
+        public int getSlotLimit(int i) {
+            return 1;
+        }
+
+        @Override
+        public boolean isItemValid(int i, ItemStack item) {
+            IEnergyStorage storage = item.getCapability(Capabilities.EnergyStorage.ITEM);
+            return storage != null && storage.canReceive();
+        }
+    };
+
     private int timer = TIMER;
     private float boostAccumulator = 0.0F;
 
+    private boolean isChargingMode = true;
     private ItemStack item = ItemStack.EMPTY;
 
     public static void registerRenderer(EntityRenderersEvent.RegisterRenderers event) {
@@ -70,58 +158,10 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity implements G
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ModBlockEntities.REDSTONE_DEPLETER.get(), (be, context) ->
+                context != Direction.UP || be.isChargingMode ? null : be.outputStorage);
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.REDSTONE_DEPLETER.get(),
-                (be, d) -> new IItemHandler() {
-                    @Override
-                    public int getSlots() {
-                        return 1;
-                    }
-
-                    @Override
-                    public ItemStack getStackInSlot(int i) {
-                        return be.item.copy();
-                    }
-
-                    @Override
-                    public ItemStack insertItem(int i, ItemStack stack, boolean simulate) {
-                        if (!be.item.isEmpty()) return stack;
-
-                        ItemStack item = stack.copyWithCount(1);
-                        if (!isItemValid(i, item)) return stack;
-
-                        if (!simulate) {
-                            be.item = item;
-                            be.sync();
-                        }
-
-                        return stack.copyWithCount(stack.getCount() - 1);
-                    }
-
-                    @Override
-                    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                        ItemStack item = be.item.copy();
-                        if (item.isEmpty() || amount <= 0) return ItemStack.EMPTY;
-                        if (item.getCapability(Capabilities.EnergyStorage.ITEM).receiveEnergy(2, true) > 0) return ItemStack.EMPTY;
-
-                        if (!simulate) {
-                            be.item = ItemStack.EMPTY;
-                            be.sync();
-                        }
-
-                        return item;
-                    }
-
-                    @Override
-                    public int getSlotLimit(int i) {
-                        return 1;
-                    }
-
-                    @Override
-                    public boolean isItemValid(int i, ItemStack item) {
-                        IEnergyStorage storage = item.getCapability(Capabilities.EnergyStorage.ITEM);
-                        return storage != null && storage.canReceive();
-                    }
-                });
+                (be, d) -> be.isChargingMode ? be.itemHandler : null);
     }
 
     public RedStoneDepleterBlockEntity(BlockPos pos, BlockState blockState) {
@@ -132,11 +172,39 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity implements G
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
     }
 
+    public boolean getIsChargingMode() {
+        return isChargingMode;
+    }
+    public void toggleMode() {
+        if (level == null || level.isClientSide) return;
+
+        if (isChargingMode && !item.isEmpty()) {
+            ItemEntity entity = new ItemEntity(level,
+                    worldPosition.getX() + 0.5,
+                    worldPosition.getY() + 0.8,
+                    worldPosition.getZ() + 0.5, item);
+            double speed = level.random.nextDouble() * 0.05 + 0.1;
+            double spread = 0.02;
+            entity.setDeltaMovement(
+                    level.random.triangle(0, spread),
+                    level.random.triangle(speed, spread),
+                    level.random.triangle(0, spread));
+            level.addFreshEntity(entity);
+            item = ItemStack.EMPTY;
+        }
+        isChargingMode = !isChargingMode;
+        setChanged();
+
+        level.setBlock(worldPosition, getBlockState().setValue(RedStoneDepleterBlock.IS_CHARGING_MODE, isChargingMode), 3);
+        level.invalidateCapabilities(worldPosition);
+        sync();
+    }
     public ItemStack getItem() {
         return item;
     }
 
     public ItemInteractionResult useItemOn(Player player) {
+        if (!isChargingMode) return ItemInteractionResult.FAIL;
         ItemStack hand = player.getMainHandItem().copy();
 
         if (hand.isEmpty()) {
@@ -241,12 +309,14 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity implements G
 
         addStressImpactStats(tooltip, calculateStressApplied());
 
-        if (item.isEmpty()) tooltip.add(Component.literal("    Item: -"));
-        else {
-            IEnergyStorage storage = item.getCapability(Capabilities.EnergyStorage.ITEM);
+        if (isChargingMode) {
+            if (item.isEmpty()) tooltip.add(Component.literal("    Item: -"));
+            else {
+                IEnergyStorage storage = item.getCapability(Capabilities.EnergyStorage.ITEM);
 
-            tooltip.add(Component.literal("    Item: " + item.getHoverName().getString()));
-            tooltip.add(Component.literal("        Energy: " + formatFE(storage.getEnergyStored()) + " / " + formatFE(storage.getMaxEnergyStored())));
+                tooltip.add(Component.literal("    Item: " + item.getHoverName().getString()));
+                tooltip.add(Component.literal("        Energy: " + formatFE(storage.getEnergyStored()) + " / " + formatFE(storage.getMaxEnergyStored())));
+            }
         }
 
         return true;
@@ -256,6 +326,7 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity implements G
     protected void write(CompoundTag tag, HolderLookup.Provider provider, boolean clientPacket) {
         tag.put("EnergyStorage", energyStorage.serializeNBT(provider));
         tag.putInt("Timer", timer);
+        tag.putBoolean("IsChargingMode", isChargingMode);
         if (!item.isEmpty()) tag.put("Item", item.save(provider));
 
         super.write(tag, provider, clientPacket);
@@ -265,9 +336,25 @@ public class RedStoneDepleterBlockEntity extends KineticBlockEntity implements G
     protected void read(CompoundTag tag, HolderLookup.Provider provider, boolean clientPacket) {
         if (tag.contains("EnergyStorage")) energyStorage.deserializeNBT(provider, tag.get("EnergyStorage"));
         if (tag.contains("Timer")) timer = tag.getInt("Timer");
+        if (tag.contains("IsChargingMode")) {
+            isChargingMode = tag.getBoolean("IsChargingMode");
+            level.setBlock(getBlockPos(), getBlockState().setValue(RedStoneDepleterBlock.IS_CHARGING_MODE, isChargingMode), 3);
+        }
         item = tag.contains("Item") ? ItemStack.parse(provider, tag.get("Item")).orElse(ItemStack.EMPTY) : ItemStack.EMPTY;
 
         super.read(tag, provider, clientPacket);
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(ModDataComponents.REDSTONE_DEPLETER_IS_CHARGING_MODE.get(), isChargingMode);
+    }
+
+    @Override
+    protected void applyImplicitComponents(BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        isChargingMode = input.getOrDefault(ModDataComponents.REDSTONE_DEPLETER_IS_CHARGING_MODE.get(), true);
     }
 
     @Override

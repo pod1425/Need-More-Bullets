@@ -17,33 +17,39 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.pod.cnmb.registry.ModBlockEntities;
-import net.pod.cnmb.registry.ModBlocks;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class RedStoneDepleterBlock extends KineticBlock implements IBE<RedStoneDepleterBlockEntity>, IWrenchable, ICogWheel {
+    public static final BooleanProperty IS_CHARGING_MODE = BooleanProperty.create("is_charging_mode");
+
     private static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 13.0D, 16.0D);
 
     public RedStoneDepleterBlock(Properties properties) {
         super(properties);
+
+        registerDefaultState(getStateDefinition().any().setValue(IS_CHARGING_MODE, true));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(IS_CHARGING_MODE);
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        return state.getValue(IS_CHARGING_MODE) ? SHAPE : Shapes.block();
     }
 
     @Override
@@ -75,13 +81,10 @@ public class RedStoneDepleterBlock extends KineticBlock implements IBE<RedStoneD
 
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        return InteractionResult.PASS;
+        ((RedStoneDepleterBlockEntity) context.getLevel().getBlockEntity(context.getClickedPos())).toggleMode();
+        return InteractionResult.SUCCESS;
     }
 
-    @Override
-    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        return List.of(ModBlocks.REDSTONE_DEPLETER.toStack());
-    }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {

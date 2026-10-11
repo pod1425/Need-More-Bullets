@@ -9,6 +9,7 @@
     "cnmb:steel_lamp",
     "cnmb:lead_ore",
     "cnmb:deepslate_lead_ore",
-    "cnmb:depleted_redstone_block"
+    "cnmb:depleted_redstone_block",
+    "cnmb:empty_redstone_block"
   ]
 }
