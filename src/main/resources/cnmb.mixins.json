@@ -4,9 +4,9 @@
   "package": "net.pod.cnmb.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "PalletBlockArmOutlineMixin"
   ],
   "client": [
+    "PalletBlockArmOutlineMixin"
   ],
   "injectors": {
     "defaultRequire": 1

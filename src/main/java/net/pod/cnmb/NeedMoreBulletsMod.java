@@ -3,12 +3,14 @@ package net.pod.cnmb;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -42,7 +44,9 @@ public class NeedMoreBulletsMod {
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(ModNetworking::register);
 
-        modEventBus.addListener(PalletBlockRenderer::registerRenderer);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modEventBus.addListener(PalletBlockRenderer::registerRenderer);
+        }
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
