@@ -12,6 +12,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.pod.cnmb.block.pallet.PalletBlockRenderer;
 import net.pod.cnmb.networking.ModNetworking;
 import net.pod.cnmb.registry.*;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ public class NeedMoreBulletsMod {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
         ModBlockPalettes.register(modEventBus);
         ModEntities.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
@@ -38,6 +40,8 @@ public class NeedMoreBulletsMod {
 
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(ModNetworking::register);
+
+        modEventBus.addListener(PalletBlockRenderer::registerRenderer);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

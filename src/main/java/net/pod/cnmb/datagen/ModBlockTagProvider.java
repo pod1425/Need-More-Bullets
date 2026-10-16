@@ -35,6 +35,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.LEAD_ORE.get())
                 .add(ModBlocks.DEEPSLATE_LEAD_ORE.get());
 
+        tag(BlockTags.MINEABLE_WITH_AXE)
+                .add(ModBlocks.PALLET.get());
 
         tag(BlockTags.NEEDS_STONE_TOOL)
                 .add(ModBlocks.LEAD_BLOCK.get())
