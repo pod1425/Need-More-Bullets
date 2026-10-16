@@ -64,7 +64,10 @@ public class ModBlocks {
                     .lightLevel(state -> state.getValue(VariableLampBlock.LIGHT_LEVEL))));
 
 
-
+            PALLET = registerBlock("pallet", () -> new PalletBlock(BlockBehaviour.Properties.of()
+                    .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)
+            ))
+    ;
 
 
 /*
