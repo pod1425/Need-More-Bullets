@@ -2,6 +2,7 @@ package net.pod.cnmb.block.pallet;
 
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.content.kinetics.mechanicalArm.ArmItem;
 import com.simibubi.create.content.logistics.depot.SharedDepotBlockMethods;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
@@ -61,8 +62,11 @@ public class PalletBlock extends Block implements IBE<PalletBlockEntity>, IWrenc
             case NE -> Block.box(-16, 0, 0, 16, 8, 32);
             case SW -> Block.box(0, 0, -16, 32, 8, 16);
             case SE -> Block.box(-16, 0, -16, 16, 8, 16);
-            default -> Block.box(0, 0, 0, 16, 8, 16);
+            default -> getDefaultShape();
         };
+    }
+    public static VoxelShape getDefaultShape() {
+        return Block.box(0, 0, 0, 16, 8, 16);
     }
 
     @Override
@@ -96,6 +100,8 @@ public class PalletBlock extends Block implements IBE<PalletBlockEntity>, IWrenc
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (stack.getItem() instanceof ArmItem)
+            return ItemInteractionResult.SUCCESS;
         getBlockEntityOptional(level, pos).ifPresent(blockEntity -> {
             var heldItem = blockEntity.getHeldItem();
             if (stack.isEmpty()){ // empty hand -> only take
