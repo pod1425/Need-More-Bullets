@@ -35,6 +35,7 @@ public class NeedMoreBulletsMod {
         ModDataComponents.register(modEventBus);
         ModPlayerAttachments.register(modEventBus);
         ModSounds.register(modEventBus);
+        ModArmInteractionPoints.registerAll(modEventBus);
 
         ModGunAttachments.ATTACHMENTS.initialize();
 

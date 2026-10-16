@@ -28,7 +28,7 @@ public class PalletBlockEntity extends SmartBlockEntity implements Clearable {
         behaviours.add(
                 new DirectBeltInputBehaviour(this)
                         .setInsertionHandler(this::tryInserting)
-                        .considerOccupiedWhen(p -> !heldItem.isEmpty())
+                        .considerOccupiedWhen((d) -> isOccupied())
         );
     }
 
@@ -64,6 +64,10 @@ public class PalletBlockEntity extends SmartBlockEntity implements Clearable {
     public void setHeldItem(ItemStack heldItem) {
         this.heldItem = heldItem;
         setChangedAndUpdate();
+    }
+
+    public boolean isOccupied() {
+        return !heldItem.isEmpty();
     }
 
     public ItemStack getHeldItem() {
