@@ -15,6 +15,7 @@ import net.pod.cnmb.palettes.Palette;
 import net.pod.cnmb.registry.ModBlockPalettes;
 import net.pod.cnmb.registry.ModBlocks;
 import net.pod.cnmb.registry.ModItems;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -90,6 +91,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('B', Items.BLAZE_ROD)
                 .define('R', Items.REDSTONE)
                 .unlockedBy("has_steel_block", has(ModBlocks.STEEL_BLOCK)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.PALLET.get())
+                .pattern("PPP")
+                .pattern("P P")
+                .define('P', Items.OAK_SLAB)
+                .unlockedBy("has_oak_planks", has(Items.OAK_PLANKS))
+                .save(recipeOutput);
 
 
         //ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BISMUTH.get(), 18)
@@ -100,7 +107,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput recipeOutput) {
+    protected void buildRecipes(@NotNull RecipeOutput recipeOutput) {
         buildMetalRecipes(recipeOutput);
 
         for (Palette p : ModBlockPalettes.palettes) {
