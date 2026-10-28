@@ -8,10 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickAction;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -20,7 +17,10 @@ import net.pod.cnmb.entity.projectile.GenericBulletEntity;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentsComponent;
-import net.pod.cnmb.registry.*;
+import net.pod.cnmb.registry.ModDataComponents;
+import net.pod.cnmb.registry.ModGunAttachments;
+import net.pod.cnmb.registry.ModPlayerAttachments;
+import net.pod.cnmb.registry.ModSounds;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -137,7 +137,7 @@ public abstract class AbstractGunItem extends Item {
                     case MAIN_HAND -> player.getMainHandItem() == stack;
                     case OFF_HAND -> player.getOffhandItem() == stack;
                     case BOTH -> player.getMainHandItem() == stack ||
-                                    player.getOffhandItem() == stack;
+                            player.getOffhandItem() == stack;
                 };
                 if (correctHand) {
                     if (defaultIsAutomatic || !data.hasShotOccurred()) {
@@ -196,7 +196,7 @@ public abstract class AbstractGunItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context,
-            List<Component> tooltip, TooltipFlag flag) {
+                                List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
 
         EnumMap<GunAttachmentSlot, ItemStack> slots =

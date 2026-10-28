@@ -6,6 +6,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.pod.cnmb.entity.beedrone.Client.BeeDroneRender;
 import net.pod.cnmb.entity.projectile.GenericBulletRenderer;
 import net.pod.cnmb.registry.ModEntities;
 
@@ -21,6 +22,10 @@ public class NeedMoreBulletsModClient {
             EntityRenderers.register(
                     ModEntities.GENERIC_BULLET.get(),
                     GenericBulletRenderer::new
+            );
+            EntityRenderers.register(
+                    ModEntities.BEE_DRONE.get(),
+                    BeeDroneRender::new
             );
         });
 
