@@ -2,10 +2,10 @@ package net.pod.cnmb.event;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.client.Options;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -18,8 +18,9 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
-import net.pod.cnmb.networking.payload.ControlInputPayload;
 import net.pod.cnmb.networking.ModNetworking;
+import net.pod.cnmb.networking.payload.ControlInputPayload;
+import net.pod.cnmb.networking.payload.CustomAttackPayload;
 import net.pod.cnmb.networking.payload.StopControlPayload;
 import net.pod.cnmb.registry.ModKeyBinds;
 import net.pod.cnmb.util.ControllableMob;
@@ -48,15 +49,15 @@ public class ModClientEvents {
         if (controlling != null) {
             Options opt = Minecraft.getInstance().options;
 
-            ModNetworking.sendControlInput(new ControlInputPayload((float) pitch, (float) yaw,
+            ModNetworking.sendToServer(new ControlInputPayload((float) pitch, (float) yaw,
                     opt.keyUp.isDown(), opt.keyDown.isDown(),
                     opt.keyLeft.isDown(), opt.keyRight.isDown(),
                     opt.keyJump.isDown(), opt.keyShift.isDown()));
 
-            if (ModKeyBinds.STOP_CONTROL.consumeClick()) ModNetworking.sendStopControl(new StopControlPayload(controlling.getId()));
+            if (ModKeyBinds.STOP_CONTROL.consumeClick()) ModNetworking.sendToServer(new StopControlPayload(controlling.getId()));
             if (ModKeyBinds.ACTIVATE_CUSTOM_ATTACK.isDown()) {
                 if (!prevActiveCustomAttack) {
-                    ModNetworking.sendCustomAttack(controlling.getId());
+                    ModNetworking.sendToServer(new CustomAttackPayload(controlling.getId()));
                     prevActiveCustomAttack = true;
                 }
             } else {

@@ -19,15 +19,11 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
-import net.pod.cnmb.networking.payload.ControlInputPayload;
 import net.pod.cnmb.networking.ModNetworking;
+import net.pod.cnmb.networking.payload.ControlInputPayload;
+import net.pod.cnmb.networking.payload.SetControllingPayload;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 public abstract class ControllableMob extends Mob implements Controllable {
@@ -53,7 +49,7 @@ public abstract class ControllableMob extends Mob implements Controllable {
 
         controller = player;
 
-        ModNetworking.sendControlling(player, getId(), true);
+        ModNetworking.sendToPlayer(player, new SetControllingPayload(getId(), true));
         player.connection.send(new ClientboundSetCameraPacket(this));
         controls.put(player.getUUID(), this);
 
@@ -69,7 +65,7 @@ public abstract class ControllableMob extends Mob implements Controllable {
 
         controls.remove(controller.getUUID());
         player.connection.send(new ClientboundSetCameraPacket(controller));
-        ModNetworking.sendControlling(player, getId(), false);
+        ModNetworking.sendToPlayer(player, new SetControllingPayload(getId(), false));
 
         if (level() instanceof ServerLevel level) {
             ChunkPos pos = controller.chunkPosition();
