@@ -8,8 +8,9 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.VariableLampBlock;
+import net.pod.cnmb.palettes.Palette;
+import net.pod.cnmb.registry.ModBlockPalettes;
 import net.pod.cnmb.registry.ModBlocks;
-import net.pod.cnmb.registry.ModItems;
 
 
 public class ModBlockStateProvider extends BlockStateProvider {
@@ -23,7 +24,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.CUT_STEEL);
         blockWithItem(ModBlocks.STEEL_BLOCK);
         blockWithItem(ModBlocks.RAW_LEAD_BLOCK);
-        blockWithItem(ModBlocks.CUT_LEAD);
+//        blockWithItem(ModBlocks.CUT_LEAD);
         blockWithItem(ModBlocks.STEEL_BRICKS);
         blockWithItem(ModBlocks.ACTIVE_SCULK);
 
@@ -32,6 +33,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.DEEPSLATE_LEAD_ORE);
 
         registerLamps();
+
+        for (Palette p : ModBlockPalettes.palettes) {
+            p.generateBlockStateModels(this);
+        }
     }
 
     private void registerLamps() {

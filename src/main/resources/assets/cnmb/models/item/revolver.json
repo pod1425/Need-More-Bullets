@@ -1,0 +1,44 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "builtin/entity",
+  "texture_size": [
+    64,
+    64
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [
+        0,
+        -1.5,
+        -4
+      ]
+    },
+    "gui": {
+      "rotation": [
+        30,
+        120,
+        -10
+      ],
+      "translation": [
+        0.75,
+        -4,
+        0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        -0.5,
+        -2.5,
+        0.5
+      ]
+    }
+  },
+  "textures": {
+    "particle": "cnmb:item/revolver"
+  }
+}

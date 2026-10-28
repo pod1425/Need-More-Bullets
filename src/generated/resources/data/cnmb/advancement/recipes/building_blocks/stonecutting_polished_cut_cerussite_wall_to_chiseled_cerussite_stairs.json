@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_polished_cut_cerussite_wall_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "cnmb:polished_cut_cerussite_wall"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "cnmb:stonecutting_polished_cut_cerussite_wall_to_chiseled_cerussite_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_polished_cut_cerussite_wall_block"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "cnmb:stonecutting_polished_cut_cerussite_wall_to_chiseled_cerussite_stairs"
+    ]
+  }
+}

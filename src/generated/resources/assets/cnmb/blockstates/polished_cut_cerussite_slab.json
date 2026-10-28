@@ -1,12 +1,21 @@
 {
   "variants": {
-    "type=bottom": {
+    "type=bottom,waterlogged=false": {
       "model": "cnmb:block/polished_cut_cerussite_slab"
     },
-    "type=double": {
+    "type=bottom,waterlogged=true": {
+      "model": "cnmb:block/polished_cut_cerussite_slab"
+    },
+    "type=double,waterlogged=false": {
       "model": "cnmb:block/polished_cut_cerussite_slab_double"
     },
-    "type=top": {
+    "type=double,waterlogged=true": {
+      "model": "cnmb:block/polished_cut_cerussite_slab_double"
+    },
+    "type=top,waterlogged=false": {
+      "model": "cnmb:block/polished_cut_cerussite_slab_top"
+    },
+    "type=top,waterlogged=true": {
       "model": "cnmb:block/polished_cut_cerussite_slab_top"
     }
   }

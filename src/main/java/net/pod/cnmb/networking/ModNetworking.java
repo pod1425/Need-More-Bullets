@@ -6,7 +6,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -18,6 +19,8 @@ import net.pod.cnmb.networking.payload.ControlInputPayload;
 import net.pod.cnmb.networking.payload.CustomAttackPayload;
 import net.pod.cnmb.networking.payload.SetControllingPayload;
 import net.pod.cnmb.networking.payload.StopControlPayload;
+import net.pod.cnmb.item.gun.GunPlayerData;
+import net.pod.cnmb.registry.ModPlayerAttachments;
 
 public class ModNetworking {
 
@@ -28,6 +31,18 @@ public class ModNetworking {
                 GunTriggerPayload.TYPE,
                 GunTriggerPayload.STREAM_CODEC,
                 ModNetworking::handleGunTrigger
+        );
+
+        registrar.playToServer(
+                RemoveAttachmentPayload.TYPE,
+                RemoveAttachmentPayload.STREAM_CODEC,
+                ModNetworking::handleRemoveAttachment
+        );
+
+        registrar.playToServer(
+                EquipAttachmentPayload.TYPE,
+                EquipAttachmentPayload.STREAM_CODEC,
+                ModNetworking::handleEquipAttachment
         );
 
         registrar.playToServer(
@@ -53,22 +68,40 @@ public class ModNetworking {
                 CustomAttackPayload::handle
         );
     }
+    public enum GunHand {
+        MAIN_HAND(0),
+        OFF_HAND(1),
+        BOTH(2);
 
-    public static void sendControlling(ServerPlayer player, int id, boolean controlling) {
-        PacketDistributor.sendToPlayer(player, new SetControllingPayload(id, controlling));
+        private final int id;
+
+        GunHand(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public static GunHand fromId(int id) {
+            return switch (id) {
+                case 0 -> MAIN_HAND;
+                case 1 -> OFF_HAND;
+                case 2 -> BOTH;
+                default -> throw new IllegalArgumentException("Unknown GunHand id: " + id);
+            };
+        }
     }
-    public static void sendStopControl(StopControlPayload payload) {
+
+    public static void sendToServer(CustomPacketPayload payload) {
         PacketDistributor.sendToServer(payload);
     }
-    public static void sendControlInput(ControlInputPayload payload) {
-        PacketDistributor.sendToServer(payload);
-    }
-    public static void sendCustomAttack(int mobId) {
-        NeedMoreBulletsMod.LOGGER.debug("send custom attack to server");
-        PacketDistributor.sendToServer(new CustomAttackPayload(mobId));
+    public static void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
+        PacketDistributor.sendToPlayer(player, payload);
     }
 
-    public record GunTriggerPayload(boolean pressed) implements CustomPacketPayload {
+    public record GunTriggerPayload(boolean pressed, GunHand hand) implements CustomPacketPayload {
+
         public static final Type<GunTriggerPayload> TYPE =
                 new Type<>(
                         ResourceLocation.fromNamespaceAndPath(
@@ -81,6 +114,11 @@ public class ModNetworking {
                 StreamCodec.composite(
                         ByteBufCodecs.BOOL,
                         GunTriggerPayload::pressed,
+                        ByteBufCodecs.VAR_INT.map(
+                                GunHand::fromId,
+                                GunHand::getId
+                        ),
+                        GunTriggerPayload::hand,
                         GunTriggerPayload::new
                 );
 
@@ -89,26 +127,72 @@ public class ModNetworking {
             return TYPE;
         }
     }
-    private static void handleGunTrigger(
-            GunTriggerPayload payload,
-            IPayloadContext context) {
 
-        Player player = context.player();
-
-        if (!(player instanceof ServerPlayer serverPlayer)) {
+    private static void handleGunTrigger(GunTriggerPayload payload, IPayloadContext context) {
+        if (!(context.player() instanceof ServerPlayer player)) {
             return;
         }
+        GunPlayerData data = player.getData(ModPlayerAttachments.GUN_DATA);
 
-        ItemStack stack = serverPlayer.getMainHandItem();
+        data.setTriggerPressed(payload.pressed());
+        data.setTriggerHand(payload.hand());
 
-        if (!(stack.getItem() instanceof AbstractGunItem gun)) {
-            return;
+        if (!payload.pressed()) {
+            data.setShotOccurred(false);
         }
+    }
+    private static void handleEquipAttachment(
+            EquipAttachmentPayload payload,
+            IPayloadContext context
+    ) {
+        context.enqueueWork(() -> {
+            System.out.println("HandleEquipAttachment");
+            if (!(context.player() instanceof ServerPlayer player))
+                return;
 
-        if (payload.pressed()) {
-            gun.startFiring(serverPlayer);
-        } else {
-            gun.stopFiring(serverPlayer);
-        }
+            AbstractContainerMenu menu = player.containerMenu;
+
+            int slotId = payload.inventorySlot();
+
+            if (slotId < 0 || slotId >= menu.slots.size())
+                return;
+
+            Slot slot = menu.getSlot(slotId);
+
+            ItemStack gunStack = slot.getItem();
+            System.out.println("slot item " + gunStack.getItem().getDescriptionId());
+
+            if (!(gunStack.getItem() instanceof AbstractGunItem gun))
+                return;
+
+            ItemStack cursorStack = player.containerMenu.getCarried();
+
+            if (cursorStack.isEmpty())
+                return;
+            System.out.println("trying");
+            gun.tryEquipAttachment(gunStack, cursorStack);
+        });
+    }
+
+    private static void handleRemoveAttachment(RemoveAttachmentPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            ServerPlayer player = (ServerPlayer) context.player();
+
+            AbstractContainerMenu menu = player.containerMenu;
+
+            int slotId = payload.inventorySlot();
+
+            if (slotId < 0 || slotId >= menu.slots.size())
+                return;
+
+            Slot slot = menu.getSlot(slotId);
+
+            ItemStack gunStack = slot.getItem();
+
+            if (!(gunStack.getItem() instanceof AbstractGunItem gun))
+                return;
+
+            gun.removeAttachment(gunStack, player, payload.attachmentSlot());
+        });
     }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "cnmb:block/palettes/stone_types/polished/cerussite_cut_polished"
+    "all": "cnmb:block/palettes/cerussite/polished_cut_cerussite"
   }
 }

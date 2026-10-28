@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "cnmb:block/palettes/horny_sculk/chiseled_horny_sculk"
+  }
+}

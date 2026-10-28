@@ -1,10 +1,7 @@
 package net.pod.cnmb.datagen;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
-
-import java.util.concurrent.CompletableFuture;
-
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -14,6 +11,8 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.palettes.Palette;
+import net.pod.cnmb.registry.ModBlockPalettes;
 import net.pod.cnmb.registry.ModBlocks;
 import net.pod.cnmb.registry.ModItems;
 
@@ -104,6 +103,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     protected void buildRecipes(RecipeOutput recipeOutput) {
         buildMetalRecipes(recipeOutput);
 
+        for (Palette p : ModBlockPalettes.palettes) {
+            p.generateRecipes(recipeOutput);
+        }
     }
 
     protected static void oreSmelting(RecipeOutput recipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,
@@ -125,4 +127,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                     .save(recipeOutput, NeedMoreBulletsMod.MODID + ":" + getItemName(pResult) + pRecipeName + "_" + getItemName(itemlike));
         }
     }
+
+    public static Criterion<InventoryChangeTrigger.TriggerInstance> has(ItemLike itemLike) { return RecipeProvider.has(itemLike); }
 }

@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "X": {
+    "B": {
       "item": "cnmb:polished_cut_cerussite"
     }
   },
   "pattern": [
-    "XXX",
-    "XXX"
+    "BBB",
+    "BBB"
   ],
   "result": {
     "count": 6,

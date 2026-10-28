@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "cnmb:cerussite_pillar"
+  },
+  "result": {
+    "count": 1,
+    "id": "cnmb:cut_cerussite_wall"
+  }
+}
