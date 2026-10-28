@@ -6,7 +6,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -16,9 +15,9 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.GunPlayerData;
+import net.pod.cnmb.networking.payload.StartGunReloadAnimationPayload;
 import net.pod.cnmb.registry.ModPlayerAttachments;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public class ModNetworking {
 
@@ -41,6 +40,12 @@ public class ModNetworking {
                 EquipAttachmentPayload.TYPE,
                 EquipAttachmentPayload.STREAM_CODEC,
                 ModNetworking::handleEquipAttachment
+        );
+
+        registrar.playToServer(
+                StartGunReloadAnimationPayload.TYPE,
+                StartGunReloadAnimationPayload.STREAM_CODEC,
+                StartGunReloadAnimationPayload::handle
         );
     }
     public enum GunHand {
@@ -69,6 +74,7 @@ public class ModNetworking {
     }
 
     public static void sendToServer(CustomPacketPayload payload) {
+        NeedMoreBulletsMod.LOGGER.debug("send to server: {}", payload.toString());
         PacketDistributor.sendToServer(payload);
     }
 

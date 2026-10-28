@@ -3,15 +3,13 @@ package net.pod.cnmb.item.gun;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickAction;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -21,6 +19,14 @@ import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentsComponent;
 import net.pod.cnmb.registry.*;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -29,7 +35,9 @@ import java.util.List;
 import static net.pod.cnmb.registry.ModDataComponents.SELECTED_ATTACHMENT;
 import static net.pod.cnmb.registry.ModDataComponents.SHOT_OCCURRED;
 
-public abstract class AbstractGunItem extends Item {
+public abstract class AbstractGunItem extends Item implements GeoItem {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
     private final int defaultShootRate;
     private final double defaultBulletDamage;
     private final double defaultBulletSpeed;
@@ -54,6 +62,7 @@ public abstract class AbstractGunItem extends Item {
         this.defaultInaccuracy = inaccuracy;
         this.defaultIsAutomatic = isAutomatic;
 
+        SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
     public int getBaseShootRate() {
@@ -81,7 +90,25 @@ public abstract class AbstractGunItem extends Item {
         return 64;
     }
 
-    public boolean shoot(Entity entity) {
+    public boolean shoot(Entity entity, ItemStack stack) {
+        return defaultShoot(entity, stack);
+    }
+
+    protected final boolean shootWithAnim(Entity entity, ItemStack stack) {
+        boolean shot = defaultShoot(entity, stack);
+        if (shot && entity instanceof Player player && player.level() instanceof ServerLevel level) {
+            triggerAnim(player, GeoItem.getOrAssignId(stack, level), "controller", "fire");
+        }
+
+        return shot;
+    }
+
+    protected final boolean defaultShoot(Entity entity, ItemStack stack) {
+        if (isReloading(stack)) return false;
+        return finalShoot(entity);
+    }
+
+    protected final boolean finalShoot(Entity entity) {
         if (entity instanceof Player player) {
             if (player.getCooldowns().isOnCooldown(this)) {
                 return false;
@@ -141,7 +168,7 @@ public abstract class AbstractGunItem extends Item {
                 };
                 if (correctHand) {
                     if (defaultIsAutomatic || !data.hasShotOccurred()) {
-                        shoot(player);
+                        shoot(player, stack);
                     }
                     if (!defaultIsAutomatic) {
                         data.setShotOccurred(true);
@@ -267,5 +294,30 @@ public abstract class AbstractGunItem extends Item {
                 ModDataComponents.GUN_ATTACHMENTS.get(),
                 component.remove(slot)
         );
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(getRawAnimations(
+                new AnimationController<>(this, "controller", 0, state -> PlayState.STOP)));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    protected AnimationController<AbstractGunItem> getRawAnimations(AnimationController<AbstractGunItem> controller) {
+        return controller;
+    }
+    protected abstract RawAnimation getReloadRawAnimation();
+
+    public boolean isReloading(ItemStack item) {
+        var controller = getAnimatableInstanceCache().getManagerForId(GeoItem.getId(item)).getAnimationControllers().get("controller");
+        return controller.isPlayingTriggeredAnimation() && controller.getCurrentRawAnimation() == getReloadRawAnimation();
+    }
+    public void reload(Entity entity, ItemStack item) {
+        if (!isReloading(item) && entity instanceof Player player && player.level() instanceof ServerLevel level)
+            triggerAnim(player, GeoItem.getOrAssignId(item, level) ,"controller",  "reload");
     }
 }

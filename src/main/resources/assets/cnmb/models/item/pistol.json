@@ -9,7 +9,14 @@
     "thirdperson_righthand": {
       "translation": [
         0,
-        -2.5,
+        -5,
+        0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "translation": [
+        0,
+        -5,
         0
       ]
     },
@@ -20,21 +27,14 @@
         -10
       ],
       "translation": [
-        3.5,
-        -2.5,
-        0
-      ]
-    },
-    "fixed": {
-      "rotation": [
-        0,
-        -90,
+        1.5,
+        -7,
         0
       ],
-      "translation": [
-        -4,
-        -3,
-        0
+      "scale": [
+        1.5,
+        1.5,
+        1.5
       ]
     }
   }

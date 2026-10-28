@@ -1,22 +1,41 @@
 {
-	"format_version": "1.12.0",
+	"format_version": "1.21.110",
 	"minecraft:geometry": [
 		{
 			"description": {
 				"identifier": "geometry.pistol",
 				"texture_width": 32,
 				"texture_height": 32,
-				"visible_bounds_width": 2,
+				"visible_bounds_width": 3,
 				"visible_bounds_height": 2.5,
 				"visible_bounds_offset": [0, 0.75, 0]
 			},
 			"bones": [
 				{
-					"name": "pistol",
-					"pivot": [0, 1, -2],
+					"name": "left_shoulder",
+					"pivot": [18, 3, 10]
+				},
+				{
+					"name": "left_arm",
+					"parent": "left_shoulder",
+					"pivot": [16, 3, 10]
+				},
+				{
+					"name": "right_shoulder",
+					"pivot": [0, 3, 10]
+				},
+				{
+					"name": "right_arm",
+					"parent": "right_shoulder",
+					"pivot": [2, 3, 10]
+				},
+				{
+					"name": "weapon",
+					"parent": "right_arm",
+					"pivot": [0, 3, 1],
 					"cubes": [
 						{
-							"origin": [-0.5, 3, -7],
+							"origin": [-0.5, 5, -4],
 							"size": [1, 1, 6],
 							"uv": {
 								"north": {"uv": [12, 8], "uv_size": [1, 1]},
@@ -28,9 +47,9 @@
 							}
 						},
 						{
-							"origin": [-0.5, 4.5, -9],
+							"origin": [-0.5, 6.5, -6],
 							"size": [1, 1, 6],
-							"pivot": [0, 5, -6],
+							"pivot": [0, 7, -3],
 							"rotation": [0, 0, 45],
 							"uv": {
 								"north": {"uv": [12, 10], "uv_size": [1, 1]},
@@ -42,10 +61,10 @@
 							}
 						},
 						{
-							"origin": [-0.5, -0.28857, -2.54924],
+							"origin": [-0.5, 1.71143, 0.45076],
 							"size": [1, 5, 2],
 							"inflate": 0.1,
-							"pivot": [0, 4.75, -1.5],
+							"pivot": [0, 6.75, 1.5],
 							"rotation": [22.5, 0, 0],
 							"uv": {
 								"north": {"uv": [7, 10], "uv_size": [1, 5]},
@@ -57,7 +76,7 @@
 							}
 						},
 						{
-							"origin": [0, 1, -5],
+							"origin": [0, 3, -2],
 							"size": [0, 2, 4],
 							"uv": {
 								"north": {"uv": [4, 4], "uv_size": [0, 2]},
@@ -72,11 +91,11 @@
 				},
 				{
 					"name": "cap",
-					"parent": "pistol",
-					"pivot": [0, 4, -2.5],
+					"parent": "weapon",
+					"pivot": [0, 6, 0.5],
 					"cubes": [
 						{
-							"origin": [-1, 4, -8.5],
+							"origin": [-1, 6, -5.5],
 							"size": [2, 2, 9],
 							"uv": {
 								"north": {"uv": [11, 4], "uv_size": [2, 2]},

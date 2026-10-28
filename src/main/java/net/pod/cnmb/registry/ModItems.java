@@ -6,9 +6,11 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.item.gun.machine_gun.MachineGunItem;
 import net.pod.cnmb.item.gun.musket.MusketItem;
 import net.pod.cnmb.item.gun.pistol.PistolItem;
 import net.pod.cnmb.item.gun.revolver.RevolverItem;
+import net.pod.cnmb.item.gun.smg.SMGItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,10 @@ public class ModItems {
             () -> new RevolverItem(new Item.Properties(), 1, 10, 8, 2, false)));
     public static final DeferredItem<Item> MUSKET = add(ITEMS.register("musket",
             () -> new MusketItem(new Item.Properties(), 4, 10, 8, 2, false)));
+    public static final DeferredItem<Item> MACHINE_GUN = add(ITEMS.register("machine_gun",
+            () -> new MachineGunItem(new Item.Properties(), 12, 10, 8, 2, true)));
+    public static final DeferredItem<Item> SMG = add(ITEMS.register("smg",
+            () -> new SMGItem(new Item.Properties(), 12, 10, 8, 2, true)));
 
     private static DeferredItem<Item> add(DeferredItem<Item> item) {
         items.add(item);
