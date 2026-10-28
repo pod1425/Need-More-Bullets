@@ -9,10 +9,13 @@ import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.ItemStackedOnOtherEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.entity.lead_golem.LeadGolem;
 import net.pod.cnmb.item.gun.AbstractGunItem;
+import net.pod.cnmb.registry.ModEntities;
 
 @EventBusSubscriber(modid = NeedMoreBulletsMod.MODID)
 
@@ -39,4 +42,8 @@ public class ModEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void registerAttributes(EntityAttributeCreationEvent event){
+        event.put(ModEntities.LEAD_GOLEM.get(), LeadGolem.createAttributes().build());
+    }
 }
