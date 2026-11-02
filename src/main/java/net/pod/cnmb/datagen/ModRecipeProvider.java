@@ -3,18 +3,22 @@ package net.pod.cnmb.datagen;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.pod.cnmb.NeedMoreBulletsMod;
-import net.pod.cnmb.palettes.Palette;
-import net.pod.cnmb.registry.ModBlockPalettes;
 import net.pod.cnmb.registry.ModBlocks;
 import net.pod.cnmb.registry.ModItems;
+import net.pod.cnmb.registry.ModPalettes;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -100,12 +104,29 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput recipeOutput) {
-        buildMetalRecipes(recipeOutput);
+    protected void buildRecipes(RecipeOutput out) {
+        buildMetalRecipes(out);
 
-        for (Palette p : ModBlockPalettes.palettes) {
-            p.generateRecipes(recipeOutput);
-        }
+        ModPalettes.PALETTES.forEach(palette -> {
+            var ingredient = Ingredient.of(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(NeedMoreBulletsMod.MODID, palette.name)));
+
+            palette.get().forEach(paletteBlock -> {
+                generateStonecuttingRecipe(out, ingredient, palette.name, paletteBlock.deferred.get());
+
+                paletteBlock.partials.forEach((partial, deferred) -> {
+                    partial.generateRecipe(out, deferred.get(), paletteBlock.deferred.get(), "has_%s_block".formatted(paletteBlock.name));
+                    generateStonecuttingRecipe(out, ingredient, palette.name, deferred.get());
+                });
+            });
+        });
+    }
+
+    private void generateStonecuttingRecipe(RecipeOutput out, Ingredient ingredient, String baseName, Block resultBlock) {
+        var resultId = BuiltInRegistries.BLOCK.getKey(resultBlock);
+        var recipeId = ResourceLocation.fromNamespaceAndPath(NeedMoreBulletsMod.MODID, "stonecutting_%s_to_%s".formatted(baseName, resultId.getPath()));
+
+        SingleItemRecipeBuilder.stonecutting(ingredient, RecipeCategory.BUILDING_BLOCKS, resultBlock, resultBlock instanceof SlabBlock ? 2 : 1)
+                .unlockedBy("has_%s_block".formatted(baseName), has(resultBlock.asItem())).save(out, recipeId);
     }
 
     protected static void oreSmelting(RecipeOutput recipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,

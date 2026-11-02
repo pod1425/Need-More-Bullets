@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "cnmb:block/palettes/cerussite/chiseled_cerussite",
-    "side": "cnmb:block/palettes/cerussite/chiseled_cerussite",
-    "top": "cnmb:block/palettes/cerussite/chiseled_cerussite"
-  }
-}

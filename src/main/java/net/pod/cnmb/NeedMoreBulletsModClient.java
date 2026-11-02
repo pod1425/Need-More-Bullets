@@ -2,10 +2,12 @@ package net.pod.cnmb;
 
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.pod.cnmb.block.pallete.client.ConnectedTextureRegistry;
 import net.pod.cnmb.entity.projectile.GenericBulletRenderer;
 import net.pod.cnmb.registry.ModEntities;
 
@@ -14,6 +16,9 @@ import net.pod.cnmb.registry.ModEntities;
 // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
 @EventBusSubscriber(modid = NeedMoreBulletsMod.MODID, value = Dist.CLIENT)
 public class NeedMoreBulletsModClient {
+    public NeedMoreBulletsModClient(IEventBus modEventBus) {
+        ConnectedTextureRegistry.register(modEventBus);
+    }
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
@@ -23,8 +28,6 @@ public class NeedMoreBulletsModClient {
                     GenericBulletRenderer::new
             );
         });
-
-
     }
 
 }

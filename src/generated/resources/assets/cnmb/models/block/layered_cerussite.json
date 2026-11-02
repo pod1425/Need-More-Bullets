@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_column",
   "textures": {
-    "all": "cnmb:block/palettes/cerussite/layered_cerussite"
+    "end": "cnmb:block/palettes/cerussite/cerussite_cap",
+    "side": "cnmb:block/palettes/cerussite/layered_cerussite"
   }
 }

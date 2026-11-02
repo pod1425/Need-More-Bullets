@@ -1,7 +1,10 @@
 package net.pod.cnmb.registry;
 
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -38,6 +41,9 @@ public class ModItems {
     private static DeferredItem<Item> add(DeferredItem<Item> item) {
         items.add(item);
         return item;
+    }
+    public static void add(String name, DeferredBlock<? extends Block> block) {
+        ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
     public static List<Item> getItems() {

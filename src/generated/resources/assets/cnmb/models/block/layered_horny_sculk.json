@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_column",
   "textures": {
-    "all": "cnmb:block/palettes/horny_sculk/layered_horny_sculk"
+    "end": "cnmb:block/palettes/horny_sculk/horny_sculk_cap",
+    "side": "cnmb:block/palettes/horny_sculk/layered_horny_sculk"
   }
 }

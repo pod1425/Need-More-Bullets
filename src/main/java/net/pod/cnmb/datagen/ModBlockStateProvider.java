@@ -8,9 +8,9 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.VariableLampBlock;
-import net.pod.cnmb.palettes.Palette;
-import net.pod.cnmb.registry.ModBlockPalettes;
+import net.pod.cnmb.block.pallete.PaletteBlockStateModelData;
 import net.pod.cnmb.registry.ModBlocks;
+import net.pod.cnmb.registry.ModPalettes;
 
 
 public class ModBlockStateProvider extends BlockStateProvider {
@@ -34,9 +34,18 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         registerLamps();
 
-        for (Palette p : ModBlockPalettes.palettes) {
-            p.generateBlockStateModels(this);
-        }
+        ModPalettes.PALETTES.forEach(palette ->
+                palette.get().forEach(paletteBlock -> {
+                    if (paletteBlock.type != null) {
+                        paletteBlock.partials.forEach((partial, deferred) ->
+                                partial.generateBlockStateModel(this, deferred.get(), palette.name));
+                        paletteBlock.type.genBlockStateModel(this, paletteBlock.deferred.get(), palette.name);
+
+                        return;
+                    }
+
+                    PaletteBlockStateModelData.defaultBlockStateModel(this, palette.deferred.get(), palette.name);
+                }));
     }
 
     private void registerLamps() {

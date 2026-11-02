@@ -10,8 +10,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
-import net.pod.cnmb.palettes.BlockTypes;
-import net.pod.cnmb.palettes.GeneratedPaletteBlock;
+import net.pod.cnmb.block.pallete.PaletteType;
 
 import java.util.Objects;
 
@@ -33,12 +32,11 @@ public class ModCreativeTabs {
                     }).build());
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BLOCK_TAB = CREATIVE_MODE_TAB.register("decorative_blocks_tab",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(Objects.requireNonNull(ModBlockPalettes.CERUSSITE.getByType(BlockTypes.PILLAR)).get()))
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(Objects.requireNonNull(ModPalettes.CERUSSITE.getType(PaletteType.PILLAR).deferred)))
                     .title(Component.literal("Сreate: Needs More Bullets Blocks"))
                     .displayItems((itemDisplayParameters, output) -> {
-                        for (GeneratedPaletteBlock b : ModBlockPalettes.getGeneratedBlocks()) {
-                            output.accept(b.deferredBlock.get());
-                        }
+                        ModPalettes.getBlocks().forEach(block -> output.accept(block.get()));
+
                         for (Block b : ModBlocks.getDecorativeBlocks()) {
                             output.accept(b);
                         }

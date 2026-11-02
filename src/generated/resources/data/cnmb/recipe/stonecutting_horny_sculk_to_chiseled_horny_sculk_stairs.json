@@ -1,7 +1,7 @@
 {
   "type": "minecraft:stonecutting",
   "ingredient": {
-    "item": "cnmb:horny_sculk"
+    "tag": "cnmb:horny_sculk"
   },
   "result": {
     "count": 1,

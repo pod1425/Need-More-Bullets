@@ -27,7 +27,7 @@ public class NeedMoreBulletsMod {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
-        ModBlockPalettes.register(modEventBus);
+        ModPalettes.register(modEventBus);
         ModEntities.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
         ModDataComponents.register(modEventBus);

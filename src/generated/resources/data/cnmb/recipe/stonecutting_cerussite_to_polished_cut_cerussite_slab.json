@@ -1,7 +1,7 @@
 {
   "type": "minecraft:stonecutting",
   "ingredient": {
-    "item": "cnmb:cerussite"
+    "tag": "cnmb:cerussite"
   },
   "result": {
     "count": 2,

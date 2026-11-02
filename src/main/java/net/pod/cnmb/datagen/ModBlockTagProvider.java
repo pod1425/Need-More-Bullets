@@ -8,9 +8,9 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.pod.cnmb.NeedMoreBulletsMod;
-import net.pod.cnmb.palettes.Palette;
-import net.pod.cnmb.registry.ModBlockPalettes;
+import net.pod.cnmb.block.pallete.ToolRequirement;
 import net.pod.cnmb.registry.ModBlocks;
+import net.pod.cnmb.registry.ModPalettes;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -49,9 +49,14 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.DEEPSLATE_LEAD_ORE.get());
 
 
-        for (Palette p : ModBlockPalettes.palettes) {
-            p.generateTags(this);
-        }
+        ModPalettes.PALETTES.forEach(palette ->
+                palette.get().forEach(paletteBlock -> {
+                    if (palette.getToolRequirement() != ToolRequirement.NONE) tag(palette.getToolRequirement().getTag()).add(paletteBlock.deferred.get());
+                    paletteBlock.partials.forEach((partial, deferred) -> {
+                        if (palette.getToolRequirement() != ToolRequirement.NONE) tag(palette.getToolRequirement().getTag()).add(deferred.get());
+                        partial.generateTag(this, deferred.get());
+                    });
+                }));
     }
 
     @Override

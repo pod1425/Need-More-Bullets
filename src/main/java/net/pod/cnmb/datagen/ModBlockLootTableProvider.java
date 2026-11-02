@@ -10,15 +10,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.pod.cnmb.palettes.Palette;
-import net.pod.cnmb.registry.ModBlockPalettes;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.pod.cnmb.registry.ModBlocks;
 import net.pod.cnmb.registry.ModItems;
+import net.pod.cnmb.registry.ModPalettes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -48,9 +49,11 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         add(ModBlocks.DEEPSLATE_LEAD_ORE.get(),
                 block -> createMultipleOreDrops(ModBlocks.DEEPSLATE_LEAD_ORE.get(), ModItems.RAW_LEAD.get(), 2, 5));
 
-        for (Palette p : ModBlockPalettes.palettes) {
-            p.generateLootTables(this);
-        }
+        ModPalettes.getBlocks().forEach(deferred -> {
+            var block = deferred.get();
+            if (block instanceof SlabBlock) add(block, createSlabItemTable(block));
+            else dropSelf(block);
+        });
     }
 
     protected LootTable.Builder createMultipleOreDrops(Block pBlock, Item item, float minDrops, float maxDrops) {
@@ -65,7 +68,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     protected @NotNull Iterable<Block> getKnownBlocks() {
         return Stream.concat(
                 ModBlocks.BLOCKS.getEntries().stream().map(Holder::value),
-                ModBlockPalettes.getGeneratedBlocks().stream().map( b -> b.deferredBlock.get())
+                ModPalettes.getBlocks().stream().map(DeferredHolder::get)
         ).toList();
     }
 
