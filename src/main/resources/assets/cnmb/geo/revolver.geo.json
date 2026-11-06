@@ -6,19 +6,38 @@
 				"identifier": "geometry.revolver",
 				"texture_width": 64,
 				"texture_height": 64,
-				"visible_bounds_width": 2,
-				"visible_bounds_height": 1.5,
-				"visible_bounds_offset": [0, 0.25, 0]
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
 			},
 			"bones": [
 				{
-					"name": "revolver",
-					"pivot": [0, 6.04289, 3],
+					"name": "left_shoulder",
+					"pivot": [18, 3, 10]
+				},
+				{
+					"name": "left_arm",
+					"parent": "left_shoulder",
+					"pivot": [16, 3, 10]
+				},
+				{
+					"name": "right_shoulder",
+					"pivot": [0, 3, 10]
+				},
+				{
+					"name": "right_arm",
+					"parent": "right_shoulder",
+					"pivot": [2, 3, 10]
+				},
+				{
+					"name": "weapon",
+					"parent": "right_arm",
+					"pivot": [0, 3, 2],
 					"cubes": [
 						{
-							"origin": [-0.5, 0.25, 5.5],
+							"origin": [-0.5, 2.25, 2.5],
 							"size": [1, 4, 2],
-							"pivot": [0.5, 0.25, 6.5],
+							"pivot": [0.5, 2.25, 3.5],
 							"rotation": [22.5, 0, 0],
 							"uv": {
 								"north": {"uv": [28, 7], "uv_size": [1, 4]},
@@ -30,9 +49,9 @@
 							}
 						},
 						{
-							"origin": [-0.5, 5.5, -8],
+							"origin": [-0.5, 7.5, -11],
 							"size": [1, 1, 9],
-							"pivot": [0, 6, 0],
+							"pivot": [0, 8, -3],
 							"rotation": [0, 0, 45],
 							"uv": {
 								"north": {"uv": [9, 28], "uv_size": [1, 1]},
@@ -44,9 +63,9 @@
 							}
 						},
 						{
-							"origin": [-3, 6.5, 4],
+							"origin": [-3, 8.5, 1],
 							"size": [2, 2, 2],
-							"pivot": [0.75, 6.75, 6],
+							"pivot": [0.75, 8.75, 3],
 							"rotation": [0, 0, -90],
 							"uv": {
 								"north": {"uv": [28, 13], "uv_size": [2, 2]},
@@ -58,9 +77,9 @@
 							}
 						},
 						{
-							"origin": [-1, 4.29289, 4],
+							"origin": [-1, 6.29289, 1],
 							"size": [2, 2, 1],
-							"pivot": [0, 5.29289, 6],
+							"pivot": [0, 7.29289, 3],
 							"rotation": [0, 0, -45],
 							"uv": {
 								"north": {"uv": [3, 26], "uv_size": [2, 2]},
@@ -72,7 +91,7 @@
 							}
 						},
 						{
-							"origin": [-0.5, 4, -2],
+							"origin": [-0.5, 6, -5],
 							"size": [1, 2, 3],
 							"uv": {
 								"north": {"uv": [29, 3], "uv_size": [1, 2]},
@@ -84,7 +103,7 @@
 							}
 						},
 						{
-							"origin": [-0.5, 3, 0],
+							"origin": [-0.5, 5, -3],
 							"size": [1, 1, 4],
 							"uv": {
 								"north": {"uv": [24, 29], "uv_size": [1, 1]},
@@ -96,7 +115,7 @@
 							}
 						},
 						{
-							"origin": [0, 1, -8],
+							"origin": [0, 3, -11],
 							"size": [0, 6, 13],
 							"uv": {
 								"north": {"uv": [13, 13], "uv_size": [0, 6]},
@@ -111,12 +130,12 @@
 				},
 				{
 					"name": "hammer",
-					"parent": "revolver",
-					"pivot": [0, 6, 5],
+					"parent": "weapon",
+					"pivot": [0, 8, 2],
 					"rotation": [-45, 0, 0],
 					"cubes": [
 						{
-							"origin": [-0.5, 6, 4],
+							"origin": [-0.5, 8, 1],
 							"size": [1, 1, 2],
 							"uv": {
 								"north": {"uv": [28, 17], "uv_size": [1, 1]},
@@ -131,13 +150,13 @@
 				},
 				{
 					"name": "cylinder",
-					"parent": "revolver",
-					"pivot": [0, 5.25, 2],
+					"parent": "weapon",
+					"pivot": [0, 7.25, -1],
 					"cubes": [
 						{
-							"origin": [-1, 4.29289, 1],
+							"origin": [-1, 6.29289, -2],
 							"size": [2, 2, 3],
-							"pivot": [0, 5.29289, 2.5],
+							"pivot": [0, 7.29289, -0.5],
 							"rotation": [0, 0, -45],
 							"uv": {
 								"north": {"uv": [14, 29], "uv_size": [2, 2]},

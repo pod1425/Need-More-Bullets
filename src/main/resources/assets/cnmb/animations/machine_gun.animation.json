@@ -4,7 +4,7 @@
 		"reload": {
 			"animation_length": 1.0833,
 			"bones": {
-				"without_box": {
+				"weapon": {
 					"position": {
 						"0.0": {
 							"vector": [0, 0, 0]

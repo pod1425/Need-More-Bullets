@@ -23,7 +23,7 @@
 						"vector": [1, 1, 1]
 					}
 				},
-				"pistol": {
+				"weapon": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
@@ -52,7 +52,7 @@
 		"load": {
 			"animation_length": 0.5,
 			"bones": {
-				"pistol": {
+				"weapon": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
@@ -93,7 +93,7 @@
 		"unload": {
 			"animation_length": 0.5,
 			"bones": {
-				"pistol": {
+				"weapon": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]

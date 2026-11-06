@@ -6,11 +6,13 @@ import net.pod.cnmb.item.gun.AbstractGunItem;
 import software.bernie.geckolib.model.GeoModel;
 
 public class AbstractGunModel<T extends AbstractGunItem> extends GeoModel<T> {
-    private final ResourceLocation model, texture, animation;
+    public static Integer mode;
+    private final ResourceLocation model, texture, animation, animation_inverse;
     public AbstractGunModel(String name) {
         model = NeedMoreBulletsMod.asResource("geo/" + name + ".geo.json");
         texture = NeedMoreBulletsMod.asResource("textures/item/" + name + ".png");
         animation = NeedMoreBulletsMod.asResource("animations/" + name + ".animation.json");
+        animation_inverse = NeedMoreBulletsMod.asResource("animations/" + name + "_inverse.animation.json");
     }
 
     @Override
@@ -25,6 +27,6 @@ public class AbstractGunModel<T extends AbstractGunItem> extends GeoModel<T> {
 
     @Override
     public ResourceLocation getAnimationResource(T animatable) {
-        return animation;
+        return mode == 0 ? animation : animation_inverse;
     }
 }

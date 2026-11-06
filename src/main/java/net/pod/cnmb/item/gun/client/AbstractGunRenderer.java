@@ -17,19 +17,33 @@ public abstract class AbstractGunRenderer<I extends AbstractGunItem> extends Geo
 
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack ps, MultiBufferSource bs, int packedLight, int packedOverlay) {
-        if (context.firstPerson()) {
-            GeoBone leftArm = getGeoModel().getAnimationProcessor().getBone("left_arm");
-            if (leftArm != null) ModClientEvents.leftArm =
-                    new ArmTransform(leftArm.getPosX(), leftArm.getPosY(), leftArm.getPosZ(), leftArm.getRotX(), leftArm.getRotY(), leftArm.getRotZ());
+        int d = 1;
+        switch (context) {
+            case ItemDisplayContext.FIRST_PERSON_LEFT_HAND:
+                d = -1;
+            case ItemDisplayContext.FIRST_PERSON_RIGHT_HAND:
+                GeoBone leftArm = getGeoModel().getAnimationProcessor().getBone("left_arm");
+                GeoBone rightArm = getGeoModel().getAnimationProcessor().getBone("right_arm");
 
-            GeoBone rightArm = getGeoModel().getAnimationProcessor().getBone("right_arm");
-            if (rightArm != null) ModClientEvents.rightArm =
-                    new ArmTransform(rightArm.getPosX(), rightArm.getPosY(), rightArm.getPosZ(), rightArm.getRotX(), rightArm.getRotY(), rightArm.getRotZ());
+                if (d == -1) {
+                    GeoBone l = leftArm;
+                    leftArm = rightArm;
+                    rightArm = l;
+                }
 
-            ps.pushPose();
-            ps.translate(0, -2F / 16, -8F / 16);
-            super.renderByItem(stack, context, ps, bs, packedLight, packedOverlay);
-            ps.popPose();
-        } else  super.renderByItem(stack, context, ps, bs, packedLight, packedOverlay);
+                if (rightArm != null) ModClientEvents.rightArm =
+                        new ArmTransform(rightArm.getPosX() * d, rightArm.getPosY(), rightArm.getPosZ(),
+                                rightArm.getRotX(), rightArm.getRotY() * d, rightArm.getRotZ() * d);
+                if (leftArm != null) ModClientEvents.leftArm =
+                        new ArmTransform(leftArm.getPosX() * d, leftArm.getPosY(), leftArm.getPosZ(),
+                                leftArm.getRotX(), leftArm.getRotY() * d, leftArm.getRotZ() * d);
+
+                ps.pushPose();
+                ps.translate(0, -2.8F / 16, -8F / 16);
+                super.renderByItem(stack, context, ps, bs, packedLight, packedOverlay);
+                ps.popPose();
+                break;
+            default: super.renderByItem(stack, context, ps, bs, packedLight, packedOverlay);
+        }
     }
 }

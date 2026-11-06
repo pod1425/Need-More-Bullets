@@ -28,6 +28,7 @@ import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
+import net.pod.cnmb.item.gun.client.AbstractGunModel;
 import net.pod.cnmb.networking.ModNetworking;
 import net.pod.cnmb.networking.payload.StartGunReloadAnimationPayload;
 import net.pod.cnmb.registry.ModKeyBinds;
@@ -89,7 +90,12 @@ public class ModClientEvents {
         Minecraft mc = Minecraft.getInstance();
         AbstractClientPlayer p = mc.player;
         if (p == null) return;
-        if (!(p.getMainHandItem().getItem() instanceof AbstractGunItem)) return;
+        if (p.getOffhandItem().getItem() instanceof AbstractGunItem) {
+            event.setCanceled(true);
+            AbstractGunModel.mode = 1;
+        } else if (p.getMainHandItem().getItem() instanceof AbstractGunItem) {
+            AbstractGunModel.mode = 0;
+        } else return;
 
         PoseStack ps = event.getPoseStack();
 
