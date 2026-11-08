@@ -4,10 +4,12 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.VariableLampBlock;
+import net.pod.cnmb.block.thermometer.ThermometerBlock;
 import net.pod.cnmb.palettes.Palette;
 import net.pod.cnmb.registry.ModBlockPalettes;
 import net.pod.cnmb.registry.ModBlocks;
@@ -33,6 +35,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.DEEPSLATE_LEAD_ORE);
 
         registerLamps();
+        registerThermometer();
 
         for (Palette p : ModBlockPalettes.palettes) {
             p.generateBlockStateModels(this);
@@ -67,6 +70,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
         });
         simpleBlockItem(ModBlocks.STEEL_LAMP.get(), models().cubeAll("steel_lamp_off",
                 ResourceLocation.fromNamespaceAndPath(NeedMoreBulletsMod.MODID, "block/" + "steel_lamp_off")));
+    }
+
+    private void registerThermometer() {
+        ResourceLocation brass = ResourceLocation.fromNamespaceAndPath("create", "block/brass_block");
+        VariantBlockStateBuilder builder = getVariantBuilder(ModBlocks.THERMOMETER.get());
+        for (int i = 0; i <= 15; i++) {
+            ResourceLocation side = modLoc("block/thermometer/" + i);
+
+            builder.partialState().with(ThermometerBlock.POWER, i)
+                    .setModels(new ConfiguredModel(models().cubeBottomTop("thermometer_" + i, side, brass, brass)));
+        }
     }
 
     private void blockWithItem(DeferredBlock<?> deferredBlock) {

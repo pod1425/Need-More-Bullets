@@ -41,7 +41,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.STEEL_LAMP.get());
         dropSelf(ModBlocks.ACTIVE_SCULK.get());
 
-
+        dropSelf(ModBlocks.THERMOMETER.get());
 
         add(ModBlocks.LEAD_ORE.get(),
                 block -> createMultipleOreDrops(ModBlocks.LEAD_ORE.get(), ModItems.RAW_LEAD.get(), 2, 5));

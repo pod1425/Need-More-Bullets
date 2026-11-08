@@ -11,6 +11,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.VariableLampBlock;
+import net.pod.cnmb.block.thermometer.ThermometerBlock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,9 @@ public class ModBlocks {
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)
                     .lightLevel(state -> state.getValue(VariableLampBlock.LIGHT_LEVEL))));
 
-
+    public static final DeferredBlock<Block> THERMOMETER = registerBlock("thermometer",
+            () -> new ThermometerBlock(BlockBehaviour.Properties.of()
+                    .strength(2f).requiresCorrectToolForDrops()));
 
 
 

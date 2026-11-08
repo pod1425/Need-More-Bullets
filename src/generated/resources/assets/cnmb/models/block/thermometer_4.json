@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "create:block/brass_block",
+    "side": "cnmb:block/thermometer/4",
+    "top": "create:block/brass_block"
+  }
+}

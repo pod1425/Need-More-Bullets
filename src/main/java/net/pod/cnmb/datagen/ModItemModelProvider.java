@@ -19,5 +19,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.STEEL_NUGGET.get());
         basicItem(ModItems.LEAD_NUGGET.get());
         basicItem(ModItems.RAW_LEAD.get());
+
+        withExistingParent("thermometer", modLoc("block/thermometer_0"));
     }
 }
