@@ -25,7 +25,6 @@ import net.pod.cnmb.networking.payload.SetControllingPayload;
 
 import java.util.*;
 
-
 public abstract class ControllableMob extends Mob implements Controllable {
     public static final Map<UUID, ControllableMob> controls = new HashMap<>();
 

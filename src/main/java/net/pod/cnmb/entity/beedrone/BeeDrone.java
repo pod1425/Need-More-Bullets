@@ -2,6 +2,7 @@ package net.pod.cnmb.entity.beedrone;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AnimationState;
@@ -14,19 +15,37 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.pod.cnmb.registry.ModEntities;
 import net.pod.cnmb.util.ControllableMob;
 import net.pod.cnmb.util.CustomAttack;
 
 import java.util.List;
 
 public class BeeDrone extends ControllableMob implements CustomAttack {
+    private final EnergyStorage energyStorage = new EnergyStorage(10000, 128, 128, 1000);
+    private final IEnergyStorage energyCapability = new IEnergyStorage() {
+        @Override public int receiveEnergy(int toReceive, boolean simulate) {return energyStorage.receiveEnergy(toReceive, simulate);}
+        @Override public int extractEnergy(int toExtract, boolean simulate) {return 0;}
+        @Override public int getEnergyStored() {return energyStorage.getEnergyStored();}
+        @Override public int getMaxEnergyStored() {return energyStorage.getMaxEnergyStored();}
+        @Override public boolean canExtract() {return false;}
+        @Override public boolean canReceive() {return true;}
+    };
+
     public final AnimationState flyAnimationState = new AnimationState();
 
     private Vec3 target;
 
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerEntity(Capabilities.EnergyStorage.ENTITY, ModEntities.BEE_DRONE.get(), (be, d) -> be.energyCapability);
+    }
+
     public BeeDrone(EntityType<? extends Mob> entityType, Level level) {
         super(entityType, level);
-
         flyAnimationState.start(0);
     }
 
@@ -35,6 +54,21 @@ public class BeeDrone extends ControllableMob implements CustomAttack {
                 .add(Attributes.MAX_HEALTH, 20)
                 .add(Attributes.FLYING_SPEED, 0.2)
                 .add(Attributes.FOLLOW_RANGE, 16);
+    }
+
+    @Override
+    protected boolean start(ServerPlayer player) {
+        return energyStorage.getEnergyStored() > 0 && super.start(player);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (!level().isClientSide) {
+            int extracted = energyStorage.extractEnergy(1, false);
+            if (isControlled() && extracted == 0) stop();
+        }
     }
 
     public void setTarget(Vec3 newTarget) {
@@ -128,6 +162,8 @@ public class BeeDrone extends ControllableMob implements CustomAttack {
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
+        tag.putInt("Energy", energyStorage.getEnergyStored());
+
         if (target != null) {
             tag.putDouble("TargetX", target.x);
             tag.putDouble("TargetY", target.y);
@@ -139,6 +175,8 @@ public class BeeDrone extends ControllableMob implements CustomAttack {
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
+        if (tag.contains("Energy")) energyStorage.receiveEnergy(tag.getInt("Energy"), false);
+
         if (tag.contains("TargetX") && tag.contains("TargetY") && tag.contains("TargetZ")) {
             target = new Vec3(tag.getDouble("TargetX"), tag.getDouble("TargetY"), tag.getDouble("TargetZ"));
         }
