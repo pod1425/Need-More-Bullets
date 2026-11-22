@@ -79,19 +79,19 @@ public class GunAttachment implements Iterable<Consumer<GunEvent>> {
         return this;
     }
     public GunAttachment onDamageReceived(@NotNull Consumer<GunEvent> handler) {
-        addHandler(GunAttachmentEventType.ON_GUN_EQUIP, handler);
+        addHandler(GunAttachmentEventType.ON_DAMAGE_RECEIVED, handler);
         return this;
     }
     public GunAttachment onDamageDealt(@NotNull Consumer<GunEvent> handler) {
-        addHandler(GunAttachmentEventType.ON_GUN_EQUIP, handler);
+        addHandler(GunAttachmentEventType.ON_DAMAGE_DEALT, handler);
         return this;
     }
     public GunAttachment onEntityHit(@NotNull Consumer<GunEvent> handler) {
-        addHandler(GunAttachmentEventType.ON_GUN_EQUIP, handler);
+        addHandler(GunAttachmentEventType.ON_ENTITY_HIT, handler);
         return this;
     }
     public GunAttachment onBlockHit(@NotNull Consumer<GunEvent> handler) {
-        addHandler(GunAttachmentEventType.ON_GUN_EQUIP, handler);
+        addHandler(GunAttachmentEventType.ON_BLOCK_HIT, handler);
         return this;
     }
 
