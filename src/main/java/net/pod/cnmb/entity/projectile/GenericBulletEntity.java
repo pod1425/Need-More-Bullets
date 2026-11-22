@@ -9,6 +9,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -16,10 +17,15 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
+import net.pod.cnmb.event.gun.GunAttachmentEventType;
+import net.pod.cnmb.item.gun.attachment.GunAttachmentsComponent;
+import net.pod.cnmb.event.gun.GunEvent;
+import net.pod.cnmb.registry.ModDataComponents;
 import net.pod.cnmb.registry.ModEntities;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
+
 /**
  This is serverside code that runs for every bullet.
  For clientside, check out GenericBulletRenderer
@@ -32,6 +38,7 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
     private Entity owner;
     // for fixing the issues with weird rendering on high speeds
     private Vec3 clientVelocity = Vec3.ZERO;
+    private ItemStack gun;
 
     /**
      * Shouldnt be used to create a bullet entity.
@@ -59,7 +66,8 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
      *               and their EyeY
      *               If this param is null, the default pos will be at the center of {@code shooter}'s head
      */
-    public GenericBulletEntity(Entity shooter, Level level, double damage, double speed, double inaccuracy, @Nullable Vec3 offset) {
+    public GenericBulletEntity(Entity shooter, Level level, double damage, double speed, double inaccuracy,
+                               @Nullable Vec3 offset, ItemStack gun) {
         this(ModEntities.GENERIC_BULLET.get(), level);
         this.damage = damage;
         this.setOwner(shooter);
@@ -91,6 +99,8 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
                 EntityAnchorArgument.Anchor.FEET,
                 this.position().add(look)
         );
+        this.gun = gun;
+
     }
     private static Vec3 applyInaccuracy(Vec3 direction, double inaccuracy, RandomSource random) {
         if (inaccuracy <= 0.0) {
@@ -117,11 +127,11 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
                 .normalize();
     }
     /**
-     * Initializes a new bullet and fully prepares it to be added into the world.
+     * Initializes a new bullet and fully prepares it to be added into the world without offset.
      * See {@code GenericBulletEntity(Entity, Level, double, double, Vec3)} for more details.
      */
-    public GenericBulletEntity(Entity shooter, Level level, double damage, double speed, double inaccuracy) {
-        this(shooter, level, damage, speed, inaccuracy, null);
+    public GenericBulletEntity(Entity shooter, Level level, double damage, double speed, double inaccuracy, ItemStack gun) {
+        this(shooter, level, damage, speed, inaccuracy, null, gun);
     }
 
     @Override
@@ -222,12 +232,19 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
         }
     }
 
-
+    /**
+     * Fires ON_ENTITY_HIT effect before applying the damage to the enemy, and ON_DAMAGE_DEALT after hurting the enemy
+     * @param result
+     */
     @Override
     public void onHitEntity(EntityHitResult result) {
         Entity target = result.getEntity();
 
         if (!this.level().isClientSide) {
+            GunAttachmentsComponent component = gun.get(ModDataComponents.GUN_ATTACHMENTS.get());
+            component.fireEvents(GunAttachmentEventType.ON_ENTITY_HIT, new GunEvent(result.getEntity().level(),
+                    owner, result.getEntity(), gun, result.getEntity().getOnPos()));
+
             target.hurt(
                     this.damageSources().thrown(this, this.getOwner()),
                     (float) damage
@@ -236,10 +253,17 @@ public class GenericBulletEntity extends Entity implements IEntityWithComplexSpa
             this.discard();
         }
     }
-
+    /**
+     * Fires ON_BLOCK_HIT effect before discarding this entity because of block hits
+     * @param result
+     */
     @Override
     public void onHitBlock(BlockHitResult result) {
         if (!this.level().isClientSide) {
+            GunAttachmentsComponent component = gun.get(ModDataComponents.GUN_ATTACHMENTS.get());
+            component.fireEvents(GunAttachmentEventType.ON_BLOCK_HIT, new GunEvent(level(), owner, null,
+                    gun, result.getBlockPos()));
+
             this.discard();
         }
     }

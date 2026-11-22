@@ -113,10 +113,7 @@ public class ModNetworking {
             data.setShotOccurred(false);
         }
     }
-    private static void handleEquipAttachment(
-            EquipAttachmentPayload payload,
-            IPayloadContext context
-    ) {
+    private static void handleEquipAttachment(EquipAttachmentPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             System.out.println("HandleEquipAttachment");
             if (!(context.player() instanceof ServerPlayer player))

@@ -40,7 +40,7 @@ public class ModClientEvents {
         List<Component> tooltip = event.getToolTip();
 
         tooltip.add(
-                Component.translatable("attachment.cnmb.can_be_attached_text")
+                Component.translatable("tooltip.cnmb.can_be_attached_text")
                         .withStyle(ChatFormatting.GRAY)
         );
 
@@ -48,7 +48,7 @@ public class ModClientEvents {
             tooltip.add(Component.empty());
 
             tooltip.add(
-                    Component.translatable("attachment.cnmb.compatible_slots_text")
+                    Component.translatable("tooltip.cnmb.compatible_slots_text")
                             .withStyle(ChatFormatting.GRAY)
             );
 
@@ -60,7 +60,7 @@ public class ModClientEvents {
             }
         } else {
             tooltip.add(
-                    Component.translatable("attachment.cnmb.hold_shift_text")
+                    Component.translatable("tooltip.cnmb.hold_shift_text")
                             .withStyle(ChatFormatting.DARK_GRAY)
             );
         }

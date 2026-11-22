@@ -23,5 +23,6 @@ public class ModPlayerAttachments {
 
     public static void register (IEventBus eventBus){
         ATTACHMENTS.register(eventBus);
+
     }
 }

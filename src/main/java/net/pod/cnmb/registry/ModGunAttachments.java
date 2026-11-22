@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.pod.cnmb.event.gun.GunAimEvent;
 import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
@@ -24,12 +25,11 @@ public class ModGunAttachments {
                     "spyglass_scope",
                     Items.SPYGLASS,
                     () -> GunAttachment.createScope()
-                            .onAim(args -> {
-                                if (args.getShooter() instanceof Player player) {
-                                    player.displayClientMessage(
-                                            Component.literal("Aiming!"),
-                                            true
-                                    );
+                            .onAim(e -> {
+                                if (e.getShooter() instanceof Player player) {
+                                    player.displayClientMessage(Component.literal("Aiming!"), true);
+                                    GunAimEvent aimEvent = (GunAimEvent) e;
+
                                 }
                             })
             );
@@ -39,10 +39,10 @@ public class ModGunAttachments {
                     "redstone_powerup",
                     Items.REDSTONE,
                     () -> GunAttachment.createBarrel()
-                            .onBlockHit(a -> a.getLevel().destroyBlock(
-                                    a.getPos(), true, a.getShooter()))
+                            .onBlockHit(e -> e.getLevel().destroyBlock(
+                                    e.getPos(), true, e.getShooter()))
                             .onGunEquip(
-                                a -> a.getGunItem().set(ModDataComponents.BULLET_DAMAGE.get(), 20.0))
+                                e -> e.getGunItem().set(ModDataComponents.BULLET_DAMAGE.get(), 20.0))
             );
 
 
