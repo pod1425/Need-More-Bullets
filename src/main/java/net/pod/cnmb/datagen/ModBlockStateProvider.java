@@ -2,12 +2,14 @@ package net.pod.cnmb.datagen;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.VariableLampBlock;
+import net.pod.cnmb.block.pallet.PalletBlock;
 import net.pod.cnmb.palettes.Palette;
 import net.pod.cnmb.registry.ModBlockPalettes;
 import net.pod.cnmb.registry.ModBlocks;
@@ -31,6 +33,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         blockWithItem(ModBlocks.LEAD_ORE);
         blockWithItem(ModBlocks.DEEPSLATE_LEAD_ORE);
+
+        registerPallets();
 
         registerLamps();
 
@@ -67,6 +71,46 @@ public class ModBlockStateProvider extends BlockStateProvider {
         });
         simpleBlockItem(ModBlocks.STEEL_LAMP.get(), models().cubeAll("steel_lamp_off",
                 ResourceLocation.fromNamespaceAndPath(NeedMoreBulletsMod.MODID, "block/" + "steel_lamp_off")));
+    }
+
+    private void registerPallets() {
+        var block = ModBlocks.PALLET.get();
+        var normal = models().getExistingFile(modLoc("block/pallet"));
+        var big = models().getExistingFile(modLoc("block/big_pallet"));
+        var empty = models().getBuilder("block/empty_pallet").texture("particle", modLoc("block/pallet"));
+
+        simpleBlockItem(block, normal);
+        getVariantBuilder(block).forAllStates(state -> {
+            var placement = state.getValue(PalletBlock.MULTIBLOCK_PLACEMENT);
+            var facing = state.getValue(HorizontalDirectionalBlock.FACING);
+
+            if (placement == PalletBlock.MultiblockPlacement.NONE) {
+                return ConfiguredModel.builder()
+                        .modelFile(normal)
+                        .rotationY((int) facing.toYRot())
+                        .build();
+            }
+
+            var mainPlacement = switch (facing) {
+                case NORTH -> PalletBlock.MultiblockPlacement.SE;
+                case SOUTH -> PalletBlock.MultiblockPlacement.NW;
+                case EAST  -> PalletBlock.MultiblockPlacement.SW;
+                case WEST  -> PalletBlock.MultiblockPlacement.NE;
+                default -> throw new IllegalStateException();
+            };
+
+            if (placement == mainPlacement) {
+                return ConfiguredModel.builder()
+                        .modelFile(big)
+                        .rotationY((int) facing.toYRot())
+                        .build();
+            }
+
+            return ConfiguredModel.builder()
+                    .modelFile(empty)
+                    .build();
+        });
+
     }
 
     private void blockWithItem(DeferredBlock<?> deferredBlock) {

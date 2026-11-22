@@ -1,0 +1,136 @@
+{
+  "variants": {
+    "facing=east,multiblock_placement=ne,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=east,multiblock_placement=ne,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=east,multiblock_placement=none,waterlogged=false": {
+      "model": "cnmb:block/pallet",
+      "y": 270
+    },
+    "facing=east,multiblock_placement=none,waterlogged=true": {
+      "model": "cnmb:block/pallet",
+      "y": 270
+    },
+    "facing=east,multiblock_placement=nw,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=east,multiblock_placement=nw,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=east,multiblock_placement=se,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=east,multiblock_placement=se,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=east,multiblock_placement=sw,waterlogged=false": {
+      "model": "cnmb:block/big_pallet",
+      "y": 270
+    },
+    "facing=east,multiblock_placement=sw,waterlogged=true": {
+      "model": "cnmb:block/big_pallet",
+      "y": 270
+    },
+    "facing=north,multiblock_placement=ne,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=north,multiblock_placement=ne,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=north,multiblock_placement=none,waterlogged=false": {
+      "model": "cnmb:block/pallet",
+      "y": 180
+    },
+    "facing=north,multiblock_placement=none,waterlogged=true": {
+      "model": "cnmb:block/pallet",
+      "y": 180
+    },
+    "facing=north,multiblock_placement=nw,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=north,multiblock_placement=nw,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=north,multiblock_placement=se,waterlogged=false": {
+      "model": "cnmb:block/big_pallet",
+      "y": 180
+    },
+    "facing=north,multiblock_placement=se,waterlogged=true": {
+      "model": "cnmb:block/big_pallet",
+      "y": 180
+    },
+    "facing=north,multiblock_placement=sw,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=north,multiblock_placement=sw,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=south,multiblock_placement=ne,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=south,multiblock_placement=ne,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=south,multiblock_placement=none,waterlogged=false": {
+      "model": "cnmb:block/pallet"
+    },
+    "facing=south,multiblock_placement=none,waterlogged=true": {
+      "model": "cnmb:block/pallet"
+    },
+    "facing=south,multiblock_placement=nw,waterlogged=false": {
+      "model": "cnmb:block/big_pallet"
+    },
+    "facing=south,multiblock_placement=nw,waterlogged=true": {
+      "model": "cnmb:block/big_pallet"
+    },
+    "facing=south,multiblock_placement=se,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=south,multiblock_placement=se,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=south,multiblock_placement=sw,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=south,multiblock_placement=sw,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=west,multiblock_placement=ne,waterlogged=false": {
+      "model": "cnmb:block/big_pallet",
+      "y": 90
+    },
+    "facing=west,multiblock_placement=ne,waterlogged=true": {
+      "model": "cnmb:block/big_pallet",
+      "y": 90
+    },
+    "facing=west,multiblock_placement=none,waterlogged=false": {
+      "model": "cnmb:block/pallet",
+      "y": 90
+    },
+    "facing=west,multiblock_placement=none,waterlogged=true": {
+      "model": "cnmb:block/pallet",
+      "y": 90
+    },
+    "facing=west,multiblock_placement=nw,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=west,multiblock_placement=nw,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=west,multiblock_placement=se,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=west,multiblock_placement=se,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=west,multiblock_placement=sw,waterlogged=false": {
+      "model": "cnmb:block/empty_pallet"
+    },
+    "facing=west,multiblock_placement=sw,waterlogged=true": {
+      "model": "cnmb:block/empty_pallet"
+    }
+  }
+}
