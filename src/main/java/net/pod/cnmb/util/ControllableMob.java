@@ -1,15 +1,13 @@
 package net.pod.cnmb.util;
 
-import net.minecraft.network.protocol.game.ClientboundForgetLevelChunkPacket;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.network.protocol.game.ClientboundSetCameraPacket;
 import net.minecraft.network.protocol.game.ClientboundSetChunkCacheCenterPacket;
+import net.minecraft.network.protocol.game.ClientboundSetChunkCacheRadiusPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
-import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -19,20 +17,26 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.pod.cnmb.networking.ModNetworking;
 import net.pod.cnmb.networking.payload.ControlInputPayload;
 import net.pod.cnmb.networking.payload.SetControllingPayload;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public abstract class ControllableMob extends Mob implements Controllable {
     public static final Map<UUID, ControllableMob> controls = new HashMap<>();
 
-    public static final TicketType<ChunkPos> CHUNK_TICKET =
-            TicketType.create("cnmb_controllable_mob_chunk_loader", Comparator.comparingLong(ChunkPos::toLong));
+    public static final TicketType<UUID> TICKET =
+            TicketType.create("cnmb:controllable_mob", Comparator.comparing(UUID::toString));
 
-    public ChunkPos chunkPos;
-    protected Set<ChunkPos> loadedChunks = new HashSet<>();
+    private ChunkPos chunkPos;
+    private int positionSyncTimer;
+
+    private final LongOpenHashSet sent = new LongOpenHashSet();
 
     public Player controller;
     protected ControlInputPayload input;
@@ -41,129 +45,113 @@ public abstract class ControllableMob extends Mob implements Controllable {
         super(entityType, level);
     }
 
-    protected boolean start(ServerPlayer player) {
-        if (isControlled() || controls.containsKey(player.getUUID())) {
-            return false;
-        }
+    public boolean start(ServerPlayer player) {
+        if (isControlled() || controls.get(player.getUUID()) != null) return false;
 
         controller = player;
+        controls.put(player.getUUID(), this);
 
         ModNetworking.sendToPlayer(player, new SetControllingPayload(getId(), true));
         player.connection.send(new ClientboundSetCameraPacket(this));
-        controls.put(player.getUUID(), this);
+        player.connection.send(new ClientboundSetChunkCacheRadiusPacket(getViewDistance(player)));
 
         return true;
     }
 
     public void stop() {
-        if (controller == null) {
-            return;
-        }
+        if (!(controller instanceof ServerPlayer player)) return;
 
-        ServerPlayer player = (ServerPlayer) controller;
+        ChunkPos playerPos = player.chunkPosition();
 
-        controls.remove(controller.getUUID());
-        player.connection.send(new ClientboundSetCameraPacket(controller));
-        ModNetworking.sendToPlayer(player, new SetControllingPayload(getId(), false));
+        controls.remove(player.getUUID(), this);
 
-        if (level() instanceof ServerLevel level) {
-            ChunkPos pos = controller.chunkPosition();
-            player.connection.send(new ClientboundSetChunkCacheCenterPacket(pos.x, pos.z));
+        if (player.connection.isAcceptingMessages()) {
+            syncControllerPosition(player);
 
-            int radius = player.requestedViewDistance() + 2;
+            ChunkPos center = player.chunkPosition();
+            int distance = getViewDistance(player);
 
-            loadedChunks.removeIf(p -> {
-                if (p.x < -radius || p.x > radius || p.z < -radius || p.z > radius) {
-                    player.connection.send(new ClientboundForgetLevelChunkPacket(p));
-                    return true;
-                }
-                return false;
-            });
+            player.connection.send(new ClientboundSetChunkCacheCenterPacket(playerPos.x, playerPos.z));
+            player.connection.send(new ClientboundSetChunkCacheRadiusPacket(distance));
+            player.connection.send(new ClientboundSetCameraPacket(player));
+            ModNetworking.sendToPlayer(player, new SetControllingPayload(getId(), false));
 
-            for (int dx = -radius; dx <= radius; dx++) {
-                for (int dz = -radius; dz <= radius; dz++) {
-                    int x = pos.x + dx, z = pos.z + dz;
+            if (!(level() instanceof ServerLevel level)) return;
 
-                    level.getChunkSource().getChunkFuture(x, z, ChunkStatus.FULL, true).thenAcceptAsync(res -> res.ifSuccess(access -> {
-                        if (access instanceof LevelChunk chunk) {
-                            if (!loadedChunks.contains(chunk.getPos())) {
-                                if (!player.connection.isAcceptingMessages()) return;
-                                player.connection.send(new ClientboundLevelChunkWithLightPacket(chunk, level.getLightEngine(), null, null));
-                            }
-                        }
-                    }));
+            LevelLightEngine engine = level.getLightEngine();
+            for (int x = -distance; x <= distance; x++) {
+                for (int z = -distance; z <= distance; z++) {
+                    ChunkPos pos = new ChunkPos(center.x + x, center.z + z);
+                    player.connection.send(new ClientboundLevelChunkWithLightPacket(
+                            (LevelChunk) level.getChunk(pos.x, pos.z, ChunkStatus.FULL, true), engine, null, null));
                 }
             }
-
-            loadedChunks.clear();
-            chunkPos = null;
         }
 
+        sent.clear();
         controller = null;
+        input = null;
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (level() instanceof ServerLevel level && controller instanceof ServerPlayer player && isControlled()) {
-            ChunkPos pos = chunkPosition();
-            if (!pos.equals(chunkPos)) {
-                player.connection.send(new ClientboundSetChunkCacheCenterPacket(pos.x, pos.z));
-
-                int radius = player.requestedViewDistance();
-                Set<ChunkPos> needed = new HashSet<>();
-                for (int dx = -radius; dx <= radius; dx++) {
-                    for (int dz = -radius; dz <= radius; dz++) {
-                        needed.add(new ChunkPos(pos.x + dx, pos.z + dz));
-                    }
-                }
-
-                loadedChunks.removeIf(p -> {
-                    if (!needed.contains(p)) {
-                        player.connection.send(new ClientboundForgetLevelChunkPacket(p));
-                        return true;
-                    }
-                    return false;
-                });
-
-                needed.forEach(p -> {
-                    if (!loadedChunks.contains(p)) {
-                        level.getChunkSource().getChunkFuture(p.x, p.z, ChunkStatus.FULL, true)
-                                .thenAcceptAsync(res -> res.ifSuccess(access -> {
-                                    if (access instanceof LevelChunk chunk && player.connection.isAcceptingMessages()) {
-                                        player.connection.send(new ClientboundLevelChunkWithLightPacket(chunk, level.getLightEngine(), null, null));
-                                    }
-                                }), level.getServer());
-                    }
-                });
-
-                level.getChunkSource().addRegionTicket(CHUNK_TICKET, pos, radius, pos);
-                if (chunkPos != null) {
-                    level.getChunkSource().removeRegionTicket(CHUNK_TICKET, chunkPos, radius, chunkPos);
-                }
-
-                chunkPos = pos;
-                loadedChunks = needed;
-            }
+        if (!(controller instanceof ServerPlayer player)) return;
+        if (!player.connection.getConnection().isConnected()) {
+            stop();
+            return;
         }
+
+        if (++positionSyncTimer >= 3) {
+            positionSyncTimer = 0;
+            syncControllerPosition(player);
+        }
+
+        int distance = getViewDistance(player);
+
+        ChunkPos center = chunkPosition();
+        UUID id = getUUID();
+
+        ServerLevel level = player.serverLevel();
+        if (!center.equals(chunkPos)) {
+            level.getChunkSource().addRegionTicket(TICKET, center, distance, id);
+
+            player.connection.send(new ClientboundSetChunkCacheCenterPacket(center.x, center.z));
+            player.connection.send(new ClientboundSetChunkCacheRadiusPacket(distance));
+
+            LongOpenHashSet wanted = new LongOpenHashSet();
+            LevelLightEngine engine = level.getLightEngine();
+            for (int x = -distance; x <= distance; x++) {
+                for (int z = -distance; z <= distance; z++) {
+                    ChunkPos pos = new ChunkPos(center.x + x, center.z + z);
+                    wanted.add(pos.toLong());
+
+                    if (sent.add(pos.toLong()))
+                        player.connection.send(new ClientboundLevelChunkWithLightPacket(
+                                (LevelChunk) level.getChunk(pos.x, pos.z, ChunkStatus.FULL, true), engine, null, null));
+                }
+            }
+
+            sent.removeIf(pos -> !wanted.contains(pos));
+
+            if (chunkPos != null) level.getChunkSource().removeRegionTicket(TICKET, chunkPos, distance, id);
+            chunkPos = center;
+        }
+
     }
 
-    @Override
-    public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (player.getMainHandItem().isEmpty() && player.isShiftKeyDown() && player instanceof ServerPlayer serverPlayer) {
-            return start(serverPlayer) ? InteractionResult.SUCCESS_NO_ITEM_USED : InteractionResult.FAIL;
-        }
+    private int getViewDistance(ServerPlayer player) {
+        return Math.min(player.clientInformation().viewDistance(), player.serverLevel().getServer().getPlayerList().getViewDistance());
+    }
 
-        return super.mobInteract(player, hand);
+    private void syncControllerPosition(ServerPlayer player) {
+        player.connection.teleport(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
     }
 
     @Override
     public void handleInput(ControlInputPayload input) {
         this.input = input;
-
-        setYRot(yBodyRot = yHeadRot += input.yaw());
-        setXRot(xRotO = Mth.clamp(getXRot() + input.pitch(), -90, 90));
     }
 
     public boolean isControlled() {
@@ -191,9 +179,7 @@ public abstract class ControllableMob extends Mob implements Controllable {
 
     @Override
     public void remove(RemovalReason reason) {
-        if (!level().isClientSide) {
-            stop();
-        }
+        if (!level().isClientSide) stop();
 
         super.remove(reason);
     }

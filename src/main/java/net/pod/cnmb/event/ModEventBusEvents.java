@@ -6,7 +6,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.entity.beedrone.BeeDrone;
-import net.pod.cnmb.entity.beedrone.Client.BeeDroneModel;
+import net.pod.cnmb.entity.beedrone.client.BeeDroneModel;
 import net.pod.cnmb.registry.ModEntities;
 
 @EventBusSubscriber(modid = NeedMoreBulletsMod.MODID)

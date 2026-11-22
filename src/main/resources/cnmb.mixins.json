@@ -7,9 +7,10 @@
     "TrackedEntityMixin"
   ],
   "client": [
+    "LevelRendererMixin",
+    "LocalPlayerMixin",
     "MinecraftMixin",
-    "MouseHandlerMixin",
-    "LocalPlayerMixin"
+    "MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

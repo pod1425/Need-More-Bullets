@@ -1,6 +1,5 @@
 package net.pod.cnmb.registry;
 
-import net.minecraft.world.item.EggItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
@@ -8,6 +7,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.item.BeeDroneController;
 import net.pod.cnmb.item.gun.musket.MusketItem;
 import net.pod.cnmb.item.gun.pistol.PistolItem;
 import net.pod.cnmb.item.gun.revolver.RevolverItem;
@@ -39,9 +39,11 @@ public class ModItems {
 
     public static final DeferredItem<Item> BEE_DRONE_SPAWN_EGG = add(ITEMS.register("bee_drone_spawn_egg",
             () -> new DeferredSpawnEggItem(ModEntities.BEE_DRONE, 0xffffff, 0xffffff, new Item.Properties())));
+    public static final DeferredItem<Item> BEE_DRONE_CONTROLLER = add(ITEMS.register("bee_drone_controller",
+            () -> new BeeDroneController(new Item.Properties())));
+
     public static final DeferredItem<Item> LEAD_GOLEM_SPAWN_EGG = add(ITEMS.register("lead_golem_spawn_egg",
             () -> new DeferredSpawnEggItem(ModEntities.LEAD_GOLEM, 0x343950, 0x27d9e4, new Item.Properties())));
-
 
     private static DeferredItem<Item> add(DeferredItem<Item> item) {
         items.add(item);

@@ -1,4 +1,4 @@
-package net.pod.cnmb.entity.beedrone.Client;
+package net.pod.cnmb.entity.beedrone.client;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;

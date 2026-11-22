@@ -29,8 +29,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.common.IShearable;
 import net.pod.cnmb.NeedMoreBulletsMod;
-import net.pod.cnmb.entity.lead_golem.goal.ShootGunGoal;
 import net.pod.cnmb.entity.lead_golem.client.LeadGolemRenderer;
+import net.pod.cnmb.entity.lead_golem.goal.ShootGunGoal;
 import net.pod.cnmb.registry.ModEntities;
 import net.pod.cnmb.registry.ModTags;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -43,13 +43,13 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class LeadGolem extends PathfinderMob implements GeoEntity, Shearable, IShearable {
     public enum Clothes {
-        MAID("textures/entity/lead_golem/lead_golem_maid.png"),
-        HELMET("textures/entity/lead_golem/lead_golem_helmet.png");
+        MAID("lead_golem_maid.png"),
+        HELMET("lead_golem_helmet.png");
 
         public final ResourceLocation resource;
 
         Clothes(String path) {
-            resource = NeedMoreBulletsMod.asResource(path);
+            resource = NeedMoreBulletsMod.asResource("textures/entity/lead_golem/" + path);
         }
     }
 

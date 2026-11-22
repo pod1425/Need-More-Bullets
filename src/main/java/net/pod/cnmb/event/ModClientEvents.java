@@ -3,23 +3,23 @@ package net.pod.cnmb.event;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-import net.neoforged.neoforge.client.event.RenderHandEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.entity.beedrone.BeeDrone;
+import net.pod.cnmb.entity.beedrone.client.BeeDroneTextures;
 import net.pod.cnmb.entity.lead_golem.LeadGolem;
-import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
 import net.pod.cnmb.networking.ModNetworking;
@@ -50,6 +50,9 @@ public class ModClientEvents {
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+
         if (controlling != null) {
             Options opt = Minecraft.getInstance().options;
 
@@ -67,7 +70,16 @@ public class ModClientEvents {
             } else {
                 prevActiveCustomAttack = false;
             }
+
+            if (player == null) return;
+
+            player.setDeltaMovement(Vec3.ZERO);
+            player.noPhysics = true;
+
+            return;
         }
+
+        if (player != null && player.noPhysics) player.noPhysics = false;
     }
 
     @SubscribeEvent
@@ -82,8 +94,40 @@ public class ModClientEvents {
         if (controlling != null && event.getName().equals(VanillaGuiLayers.EXPERIENCE_BAR)) {
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         LeadGolem.registerRenderer(event);
+    }
+
+    @SubscribeEvent
+    public static void onRenderHud(RenderGuiEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer p = mc.player;
+
+        if (p == null || mc.options.hideGui || mc.screen != null) return;
+        if (!(controlling instanceof BeeDrone beeDrone)) return;
+
+        GuiGraphics gui = event.getGuiGraphics();
+        int sw = gui.guiWidth();
+        int sh = gui.guiHeight();
+
+        int cs = 32;
+        int margin = 8;
+
+        renderCorner(gui, BeeDroneTextures.CAMERA_TL.res, margin, margin, cs);
+        renderCorner(gui, BeeDroneTextures.CAMERA_TR.res, sw - margin - cs, margin, cs);
+        renderCorner(gui, BeeDroneTextures.CAMERA_BL.res, margin, sh - margin - cs, cs);
+        renderCorner(gui, BeeDroneTextures.CAMERA_BR.res, sw - margin - cs, sh - margin - cs, cs);
+
+        int bs = 64;
+
+        gui.blit(BeeDroneTextures.getBattery(beeDrone.getDisplayBatteryLevel()), sw - bs - 32, sh - bs - 24, 0, 0, bs, bs, bs, bs);
+    }
+
+    private static void renderCorner(GuiGraphics gui, ResourceLocation texture, int x, int y, int size) {
+        gui.blit(texture, x, y, 0, 0, size, size, size, size);
     }
 
     @SubscribeEvent

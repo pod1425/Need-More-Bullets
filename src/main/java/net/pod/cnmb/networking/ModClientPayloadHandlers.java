@@ -11,5 +11,6 @@ public class ModClientPayloadHandlers {
         ControllableMob mob = (ControllableMob) Minecraft.getInstance().level.getEntity(payload.mobId());
         ModClientEvents.controlling = payload.controlling() ? mob : null;
         mob.controller = payload.controlling() ? Minecraft.getInstance().player : null;
+        System.out.println("client start controlling: " + payload.mobId());
     }
 }
