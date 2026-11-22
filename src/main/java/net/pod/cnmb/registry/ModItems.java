@@ -39,6 +39,9 @@ public class ModItems {
 
     public static final DeferredItem<Item> BEE_DRONE_SPAWN_EGG = add(ITEMS.register("bee_drone_spawn_egg",
             () -> new DeferredSpawnEggItem(ModEntities.BEE_DRONE, 0xffffff, 0xffffff, new Item.Properties())));
+    public static final DeferredItem<Item> LEAD_GOLEM_SPAWN_EGG = add(ITEMS.register("lead_golem_spawn_egg",
+            () -> new DeferredSpawnEggItem(ModEntities.LEAD_GOLEM, 0x343950, 0x27d9e4, new Item.Properties())));
+
 
     private static DeferredItem<Item> add(DeferredItem<Item> item) {
         items.add(item);
