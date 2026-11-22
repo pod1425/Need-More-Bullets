@@ -11,6 +11,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.VariableLampBlock;
+import net.pod.cnmb.block.pallet.PalletBlock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,8 @@ public class ModBlocks {
                     .lightLevel(state -> state.getValue(VariableLampBlock.LIGHT_LEVEL))));
 
 
-
+    public static final DeferredBlock<Block> PALLET = registerBlock("pallet",
+            () -> new PalletBlock(BlockBehaviour.Properties.of().strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
 
 
 /*

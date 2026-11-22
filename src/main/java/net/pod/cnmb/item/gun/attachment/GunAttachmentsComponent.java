@@ -1,12 +1,12 @@
 package net.pod.cnmb.item.gun.attachment;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
+import net.pod.cnmb.event.gun.GunAttachmentEventType;
+import net.pod.cnmb.event.gun.GunEvent;
+import net.pod.cnmb.registry.ModGunAttachments;
 
 import java.util.*;
 
@@ -66,6 +66,21 @@ public class GunAttachmentsComponent {
         copy.put(slot, ItemStack.EMPTY);
 
         return new GunAttachmentsComponent(copy);
+    }
+
+    public boolean fireEvents(GunAttachmentEventType type, GunEvent event) {
+        for (ItemStack stack : attachments.values()) {
+            if (stack.isEmpty()) {
+                continue;
+            }
+            GunAttachment attachment = ModGunAttachments.ATTACHMENTS
+                    .getForItemOrNull(stack.getItem());
+            if (attachment == null) {
+                continue;
+            }
+            attachment.fire(type, event);
+        }
+        return true;
     }
 
     public EnumMap<GunAttachmentSlot, ItemStack> attachments() {

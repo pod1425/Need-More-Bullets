@@ -1,7 +1,9 @@
 package net.pod.cnmb.event;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -93,6 +95,7 @@ public class GunClientHandler {
         // prevent the hand swing animation
         event.setSwingHand(false);
     }
+
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
@@ -137,6 +140,7 @@ public class GunClientHandler {
             }
         }
     }
+
     @SubscribeEvent
     public static void onMouseButtonPressed(ScreenEvent.MouseButtonPressed.Pre event) {
         removingAttachment = false;
@@ -147,46 +151,33 @@ public class GunClientHandler {
         if (slot == null)
             return;
         ItemStack gunStack = slot.getItem();
-
         if (!(gunStack.getItem() instanceof AbstractGunItem))
             return;
+
         // Ctrl + Right Click = remove attachment
         if (Screen.hasControlDown() && event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             int selected = gunStack.get(ModDataComponents.SELECTED_ATTACHMENT.get());
-
             removingAttachment = true;
             event.setCanceled(true);
-
-            PacketDistributor.sendToServer(
-                    new RemoveAttachmentPayload(slot.index, selected)
-            );
+            PacketDistributor.sendToServer(new RemoveAttachmentPayload(slot.index, selected));
             return;
         }
+
         // Left Click with an attachment on the cursor = equip attachment
         if (event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-
-            ItemStack cursorStack =
-                    Minecraft.getInstance()
-                            .player
-                            .containerMenu
-                            .getCarried();
-
+            ItemStack cursorStack = Minecraft.getInstance().player.containerMenu.getCarried();
             if (cursorStack.isEmpty())
                 return;
-
-            if (ModGunAttachments.ATTACHMENTS
-                    .getForItemOrNull(cursorStack.getItem()) == null)
+            if (ModGunAttachments.ATTACHMENTS.getForItemOrNull(cursorStack.getItem()) == null)
                 return;
-
             event.setCanceled(true);
-
-            PacketDistributor.sendToServer(
-                    new EquipAttachmentPayload(slot.index)
-            );
+            PacketDistributor.sendToServer(new EquipAttachmentPayload(slot.index));
         }
     }
+
     /**
      * Cancels picking up the gun when the button is released
+     *
      * @param event
      */
     @SubscribeEvent
@@ -199,9 +190,11 @@ public class GunClientHandler {
             removingAttachment = false;
         }
     }
+
     public static boolean playerShooting() {
         return wasPressed;
     }
+
     public static boolean playerHoldsGun(Player player) {
         return player.getMainHandItem().getItem() instanceof AbstractGunItem
                 || player.getOffhandItem().getItem() instanceof AbstractGunItem;

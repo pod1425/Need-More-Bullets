@@ -14,20 +14,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-import net.neoforged.neoforge.client.event.RenderHandEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.entity.lead_golem.LeadGolem;
 import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
+import net.pod.cnmb.networking.ModNetworking;
+import net.pod.cnmb.networking.payload.StartGunReloadAnimationPayload;
+import net.pod.cnmb.registry.ModKeyBinds;
+import net.pod.cnmb.utils.ArmTransform;
 import net.pod.cnmb.item.gun.client.AbstractGunModel;
 import net.pod.cnmb.networking.ModNetworking;
 import net.pod.cnmb.networking.payload.StartGunReloadAnimationPayload;
@@ -145,6 +149,11 @@ public class ModClientEvents {
     }
 
     @SubscribeEvent
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        LeadGolem.registerRenderer(event);
+    }
+
+    @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
 
@@ -157,7 +166,7 @@ public class ModClientEvents {
         List<Component> tooltip = event.getToolTip();
 
         tooltip.add(
-                Component.translatable("attachment.cnmb.can_be_attached_text")
+                Component.translatable("tooltip.cnmb.can_be_attached_text")
                         .withStyle(ChatFormatting.GRAY)
         );
 
@@ -165,7 +174,7 @@ public class ModClientEvents {
             tooltip.add(Component.empty());
 
             tooltip.add(
-                    Component.translatable("attachment.cnmb.compatible_slots_text")
+                    Component.translatable("tooltip.cnmb.compatible_slots_text")
                             .withStyle(ChatFormatting.GRAY)
             );
 
@@ -177,7 +186,7 @@ public class ModClientEvents {
             }
         } else {
             tooltip.add(
-                    Component.translatable("attachment.cnmb.hold_shift_text")
+                    Component.translatable("tooltip.cnmb.hold_shift_text")
                             .withStyle(ChatFormatting.DARK_GRAY)
             );
         }

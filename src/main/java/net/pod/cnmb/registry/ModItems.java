@@ -2,6 +2,7 @@ package net.pod.cnmb.registry;
 
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -40,6 +41,10 @@ public class ModItems {
             () -> new MachineGunItem(new Item.Properties(), 12, 10, 8, 2, true)));
     public static final DeferredItem<Item> SMG = add(ITEMS.register("smg",
             () -> new SMGItem(new Item.Properties(), 12, 10, 8, 2, true)));
+
+    public static final DeferredItem<Item> LEAD_GOLEM_SPAWN_EGG = add(ITEMS.register("lead_golem_spawn_egg",
+            () -> new DeferredSpawnEggItem(ModEntities.LEAD_GOLEM, 0x343950, 0x27d9e4, new Item.Properties())));
+
 
     private static DeferredItem<Item> add(DeferredItem<Item> item) {
         items.add(item);

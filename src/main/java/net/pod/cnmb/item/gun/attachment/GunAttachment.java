@@ -1,23 +1,25 @@
 package net.pod.cnmb.item.gun.attachment;
 
 import com.google.common.collect.ImmutableList;
+import net.pod.cnmb.event.gun.GunAttachmentEventType;
+import net.pod.cnmb.event.gun.GunEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
 
-public class GunAttachment implements Iterable<Consumer<GunInteractionArgs>> {
+public class GunAttachment implements Iterable<Consumer<GunEvent>> {
     // bitmask for O(1) lookup
     private final GunAttachmentSlot[] slots;
     // actual list of compatible slots
     private final ImmutableList<GunAttachmentSlot> usableSlots;
-    private final Map<GunAttachmentEventType, Consumer<GunInteractionArgs>> handlers;
+    private final Map<GunAttachmentEventType, Consumer<GunEvent>> handlers;
 
-    private static final EnumMap<GunAttachmentEventType, Consumer<GunInteractionArgs>> EMPTY_HANDLER_MAP
+    private static final EnumMap<GunAttachmentEventType, Consumer<GunEvent>> EMPTY_HANDLER_MAP
             = new EnumMap<>(GunAttachmentEventType.class);
 
     private GunAttachment(List<GunAttachmentSlot> slots,
-                          EnumMap<GunAttachmentEventType, Consumer<GunInteractionArgs>> handlers) {
+                          EnumMap<GunAttachmentEventType, Consumer<GunEvent>> handlers) {
         this.usableSlots = ImmutableList.copyOf(slots.stream().sorted().toList());
         this.slots = Arrays.stream(GunAttachmentSlot.values())
                 .map(v -> usableSlots.contains(v) ? v : null)
@@ -51,44 +53,44 @@ public class GunAttachment implements Iterable<Consumer<GunInteractionArgs>> {
         return new GunAttachment(List.of(GunAttachmentSlot.UNDERSIDE));
     }
 
-    public GunAttachment addHandler(@NotNull GunAttachmentEventType type, @NotNull Consumer<GunInteractionArgs> handler) {
+    public GunAttachment addHandler(@NotNull GunAttachmentEventType type, @NotNull Consumer<GunEvent> handler) {
         handlers.put(type, handler);
         return this;
     }
 
-    public GunAttachment onGunUnequip(@NotNull Consumer<GunInteractionArgs> handler) {
+    public GunAttachment onGunUnequip(@NotNull Consumer<GunEvent> handler) {
         addHandler(GunAttachmentEventType.ON_GUN_UNEQUIP, handler);
         return this;
     }
-    public GunAttachment onGunEquip(@NotNull Consumer<GunInteractionArgs> handler) {
+    public GunAttachment onGunEquip(@NotNull Consumer<GunEvent> handler) {
         addHandler(GunAttachmentEventType.ON_GUN_EQUIP, handler);
         return this;
     }
-    public GunAttachment onShoot(@NotNull Consumer<GunInteractionArgs> handler) {
+    public GunAttachment onShoot(@NotNull Consumer<GunEvent> handler) {
         addHandler(GunAttachmentEventType.ON_SHOOT, handler);
         return this;
     }
-    public GunAttachment onAim(@NotNull Consumer<GunInteractionArgs> handler) {
+    public GunAttachment onAim(@NotNull Consumer<GunEvent> handler) {
         addHandler(GunAttachmentEventType.ON_AIM, handler);
         return this;
     }
-    public GunAttachment onReload(@NotNull Consumer<GunInteractionArgs> handler) {
+    public GunAttachment onReload(@NotNull Consumer<GunEvent> handler) {
         addHandler(GunAttachmentEventType.ON_RELOAD, handler);
         return this;
     }
-    public GunAttachment onDamageReceived(@NotNull Consumer<GunInteractionArgs> handler) {
+    public GunAttachment onDamageReceived(@NotNull Consumer<GunEvent> handler) {
         addHandler(GunAttachmentEventType.ON_GUN_EQUIP, handler);
         return this;
     }
-    public GunAttachment onDamageDealt(@NotNull Consumer<GunInteractionArgs> handler) {
+    public GunAttachment onDamageDealt(@NotNull Consumer<GunEvent> handler) {
         addHandler(GunAttachmentEventType.ON_GUN_EQUIP, handler);
         return this;
     }
-    public GunAttachment onEntityHit(@NotNull Consumer<GunInteractionArgs> handler) {
+    public GunAttachment onEntityHit(@NotNull Consumer<GunEvent> handler) {
         addHandler(GunAttachmentEventType.ON_GUN_EQUIP, handler);
         return this;
     }
-    public GunAttachment onBlockHit(@NotNull Consumer<GunInteractionArgs> handler) {
+    public GunAttachment onBlockHit(@NotNull Consumer<GunEvent> handler) {
         addHandler(GunAttachmentEventType.ON_GUN_EQUIP, handler);
         return this;
     }
@@ -105,15 +107,15 @@ public class GunAttachment implements Iterable<Consumer<GunInteractionArgs>> {
         return slots[slot.ordinal()] != null;
     }
 
-    public void fire(GunAttachmentEventType event, GunInteractionArgs args) {
-        Consumer<GunInteractionArgs> handler = handlers.get(event);
+    public void fire(GunAttachmentEventType event, GunEvent args) {
+        Consumer<GunEvent> handler = handlers.get(event);
         if (handler != null) {
             handler.accept(args);
         }
     }
 
     @Override
-    public @NotNull Iterator<Consumer<GunInteractionArgs>> iterator() {
+    public @NotNull Iterator<Consumer<GunEvent>> iterator() {
         return handlers.values().iterator();
     }
 }

@@ -9,15 +9,19 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.pod.cnmb.entity.projectile.GenericBulletEntity;
-import net.pod.cnmb.item.gun.attachment.GunAttachment;
-import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
-import net.pod.cnmb.item.gun.attachment.GunAttachmentsComponent;
+import net.pod.cnmb.event.gun.GunAttachmentEventType;
+import net.pod.cnmb.event.gun.GunEvent;
+import net.pod.cnmb.event.gun.GunShootEvent;
+import net.pod.cnmb.item.gun.attachment.*;
 import net.pod.cnmb.registry.*;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
@@ -105,10 +109,10 @@ public abstract class AbstractGunItem extends Item implements GeoItem {
 
     protected final boolean defaultShoot(Entity entity, ItemStack stack) {
         if (isReloading(stack)) return false;
-        return finalShoot(entity);
+        return finalShoot(entity, stack);
     }
 
-    protected final boolean finalShoot(Entity entity) {
+    protected final boolean finalShoot(Entity entity, ItemStack gunItemStack) {
         if (entity instanceof Player player) {
             if (player.getCooldowns().isOnCooldown(this)) {
                 return false;
@@ -120,21 +124,25 @@ public abstract class AbstractGunItem extends Item implements GeoItem {
         if (!l.isClientSide) {
             // creating the object automatically fills in all the necessary data.
             // After initialization, entity is ready to be added to the level
+            GunAttachmentsComponent component =
+                    gunItemStack.get(ModDataComponents.GUN_ATTACHMENTS.get());
+
+            GunShootEvent event = new GunShootEvent(l, entity, null, gunItemStack, null);
+            component.fireEvents(GunAttachmentEventType.ON_SHOOT, event);
+
+            // shouldnt produce NPE because every gun has those components, attached in the constructor
             GenericBulletEntity projectile =
-                    new GenericBulletEntity(entity, l, defaultBulletDamage, defaultBulletSpeed, defaultInaccuracy);
+                    new GenericBulletEntity(entity, l,
+                            gunItemStack.get(ModDataComponents.BULLET_DAMAGE.get()),
+                            gunItemStack.get(ModDataComponents.BULLET_SPEED.get()),
+                            gunItemStack.get(ModDataComponents.INACCURACY.get()),
+                            gunItemStack
+                    );
 
             l.addFreshEntity(projectile);
 
-            l.playSound(
-                    null,
-                    entity.getX(),
-                    entity.getY(),
-                    entity.getZ(),
-                    ModSounds.Gun_Fire.get(),
-                    SoundSource.PLAYERS,
-                    1.0F,
-                    1.0F
-            );
+            l.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                    ModSounds.Gun_Fire.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
         }
 
         return true;
@@ -179,10 +187,7 @@ public abstract class AbstractGunItem extends Item implements GeoItem {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
     }
 
-    public boolean tryEquipAttachment(
-            ItemStack gunStack,
-            ItemStack attachmentStack
-    ) {
+    public boolean tryEquipAttachment(ItemStack gunStack, ItemStack attachmentStack) {
         System.out.println("Trying to equip attachment");
         GunAttachment attachment =
                 ModGunAttachments.ATTACHMENTS.getForItemOrNull(
