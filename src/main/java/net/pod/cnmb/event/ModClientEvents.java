@@ -14,8 +14,12 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.entity.lead_golem.LeadGolem;
+import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.attachment.GunAttachment;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
 import net.pod.cnmb.networking.ModNetworking;
@@ -78,6 +82,8 @@ public class ModClientEvents {
         if (controlling != null && event.getName().equals(VanillaGuiLayers.EXPERIENCE_BAR)) {
             event.setCanceled(true);
         }
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        LeadGolem.registerRenderer(event);
     }
 
     @SubscribeEvent
