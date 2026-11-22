@@ -10,7 +10,8 @@
     "LevelRendererMixin",
     "LocalPlayerMixin",
     "MinecraftMixin",
-    "MouseHandlerMixin"
+    "MouseHandlerMixin",
+    "PalletBlockArmOutlineMixin"
   ],
   "injectors": {
     "defaultRequire": 1

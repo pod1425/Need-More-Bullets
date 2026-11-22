@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.pod.cnmb.item.gun.AbstractGunItem;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentSlot;
 import net.pod.cnmb.item.gun.pistol.client.PistolRenderer;
@@ -64,8 +65,8 @@ public final class PistolItem extends AbstractGunItem implements GeoItem {
     }
 
     @Override
-    public boolean shoot(Entity entity) {
-        boolean shot = super.shoot(entity);
+    public boolean shoot(Entity entity, ItemStack gunItemStack) {
+        boolean shot = super.shoot(entity, gunItemStack);
         if (shot && entity instanceof Player player && player.level() instanceof ServerLevel level) {
             triggerAnim(player, GeoItem.getOrAssignId(player.getMainHandItem(), level), "controller", "fire");
         }

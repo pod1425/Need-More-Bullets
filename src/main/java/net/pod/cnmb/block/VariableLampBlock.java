@@ -38,6 +38,7 @@ public class VariableLampBlock extends Block {
             if (value != level.getBestNeighborSignal(pos)) {
                 level.scheduleTick(pos, this, 0);
             }
+
         }
     }
 

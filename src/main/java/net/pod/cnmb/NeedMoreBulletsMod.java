@@ -3,6 +3,7 @@ package net.pod.cnmb;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -15,6 +16,8 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.pod.cnmb.block.copper_flower.CopperFlowerBlockEntity;
 import net.pod.cnmb.entity.beedrone.BeeDrone;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.pod.cnmb.block.pallet.PalletBlockRenderer;
 import net.pod.cnmb.networking.ModNetworking;
 import net.pod.cnmb.registry.*;
 import org.slf4j.Logger;
@@ -37,12 +40,17 @@ public class NeedMoreBulletsMod {
         ModDataComponents.register(modEventBus);
         ModPlayerAttachments.register(modEventBus);
         ModSounds.register(modEventBus);
+        ModArmInteractionPoints.register(modEventBus);
 
         ModGunAttachments.ATTACHMENTS.initialize();
 
         modEventBus.addListener(this::addCreative);
         modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(ModNetworking::register);
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modEventBus.addListener(PalletBlockRenderer::registerRenderer);
+        }
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

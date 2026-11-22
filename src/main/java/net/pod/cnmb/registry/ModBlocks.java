@@ -12,6 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.VariableLampBlock;
 import net.pod.cnmb.block.copper_flower.CopperFlowerBlock;
+import net.pod.cnmb.block.pallet.PalletBlock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,9 @@ public class ModBlocks {
             () -> new CopperFlowerBlock(BlockBehaviour.Properties.of()
                     .noCollission().noOcclusion().instabreak().sound(SoundType.COPPER)));
 
+
+    public static final DeferredBlock<Block> PALLET = registerBlock("pallet",
+            () -> new PalletBlock(BlockBehaviour.Properties.of().strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
 
 
 /*
