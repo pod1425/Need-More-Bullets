@@ -1,6 +1,7 @@
 package net.pod.cnmb.registry;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -8,6 +9,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.item.gun.attachment.GunAttachmentsComponent;
 
+import java.util.UUID;
 import java.util.function.UnaryOperator;
 
 @SuppressWarnings("removal")
@@ -47,6 +49,8 @@ public class ModDataComponents {
                     .networkSynchronized(GunAttachmentsComponent.STREAM_CODEC)
     );
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> BEE_DRONE_CONTROLLER_ID =
+            register("bee_drone_controller_id", builder -> builder.persistent(UUIDUtil.CODEC).networkSynchronized(UUIDUtil.STREAM_CODEC));
 
     private static <T>DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name,
                                                                                           UnaryOperator<DataComponentType.Builder<T>> builderOperator) {

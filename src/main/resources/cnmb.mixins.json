@@ -4,8 +4,13 @@
   "package": "net.pod.cnmb.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "TrackedEntityMixin"
   ],
   "client": [
+    "LevelRendererMixin",
+    "LocalPlayerMixin",
+    "MinecraftMixin",
+    "MouseHandlerMixin",
     "PalletBlockArmOutlineMixin"
   ],
   "injectors": {

@@ -6,6 +6,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
+import net.pod.cnmb.entity.beedrone.BeeDrone;
 import net.pod.cnmb.entity.lead_golem.LeadGolem;
 import net.pod.cnmb.entity.projectile.GenericBulletEntity;
 
@@ -24,6 +25,11 @@ public class ModEntities {
             ENTITY_TYPES.register("lead_golem", () -> EntityType.Builder.of(LeadGolem::new, MobCategory.CREATURE)
                     .sized(0.75f, 1.5f).build("lead_golem"));
 
+
+    public static final Supplier<EntityType<BeeDrone>> BEE_DRONE =
+            ENTITY_TYPES.register("bee_drone", () -> EntityType.Builder
+                    .of(BeeDrone::new, MobCategory.MISC)
+                    .sized(0.6f, 0.6f).build("bee_drone"));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);

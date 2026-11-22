@@ -11,6 +11,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.block.VariableLampBlock;
+import net.pod.cnmb.block.copper_flower.CopperFlowerBlock;
 import net.pod.cnmb.block.pallet.PalletBlock;
 
 import java.util.ArrayList;
@@ -63,6 +64,10 @@ public class ModBlocks {
             () -> new VariableLampBlock(BlockBehaviour.Properties.of()
                     .strength(4f).requiresCorrectToolForDrops().sound(SoundType.METAL)
                     .lightLevel(state -> state.getValue(VariableLampBlock.LIGHT_LEVEL))));
+
+    public static final DeferredBlock<Block> COPPER_FLOWER = registerBlock("copper_flower",
+            () -> new CopperFlowerBlock(BlockBehaviour.Properties.of()
+                    .noCollission().noOcclusion().instabreak().sound(SoundType.COPPER)));
 
 
     public static final DeferredBlock<Block> PALLET = registerBlock("pallet",

@@ -32,7 +32,7 @@ public class ShootGunGoal extends Goal {
         }
 
         AbstractGunItem gun = (AbstractGunItem) golem.getWeaponItem().getItem();
-        gun.shoot(golem);
+        gun.shoot(golem, golem.getWeaponItem());
         cooldown = 20 / gun.getBaseShootRate();
     }
 }

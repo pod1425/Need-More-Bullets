@@ -10,10 +10,13 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.pod.cnmb.block.copper_flower.CopperFlowerBlockEntity;
+import net.pod.cnmb.entity.beedrone.BeeDrone;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.pod.cnmb.block.pallet.PalletBlockRenderer;
 import net.pod.cnmb.networking.ModNetworking;
 import net.pod.cnmb.registry.*;
@@ -42,6 +45,7 @@ public class NeedMoreBulletsMod {
         ModGunAttachments.ATTACHMENTS.initialize();
 
         modEventBus.addListener(this::addCreative);
+        modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(ModNetworking::register);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
@@ -63,6 +67,10 @@ public class NeedMoreBulletsMod {
         }
     }
 
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        CopperFlowerBlockEntity.registerCapabilities(event);
+        BeeDrone.registerCapabilities(event);
+    }
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {

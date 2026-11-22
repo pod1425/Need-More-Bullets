@@ -6,19 +6,21 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.pod.cnmb.NeedMoreBulletsMod;
 import net.pod.cnmb.item.gun.AbstractGunItem;
+import net.pod.cnmb.networking.payload.ControlInputPayload;
+import net.pod.cnmb.networking.payload.CustomAttackPayload;
+import net.pod.cnmb.networking.payload.SetControllingPayload;
+import net.pod.cnmb.networking.payload.StopControlPayload;
 import net.pod.cnmb.item.gun.GunPlayerData;
 import net.pod.cnmb.registry.ModPlayerAttachments;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public class ModNetworking {
 
@@ -41,6 +43,29 @@ public class ModNetworking {
                 EquipAttachmentPayload.TYPE,
                 EquipAttachmentPayload.STREAM_CODEC,
                 ModNetworking::handleEquipAttachment
+        );
+
+        registrar.playToServer(
+                StopControlPayload.TYPE,
+                StopControlPayload.STREAM_CODEC,
+                StopControlPayload::handle
+        );
+        registrar.playToServer(
+                ControlInputPayload.TYPE,
+                ControlInputPayload.STREAM_CODEC,
+                ControlInputPayload::handle
+        );
+
+        registrar.playToClient(
+                SetControllingPayload.TYPE,
+                SetControllingPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> ModClientPayloadHandlers.setControlling(payload, context))
+        );
+
+        registrar.playToServer(
+                CustomAttackPayload.TYPE,
+                CustomAttackPayload.STREAM_CODEC,
+                CustomAttackPayload::handle
         );
     }
     public enum GunHand {
@@ -70,6 +95,9 @@ public class ModNetworking {
 
     public static void sendToServer(CustomPacketPayload payload) {
         PacketDistributor.sendToServer(payload);
+    }
+    public static void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
+        PacketDistributor.sendToPlayer(player, payload);
     }
 
     public record GunTriggerPayload(boolean pressed, GunHand hand) implements CustomPacketPayload {

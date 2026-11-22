@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "cnmb:block/copper_flower"
+  },
+  "render_type": "minecraft:cutout"
+}

@@ -139,7 +139,7 @@ public abstract class AbstractGunItem extends Item {
                     case MAIN_HAND -> player.getMainHandItem() == stack;
                     case OFF_HAND -> player.getOffhandItem() == stack;
                     case BOTH -> player.getMainHandItem() == stack ||
-                                    player.getOffhandItem() == stack;
+                            player.getOffhandItem() == stack;
                 };
                 if (correctHand) {
                     if (defaultIsAutomatic || !data.hasShotOccurred()) {
@@ -195,7 +195,7 @@ public abstract class AbstractGunItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context,
-            List<Component> tooltip, TooltipFlag flag) {
+                                List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
 
         EnumMap<GunAttachmentSlot, ItemStack> slots =

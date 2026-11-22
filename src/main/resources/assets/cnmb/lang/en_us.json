@@ -5,6 +5,7 @@
   "item.cnmb.steel_ingot": "Steel ingot",
   "item.cnmb.steel_nugget": "Steel nugget",
   "item.cnmb.pistol": "Pistol",
+  "item.cnmb.bee_drone_spawn_egg": "Bee drone spawn egg",
 
   "block.cnmb.lead_block": "Lead block",
   "block.cnmb.cut_lead": "Cut Lead",
@@ -17,6 +18,8 @@
   "block.cnmb.steel_lamp": "Steel lamp",
   "block.cnmb.lead_lamp": "Lead lamp",
 
+  "key.categories.cnmb": "Need More Bullets",
+  "key.cnmb.stop_control": "Stop control",
   "tooltip.cnmb.attachment_slot": "%s: %s",
   "tooltip.cnmb.empty_attachment_slot": "None",
   "tooltip.cnmb.right_click_to_remove": "R-click to remove selected attachment",
